@@ -25,10 +25,7 @@ services:
       - key: SPRING_DATASOURCE_PASSWORD
         value: root123
       - key: AI_SERVICE_URL
-        fromService:
-          name: interviewiq-ai
-          type: web
-          property: url
+        value: http://interviewiq-ai:8000
 
   # Frontend Static Site (React + Vite)
   - type: web
@@ -38,7 +35,4 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: interviewiq-backend
-          type: web
-          property: url
+        sync: false
