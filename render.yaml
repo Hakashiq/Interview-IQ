@@ -4,6 +4,7 @@ services:
     name: interviewiq-ai
     runtime: docker
     dockerfilePath: ai-service/Dockerfile
+    dockerContext: ai-service
     plan: free
     numInstances: 1
     envVars:
@@ -15,6 +16,7 @@ services:
     name: interviewiq-backend
     runtime: docker
     dockerfilePath: backend/Dockerfile
+    dockerContext: backend
     plan: free
     numInstances: 1
     envVars:
