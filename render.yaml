@@ -2,7 +2,7 @@ services:
   # AI Service (FastAPI)
   - type: web
     name: interviewiq-ai
-    env: docker
+    runtime: docker
     dockerfilePath: ai-service/Dockerfile
     plan: free
     numInstances: 1
@@ -13,7 +13,7 @@ services:
   # Backend Service (Spring Boot)
   - type: web
     name: interviewiq-backend
-    env: docker
+    runtime: docker
     dockerfilePath: backend/Dockerfile
     plan: free
     numInstances: 1
@@ -31,10 +31,11 @@ services:
           property: url
 
   # Frontend Static Site (React + Vite)
-  - type: static
+  - type: web
     name: interviewiq-frontend
+    runtime: static
     buildCommand: cd frontend && npm install && npm run build
-    publishDir: frontend/dist
+    staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
         sync: false
