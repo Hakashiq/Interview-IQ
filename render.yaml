@@ -21,11 +21,11 @@ services:
     numInstances: 1
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://kafka-25e0c3e7-thakashiq-268.d.aivencloud.com:26919/defaultdb?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        value: mysql://avnadmin:AVNS_g-HY_irvGBh1W7savhR@mysql-4e99f98-thakashiq-268.h.aivencloud.com:26917/defaultdb?ssl-mode=REQUIRED
       - key: SPRING_DATASOURCE_USERNAME
-        value: root
+        value: avnadmin
       - key: SPRING_DATASOURCE_PASSWORD
-        value: root123
+        value: AVNS_g-HY_irvGBh1W7savhR
       - key: AI_SERVICE_URL
         value: http://interviewiq-ai:8000
 
