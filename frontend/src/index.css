@@ -1,0 +1,246 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-surface-900 text-white font-sans antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary-600 rounded-full;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-primary-500/10;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent;
+  }
+
+  .gradient-bg {
+    @apply bg-gradient-to-br from-blue-600 via-sky-500 to-indigo-600;
+  }
+
+  .gradient-border {
+    @apply relative;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(56, 189, 248, 0.1));
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+
+
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-semibold text-white gradient-bg
+           shadow-lg shadow-primary-500/25
+           hover:shadow-xl hover:shadow-primary-500/40
+           active:scale-[0.98]
+           transition-all duration-200;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-semibold text-primary-400
+           bg-primary-500/10 border border-primary-500/30
+           hover:bg-primary-500/20 hover:border-primary-500/50
+           active:scale-[0.98]
+           transition-all duration-200;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl
+           bg-white/5 border border-white/10
+           text-white placeholder-gray-500
+           focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20
+           transition-all duration-200;
+  }
+
+  .stat-card {
+    @apply glass-card p-6 flex flex-col gap-2;
+  }
+
+  .nav-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400
+           hover:text-white hover:bg-white/5
+           transition-all duration-200;
+  }
+
+  .nav-link-active {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-white
+           bg-primary-500/10 border border-primary-500/20;
+  }
+
+  .badge {
+    @apply px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-success {
+    @apply badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+  }
+
+  .badge-warning {
+    @apply badge bg-amber-500/10 text-amber-400 border border-amber-500/20;
+  }
+
+  .badge-info {
+    @apply badge bg-blue-500/10 text-blue-400 border border-blue-500/20;
+  }
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Scrollbars */
+html.light ::-webkit-scrollbar-track {
+  background-color: #f1f5f9 !important;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1 !important;
+}
+
+/* Background overrides */
+html.light .bg-surface-900,
+html.light [class*="bg-surface-900"] {
+  background-color: #f8fafc !important;
+}
+html.light .bg-surface-800,
+html.light [class*="bg-surface-800"] {
+  background-color: #ffffff !important;
+}
+html.light .bg-white\/5,
+html.light [class*="bg-white/5"] {
+  background-color: rgba(15, 23, 42, 0.03) !important;
+}
+html.light .bg-white\/10,
+html.light [class*="bg-white/10"] {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Borders */
+html.light .border-white\/5,
+html.light .border-white\/10,
+html.light [class*="border-white"] {
+  border-color: rgba(15, 23, 42, 0.06) !important;
+}
+
+/* Hovers */
+html.light .hover\:bg-white\/5:hover,
+html.light .hover\:bg-white\/8:hover,
+html.light .hover\:bg-white\/10:hover,
+html.light [class*="hover:bg-white"]:hover {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+html.light .hover\:border-white\/20:hover,
+html.light [class*="hover:border-white"]:hover {
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+/* Cards */
+html.light .glass-card {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 4px -1px rgba(15, 23, 42, 0.03) !important;
+}
+
+/* Nav links */
+html.light .nav-link {
+  color: #475569 !important;
+}
+html.light .nav-link:hover {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+  color: #2563eb !important;
+}
+html.light .nav-link-active {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  border-color: rgba(59, 130, 246, 0.15) !important;
+  color: #2563eb !important;
+}
+
+/* Text Overrides */
+html.light .text-white,
+html.light [class*="text-white"] {
+  color: #0f172a !important;
+}
+html.light .text-gray-400,
+html.light [class*="text-gray-400"] {
+  color: #475569 !important;
+}
+html.light .text-gray-500,
+html.light [class*="text-gray-500"] {
+  color: #64748b !important;
+}
+html.light .text-gray-600,
+html.light [class*="text-gray-600"] {
+  color: #94a3b8 !important;
+}
+
+/* Inputs / Forms */
+html.light input,
+html.light select,
+html.light textarea {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+}
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Buttons */
+html.light .btn-secondary {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+  border-color: rgba(59, 130, 246, 0.15) !important;
+  color: #2563eb !important;
+}
+html.light .btn-secondary:hover {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Header Navbar specific */
+html.light header {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+}
+
+
