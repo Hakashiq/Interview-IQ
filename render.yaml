@@ -37,4 +37,4 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
-        sync: false
+        value: https://interviewiq-backend-75hn.onrender.com
