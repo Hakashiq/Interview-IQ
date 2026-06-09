@@ -8,7 +8,7 @@ services:
     numInstances: 1
     envVars:
       - key: GEMINI_API_KEY
-        sync: false
+        value: AIzaSyAZJfGqRUCq2voHvGDgMSuH__UNUgtvwQI
 
   # Backend Service (Spring Boot)
   - type: web
@@ -19,11 +19,11 @@ services:
     numInstances: 1
     envVars:
       - key: SPRING_DATASOURCE_URL
-        sync: false
+        value: jdbc:mysql://kafka-25e0c3e7-thakashiq-268.d.aivencloud.com:26919/defaultdb?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=UTC
       - key: SPRING_DATASOURCE_USERNAME
-        sync: false
+        value: root
       - key: SPRING_DATASOURCE_PASSWORD
-        sync: false
+        value: root123
       - key: AI_SERVICE_URL
         fromService:
           name: interviewiq-ai
@@ -38,4 +38,7 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
-        sync: false
+        fromService:
+          name: interviewiq-backend
+          type: web
+          property: url
