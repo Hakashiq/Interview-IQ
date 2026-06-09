@@ -1,0 +1,40 @@
+services:
+  # AI Service (FastAPI)
+  - type: web
+    name: interviewiq-ai
+    env: docker
+    dockerfilePath: ai-service/Dockerfile
+    plan: free
+    numInstances: 1
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+
+  # Backend Service (Spring Boot)
+  - type: web
+    name: interviewiq-backend
+    env: docker
+    dockerfilePath: backend/Dockerfile
+    plan: free
+    numInstances: 1
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: AI_SERVICE_URL
+        fromService:
+          name: interviewiq-ai
+          type: web
+          property: url
+
+  # Frontend Static Site (React + Vite)
+  - type: static
+    name: interviewiq-frontend
+    buildCommand: cd frontend && npm install && npm run build
+    publishDir: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
