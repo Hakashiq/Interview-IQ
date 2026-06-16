@@ -10,12 +10,12 @@ def create_deck():
     prs.slide_width = Inches(13.33)
     prs.slide_height = Inches(7.5)
     
-    # Theme colors (Harmony Dark Palette matching the app UI)
-    bg_color = RGBColor(15, 23, 42)      # Deep Slate Blue (#0f172a)
-    title_color = RGBColor(14, 165, 233)  # Electric Cyan (#0ea5e9)
-    accent_color = RGBColor(168, 85, 247) # Vibrant Purple (#a855f7)
-    text_color = RGBColor(255, 255, 255)  # White (#ffffff)
-    muted_color = RGBColor(148, 163, 184) # Light Gray (#94a3b8)
+    # Theme colors (Harmony Light Palette for a clean, presentable corporate look)
+    bg_color = RGBColor(248, 250, 252)    # Slate 50 (#f8fafc) - off-white
+    title_color = RGBColor(15, 23, 42)    # Slate 900 (#0f172a) - deep slate
+    accent_color = RGBColor(37, 99, 235)   # Blue 600 (#2563eb) - corporate blue
+    text_color = RGBColor(51, 65, 85)     # Slate 700 (#334155) - charcoal text
+    muted_color = RGBColor(100, 116, 139)  # Slate 500 (#64748b) - gray-slate
     
     blank_layout = prs.slide_layouts[6]
     
@@ -164,7 +164,7 @@ def create_deck():
             p_logo.font.name = "Segoe UI"
             p_logo.font.size = Pt(20)
             p_logo.font.bold = True
-            p_logo.font.color.rgb = title_color
+            p_logo.font.color.rgb = accent_color
             
             # Title
             tx_title = slide.shapes.add_textbox(Inches(1), Inches(2), Inches(11.33), Inches(2))
@@ -175,7 +175,7 @@ def create_deck():
             p_title.font.name = "Segoe UI"
             p_title.font.size = Pt(64)
             p_title.font.bold = True
-            p_title.font.color.rgb = text_color
+            p_title.font.color.rgb = title_color
             
             # Subtitle
             tx_sub = slide.shapes.add_textbox(Inches(1), Inches(4), Inches(11.33), Inches(1))
@@ -185,7 +185,7 @@ def create_deck():
             p_sub.text = slide_data["subtitle"]
             p_sub.font.name = "Segoe UI"
             p_sub.font.size = Pt(22)
-            p_sub.font.color.rgb = accent_color
+            p_sub.font.color.rgb = text_color
             
             # Muted Info
             tx_info = slide.shapes.add_textbox(Inches(1), Inches(5.5), Inches(11.33), Inches(1.5))
@@ -211,7 +211,7 @@ def create_deck():
             p_sec.font.name = "Segoe UI"
             p_sec.font.size = Pt(12)
             p_sec.font.bold = True
-            p_sec.font.color.rgb = title_color
+            p_sec.font.color.rgb = accent_color
             p_sec.space_after = Pt(8)
             
             # Main Title
@@ -220,14 +220,14 @@ def create_deck():
             p_title.font.name = "Segoe UI"
             p_title.font.size = Pt(36)
             p_title.font.bold = True
-            p_title.font.color.rgb = text_color
+            p_title.font.color.rgb = title_color
             
             # Subtitle
             p_sub = tf_header.add_paragraph()
             p_sub.text = slide_data["subtitle"]
             p_sub.font.name = "Segoe UI"
             p_sub.font.size = Pt(16)
-            p_sub.font.color.rgb = accent_color
+            p_sub.font.color.rgb = muted_color
             
             # Content Bullets
             tx_content = slide.shapes.add_textbox(Inches(1), Inches(2.2), Inches(11.33), Inches(4.5))
