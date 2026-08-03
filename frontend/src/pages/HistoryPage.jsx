@@ -66,7 +66,7 @@ export default function HistoryPage() {
         <h1 className="text-3xl font-display font-bold text-white">
           Interview <span className="gradient-text">History</span>
         </h1>
-        <p className="text-gray-400 mt-2">Browse your past mock interviews, scores, and detailed AI feedback reviews.</p>
+        <p className="text-gray-400 mt-2">Browse your past mock interviews, Scores, and detailed AI feedback reviews.</p>
       </div>
 
       {/* Filters */}

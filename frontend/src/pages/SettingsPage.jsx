@@ -105,7 +105,7 @@ export default function SettingsPage() {
   });
 
   const [appearance, setAppearance] = useState({
-    theme: 'DARK',
+    theme: localStorage.getItem('theme')?.toUpperCase() || 'LIGHT',
     fontSize: 'MEDIUM'
   });
 
@@ -223,6 +223,14 @@ export default function SettingsPage() {
   const handleSaveUserPrefs = (sectionName) => {
     if (sectionName === 'Interview') {
       localStorage.setItem('interview-preferences', JSON.stringify(interviewPrefs));
+    } else if (sectionName === 'Appearance') {
+      const selectedTheme = appearance.theme.toLowerCase();
+      localStorage.setItem('theme', selectedTheme);
+      if (selectedTheme === 'light') {
+        document.documentElement.classList.add('light');
+      } else {
+        document.documentElement.classList.remove('light');
+      }
     }
     toast.success(`${sectionName} preferences updated! ✨`);
   };
@@ -855,7 +863,6 @@ export default function SettingsPage() {
                       type="button"
                       onClick={() => {
                         setAppearance({ ...appearance, theme: 'LIGHT' });
-                        toast.error('Light theme is a premium feature!');
                       }}
                       className={`p-4 rounded-xl border flex flex-col items-center gap-2 font-semibold transition-all ${
                         appearance.theme === 'LIGHT'

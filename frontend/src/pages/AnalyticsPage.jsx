@@ -10,12 +10,17 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, BarElement, Title, Tooltip, Legend, Filler);
 
-const chartTextColor = 'rgba(255,255,255,0.7)';
-const chartGridColor = 'rgba(255,255,255,0.1)';
-
 export default function AnalyticsPage() {
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const isLight = document.documentElement.classList.contains('light');
+  const chartTextColor = isLight ? '#475569' : 'rgba(255,255,255,0.7)';
+  const chartGridColor = isLight ? 'rgba(15,23,42,0.08)' : 'rgba(255,255,255,0.1)';
+  const tooltipBg = isLight ? '#ffffff' : '#1e293b';
+  const tooltipBorder = isLight ? 'rgba(15,23,42,0.12)' : 'rgba(255,255,255,0.1)';
+  const tooltipTitle = isLight ? '#0f172a' : '#fff';
+  const tooltipBody = isLight ? '#475569' : 'rgba(255,255,255,0.8)';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,11 +88,11 @@ export default function AnalyticsPage() {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#1e293b',
-        borderColor: 'rgba(255,255,255,0.1)',
+        backgroundColor: tooltipBg,
+        borderColor: tooltipBorder,
         borderWidth: 1,
-        titleColor: '#fff',
-        bodyColor: 'rgba(255,255,255,0.8)',
+        titleColor: tooltipTitle,
+        bodyColor: tooltipBody,
         padding: 12,
         cornerRadius: 8,
       },
@@ -143,11 +148,11 @@ export default function AnalyticsPage() {
         },
       },
       tooltip: {
-        backgroundColor: '#1e293b',
-        borderColor: 'rgba(255,255,255,0.1)',
+        backgroundColor: tooltipBg,
+        borderColor: tooltipBorder,
         borderWidth: 1,
-        titleColor: '#fff',
-        bodyColor: 'rgba(255,255,255,0.8)',
+        titleColor: tooltipTitle,
+        bodyColor: tooltipBody,
         padding: 12,
         cornerRadius: 8,
       },

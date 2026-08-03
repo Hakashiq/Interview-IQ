@@ -197,6 +197,22 @@ html.light .text-gray-400,
 html.light [class*="text-gray-400"] {
   color: #475569 !important;
 }
+html.light .text-gray-300,
+html.light [class*="text-gray-300"] {
+  color: #334155 !important;
+}
+html.light .text-gray-200,
+html.light [class*="text-gray-200"] {
+  color: #1e293b !important;
+}
+html.light .text-gray-100,
+html.light [class*="text-gray-100"] {
+  color: #0f172a !important;
+}
+html.light .text-gray-50,
+html.light [class*="text-gray-50"] {
+  color: #0f172a !important;
+}
 html.light .text-gray-500,
 html.light [class*="text-gray-500"] {
   color: #64748b !important;
