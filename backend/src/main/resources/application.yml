@@ -52,7 +52,7 @@ app:
     refresh-token-expiration: 604800000  # 7 days
 
   ai-service:
-    url: http://localhost:8000
+    url: ${AI_SERVICE_URL:http://localhost:8000}
 
   upload:
     dir: ./uploads
