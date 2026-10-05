@@ -17,14 +17,16 @@ export default function AppLayout({ children }) {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-surface-900 relative">
+    <div className="flex min-h-screen bg-[#FAFAFC] text-slate-900 relative">
       <ParticleBackground />
       <Sidebar />
-      <div className={`flex-1 flex flex-col relative z-10 transition-all duration-300 ${
-        collapsed ? 'lg:ml-20' : 'lg:ml-64'
-      }`}>
+      <div
+        className={`flex-1 flex flex-col relative z-10 transition-all duration-300 ${
+          collapsed ? 'lg:ml-20' : 'lg:ml-64'
+        }`}
+      >
         <Navbar />
-        <main className="flex-1 p-4 lg:p-8 overflow-auto">
+        <main className="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto">
           {children}
         </main>
       </div>

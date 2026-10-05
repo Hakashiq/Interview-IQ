@@ -5,15 +5,15 @@ import AppLayout from '../components/layout/AppLayout';
 import api from '../api/axios';
 import {
   HiOutlineAcademicCap, HiOutlineChartBar, HiOutlineLightningBolt,
-  HiOutlineTrendingUp, HiOutlineClipboardList, HiOutlineStar,
-  HiOutlineArrowRight, HiOutlineSparkles, HiOutlineClock, HiOutlineCalendar,
-  HiOutlineFire, HiOutlineCheck
+  HiOutlineTrendingUp, HiOutlineClipboardList,
+  HiOutlineArrowRight, HiOutlineClock, HiOutlineCalendar,
+  HiOutlineFire, HiOutlineCheck, HiOutlineDocumentText
 } from 'react-icons/hi';
 
 const difficultyBadgeClass = {
   EASY: 'badge-success',
   MEDIUM: 'badge-warning',
-  HARD: 'bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-1 rounded-full text-xs font-semibold',
+  HARD: 'badge-danger',
 };
 
 export default function DashboardPage() {
@@ -47,7 +47,7 @@ export default function DashboardPage() {
 
   const scheduledInterviews = interviews.filter(i => i.status === 'SCHEDULED');
   const completedInterviews = interviews.filter(i => i.status === 'COMPLETED');
-  
+
   const totalInterviews = completedInterviews.length;
   const avgScore = totalInterviews > 0
     ? (completedInterviews.reduce((sum, i) => sum + (i.overallScore || 0), 0) / totalInterviews).toFixed(1)
@@ -55,12 +55,11 @@ export default function DashboardPage() {
   const skillsCount = resumeSkills.length;
 
   const stats = [
-    { label: 'Interviews', value: totalInterviews.toString(), icon: HiOutlineClipboardList, change: totalInterviews > 0 ? `${totalInterviews} completed` : 'Start your first!', color: 'from-blue-600 to-cyan-500' },
-    { label: 'Avg Score', value: avgScore === '--' ? '--' : `${avgScore}`, icon: HiOutlineChartBar, change: avgScore === '--' ? 'No data yet' : 'out of 10', color: 'from-emerald-500 to-teal-500' },
-    { label: 'Skills', value: skillsCount.toString(), icon: HiOutlineLightningBolt, change: skillsCount > 0 ? 'From resume' : 'Upload resume', color: 'from-amber-500 to-orange-500' },
-    { label: 'Streak', value: `${Math.min(totalInterviews, 7)} days`, icon: HiOutlineTrendingUp, change: totalInterviews > 0 ? 'Keep going!' : 'Start practicing!', color: 'from-sky-500 to-indigo-500' },
+    { label: 'Completed Sessions', value: totalInterviews.toString(), change: totalInterviews > 0 ? `${totalInterviews} sessions finished` : 'Start your first assessment' },
+    { label: 'Average Score', value: avgScore === '--' ? '--' : `${avgScore} / 10`, change: avgScore === '--' ? 'No assessments yet' : 'Mean performance benchmark' },
+    { label: 'Resume Skills Indexed', value: skillsCount.toString(), change: skillsCount > 0 ? 'Verified technical tags' : 'Upload resume to extract' },
+    { label: 'Practice Cadence', value: `${Math.min(totalInterviews, 7)} Days`, change: totalInterviews > 0 ? 'Consistent practice streak' : 'Target: 3 sessions / week' },
   ];
-
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
@@ -74,7 +73,7 @@ export default function DashboardPage() {
     return date.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   };
 
-  // Dynamic Streak Calculation
+  // Streak Calculation
   const calculateStreak = () => {
     if (interviews.length === 0) return { currentStreak: 0, maxStreak: 0, weekDays: [] };
 
@@ -94,7 +93,7 @@ export default function DashboardPage() {
     const today = new Date();
     let checkDate = new Date(today);
     let todayStr = today.toISOString().split('T')[0];
-    
+
     if (completedDates.has(todayStr)) {
       current = 1;
       checkDate.setDate(checkDate.getDate() - 1);
@@ -124,7 +123,7 @@ export default function DashboardPage() {
         const d2 = new Date(sortedDates[i]);
         const diffTime = Math.abs(d2 - d1);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays === 1) {
           temp++;
         } else if (diffDays > 1) {
@@ -138,7 +137,7 @@ export default function DashboardPage() {
     const labels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
     const currentDay = today.getDay();
     const startOfWeek = new Date(today);
-    
+
     const distanceToMonday = currentDay === 0 ? 6 : currentDay - 1;
     startOfWeek.setDate(today.getDate() - distanceToMonday);
 
@@ -160,253 +159,244 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
-      {/* Header */}
-      <div className="mb-8 animate-fade-in">
-        <div className="flex items-center gap-2 mb-1">
-          <HiOutlineSparkles className="w-5 h-5 text-primary-400" />
-          <span className="text-sm text-primary-400 font-medium">Dashboard</span>
-        </div>
-        <h1 className="text-3xl font-display font-bold text-white">
-          Welcome back, <span className="gradient-text">{user?.fullName?.split(' ')[0] || 'Student'}</span> 👋
-        </h1>
-        <p className="text-gray-400 mt-2">Ready to ace your next interview? Let&apos;s practice!</p>
-      </div>
+      <div className="space-y-6">
+        
+        {/* Welcome Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              Welcome back, {user?.fullName?.split(' ')[0] || 'Candidate'}
+            </h1>
+            <p className="text-xs text-slate-500 mt-1">
+              Here is your interview readiness progress and technical benchmark summary.
+            </p>
+          </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map((stat, index) => (
-          <div
-            key={stat.label}
-            className="glass-card p-6 animate-slide-up"
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}>
-                <stat.icon className="w-6 h-6 text-white" />
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => navigate('/resume')}
+              className="btn-secondary"
+            >
+              <HiOutlineDocumentText className="w-4 h-4 text-slate-500" />
+              <span>Resume Analyzer</span>
+            </button>
+            <button
+              onClick={() => navigate('/interviews')}
+              className="btn-primary"
+            >
+              <HiOutlineLightningBolt className="w-4 h-4" />
+              <span>Start Assessment</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 4 Clean Metric Tiles */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat) => (
+            <div
+              key={stat.label}
+              className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-xs hover:border-slate-300 transition-all"
+            >
+              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                {stat.label}
+              </div>
+              <div className="text-3xl font-bold text-slate-900 tracking-tight font-mono mb-1">
+                {stat.value}
+              </div>
+              <p className="text-[11px] text-slate-500 font-medium">
+                {stat.change}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Practice Streak & Consistency Card */}
+        <div className="bg-white border border-slate-200/90 rounded-xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shadow-xs flex-shrink-0">
+              <HiOutlineFire className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-slate-900">Consistency Cadence</h2>
+              <p className="text-xs text-slate-500 mt-0.5">Maintain consistent practice to build confidence for technical screeners.</p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-6 md:gap-8 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-slate-200/80 md:pl-8">
+            <div>
+              <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Current Streak</p>
+              <p className="text-2xl font-bold font-mono text-slate-900 mt-0.5">
+                {currentStreak} <span className="text-xs font-normal text-slate-500">days</span>
+              </p>
+            </div>
+            <div>
+              <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Best Record</p>
+              <p className="text-2xl font-bold font-mono text-slate-900 mt-0.5">
+                {maxStreak} <span className="text-xs font-normal text-slate-500">days</span>
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Weekly Tracker</p>
+              <div className="flex items-center gap-1.5">
+                {weekDays.map((day, idx) => (
+                  <div key={idx} className="flex flex-col items-center gap-1">
+                    <span className="text-[9px] text-slate-400 font-bold uppercase">{day.label}</span>
+                    <div
+                      className={`w-7 h-7 rounded-lg border flex items-center justify-center text-xs transition-all ${
+                        day.active
+                          ? 'bg-blue-600 border-blue-600 text-white font-bold shadow-xs'
+                          : 'bg-slate-50 border-slate-200 text-slate-400'
+                      }`}
+                      title={day.active ? `Completed: ${day.dateStr}` : `No session on ${day.dateStr}`}
+                    >
+                      {day.active ? <HiOutlineCheck className="w-3.5 h-3.5" /> : '•'}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-            <p className="text-3xl font-bold text-white">{stat.value}</p>
-            <p className="text-sm text-gray-400 mt-1">{stat.label}</p>
-            <p className="text-xs text-gray-500 mt-2">{stat.change}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Activity Streak Widget (LeetCode style) */}
-      <div className="glass-card p-6 mb-8 animate-slide-up flex flex-col md:flex-row md:items-center justify-between gap-6" style={{ animationDelay: '200ms' }}>
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-400 flex items-center justify-center shadow-lg shadow-orange-500/20 text-white animate-pulse">
-            <HiOutlineFire className="w-8 h-8" />
-          </div>
-          <div>
-            <h3 className="text-lg font-display font-bold text-white flex items-center gap-2">
-              Practice Streak
-            </h3>
-            <p className="text-sm text-gray-400 mt-1">
-              Complete mock interviews to maintain your daily learning streak!
-            </p>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-6 md:gap-8 border-t md:border-t-0 md:border-l border-white/5 pt-4 md:pt-0 pl-0 md:pl-8">
-          <div>
-            <p className="text-xs text-gray-500 uppercase font-semibold">Current Streak</p>
-            <p className="text-3xl font-display font-bold text-orange-400 mt-1 flex items-baseline gap-1">
-              {currentStreak} <span className="text-xs text-gray-400 font-normal">days</span>
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 uppercase font-semibold">Max Streak</p>
-            <p className="text-3xl font-display font-bold text-amber-400 mt-1 flex items-baseline gap-1">
-              {maxStreak} <span className="text-xs text-gray-400 font-normal">days</span>
-            </p>
-          </div>
-          
-          <div className="flex flex-col gap-2">
-            <p className="text-xs text-gray-500 uppercase font-semibold">This Week</p>
-            <div className="flex items-center gap-1.5">
-              {weekDays.map((day, idx) => (
-                <div key={idx} className="flex flex-col items-center gap-1">
-                  <span className="text-[9px] text-gray-600 font-bold uppercase">{day.label}</span>
-                  <div className={`w-7 h-7 rounded-lg border flex items-center justify-center transition-all ${
-                    day.active 
-                      ? 'bg-gradient-to-tr from-blue-600 to-cyan-500 border-transparent text-white shadow-md'
-                      : 'bg-white/5 border-white/10 text-gray-600'
-                  }`} title={day.active ? "Completed interview" : "No activity"}>
-                    {day.active ? <HiOutlineCheck className="w-3.5 h-3.5 font-bold" /> : <span className="text-[10px] font-bold">•</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Upcoming Scheduled Interviews */}
-      {scheduledInterviews.length > 0 && (
-        <div className="mb-8 animate-slide-up" style={{ animationDelay: '150ms' }}>
-          <h2 className="text-xl font-display font-bold text-white mb-4 flex items-center gap-2">
-            <HiOutlineCalendar className="w-5 h-5 text-primary-400" />
-            Upcoming Mock Interviews
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {scheduledInterviews.map((session) => (
-              <div key={session.id} className="glass-card p-5 flex flex-col justify-between hover:border-primary-500/30 transition-all">
-                <div className="flex items-start justify-between gap-4 mb-3">
+        {/* Scheduled Sessions (if any) */}
+        {scheduledInterviews.length > 0 && (
+          <div className="space-y-3">
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <HiOutlineCalendar className="w-4 h-4 text-blue-600" />
+              Scheduled Upcoming Interviews
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {scheduledInterviews.map((session) => (
+                <div key={session.id} className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
                   <div>
-                    <h3 className="text-lg font-semibold text-white">{session.jobRole}</h3>
-                    <div className="flex items-center gap-2 mt-1.5">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-bold text-slate-900">{session.jobRole}</h3>
                       <span className={difficultyBadgeClass[session.difficulty] || 'badge-info'}>
                         {session.difficulty}
                       </span>
-                      <span className="text-xs text-primary-400 font-medium flex items-center gap-1">
-                        <HiOutlineCalendar className="w-3.5 h-3.5" />
-                        {formatDateTime(session.scheduledAt)}
-                      </span>
                     </div>
+                    <p className="text-xs text-slate-500 flex items-center gap-1.5">
+                      <HiOutlineClock className="w-3.5 h-3.5 text-slate-400" />
+                      {formatDateTime(session.scheduledAt)}
+                    </p>
                   </div>
+                  <button
+                    onClick={() => navigate(`/interviews/${session.id}/session`)}
+                    className="btn-primary w-full mt-4"
+                  >
+                    Enter Interview Session →
+                  </button>
                 </div>
-                <button
-                  onClick={() => navigate(`/interviews/${session.id}/session`)}
-                  className="w-full mt-4 py-2.5 rounded-xl bg-primary-500/20 hover:bg-primary-500 border border-primary-500/30 hover:border-transparent text-sm font-semibold text-white transition-all flex items-center justify-center gap-2"
-                >
-                  <HiOutlineLightningBolt className="w-4.5 h-4.5" />
-                  Start Session Now
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Start Interview Card */}
-        <div
-          className="glass-card p-8 relative overflow-hidden group animate-slide-up cursor-pointer"
-          style={{ animationDelay: '400ms' }}
-          onClick={() => navigate('/interviews')}
-        >
-          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary-500/20 to-cyan-500/10 rounded-full blur-2xl -translate-y-10 translate-x-10 group-hover:scale-150 transition-transform duration-500" />
-
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-4">
-              <HiOutlineAcademicCap className="w-8 h-8 text-primary-400" />
-              <h2 className="text-xl font-display font-bold text-white">Start Mock Interview</h2>
-            </div>
-            <p className="text-gray-400 mb-6">Practice with AI-generated questions tailored to your skills and target role.</p>
-            <div className="flex flex-wrap gap-2 mb-6">
-              {(resumeSkills.length > 0 ? resumeSkills.slice(0, 4) : ['Java', 'Spring Boot', 'System Design', 'DSA']).map(skill => (
-                <span key={typeof skill === 'string' ? skill : skill.name} className="badge-info">
-                  {typeof skill === 'string' ? skill : skill.name}
-                </span>
               ))}
             </div>
-            <button className="btn-primary inline-flex items-center gap-2">
-              Start Interview <HiOutlineArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Upload Resume Card */}
-        <div
-          className="glass-card p-8 relative overflow-hidden group animate-slide-up cursor-pointer"
-          style={{ animationDelay: '500ms' }}
-          onClick={() => navigate('/resume')}
-        >
-          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 rounded-full blur-2xl -translate-y-10 translate-x-10 group-hover:scale-150 transition-transform duration-500" />
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-4">
-              <HiOutlineStar className="w-8 h-8 text-emerald-400" />
-              <h2 className="text-xl font-display font-bold text-white">Analyze Resume</h2>
-            </div>
-            <p className="text-gray-400 mb-6">Upload your resume for AI analysis, ATS scoring, and improvement suggestions.</p>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="flex -space-x-2">
-                {['PDF', 'DOCX'].map(fmt => (
-                  <span key={fmt} className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-xs font-medium text-gray-300 border-2 border-surface-900">
-                    {fmt}
-                  </span>
-                ))}
-              </div>
-              <span className="text-sm text-gray-500">Supported formats</span>
-            </div>
-            <button className="btn-secondary inline-flex items-center gap-2">
-              Upload Resume <HiOutlineArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Activity */}
-      <div className="glass-card p-8 animate-slide-up" style={{ animationDelay: '600ms' }}>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-display font-bold text-white">Recent Activity</h2>
-          {completedInterviews.length > 5 && (
-            <button
-              onClick={() => navigate('/history')}
-              className="text-xs font-semibold text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
-            >
-              View All History <HiOutlineArrowRight className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </div>
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : completedInterviews.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4">
-              <HiOutlineClipboardList className="w-10 h-10 text-gray-600" />
-            </div>
-            <p className="text-gray-400 text-lg font-medium">No activity yet</p>
-            <p className="text-gray-500 mt-2 max-w-sm">Start a mock interview or upload your resume to get started.</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {completedInterviews.slice(0, 5).map((interview, index) => (
-              <div
-                key={interview.id || index}
-                onClick={() => interview.status === 'COMPLETED' ? navigate(`/interviews/${interview.id}/results`) : null}
-                className={`flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/8 transition-all animate-slide-up ${
-                  interview.status === 'COMPLETED' ? 'cursor-pointer' : ''
-                }`}
-                style={{ animationDelay: `${(index + 7) * 80}ms` }}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="p-2.5 rounded-xl bg-primary-500/10">
-                    <HiOutlineAcademicCap className="w-5 h-5 text-primary-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-white">{interview.jobRole || 'Mock Interview'}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className={difficultyBadgeClass[interview.difficulty] || 'badge-info'}>
-                        {interview.difficulty || 'N/A'}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        <HiOutlineClock className="w-3 h-3 inline mr-1" />
-                        {formatDate(interview.createdAt || interview.startedAt)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  {interview.overallScore != null ? (
-                    <p className={`text-lg font-bold ${
-                      interview.overallScore >= 8 ? 'text-emerald-400' :
-                      interview.overallScore >= 6 ? 'text-amber-400' : 'text-red-400'
-                    }`}>
-                      {interview.overallScore.toFixed(1)}/10
-                    </p>
-                  ) : (
-                    <span className="badge-info text-xs">{interview.status || 'In Progress'}</span>
-                  )}
-                </div>
-              </div>
-            ))}
           </div>
         )}
+
+        {/* Quick Launch & Recent Sessions Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* Quick Launch Role Studio (7 cols) */}
+          <div className="lg:col-span-7 bg-white border border-slate-200/90 rounded-xl p-6 shadow-xs space-y-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-base font-bold text-slate-900">Start Adaptive Interview</h2>
+                <p className="text-xs text-slate-500 mt-0.5">Select a track to launch an adaptive AI interview with live answer evaluation.</p>
+              </div>
+              <span className="text-[11px] font-mono text-slate-400 font-semibold bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                15 MIN
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              {[
+                { role: 'Java', title: 'Core Java', desc: 'OOP, Collections, Memory' },
+                { role: 'Backend', title: 'Backend SDE', desc: 'Spring Boot, APIs, SQL' },
+                { role: 'System Design', title: 'System Design', desc: 'Scalability, Caching, DB' },
+                { role: 'SQL', title: 'SQL & Database', desc: 'Queries, Indexing, ACID' },
+                { role: 'DSA', title: 'Algorithms', desc: 'Trees, Graphs, DP' },
+                { role: 'RESUME', title: 'Resume Tailored', desc: 'Synthesized from your PDF' },
+              ].map(item => (
+                <button
+                  key={item.role}
+                  onClick={() => navigate('/interviews')}
+                  className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-blue-50/50 hover:border-blue-400/80 text-left transition-all group"
+                >
+                  <p className="text-xs font-bold text-slate-900 group-hover:text-blue-700 transition-colors">{item.title}</p>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-snug">{item.desc}</p>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between pt-3 border-t border-slate-200/80">
+              <span className="text-xs text-slate-500 font-medium">Over 250+ seeded technical questions & AI question synthesis</span>
+              <button
+                onClick={() => navigate('/interviews')}
+                className="btn-primary"
+              >
+                <span>Browse All Roles</span>
+                <HiOutlineArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Recent History Table (5 cols) */}
+          <div className="lg:col-span-5 bg-white border border-slate-200/90 rounded-xl p-6 shadow-xs space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-bold text-slate-900">Recent Completed Tests</h2>
+              <button
+                onClick={() => navigate('/history')}
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                All History →
+              </button>
+            </div>
+
+            {loading ? (
+              <div className="py-8 flex justify-center text-slate-400">
+                <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : completedInterviews.length === 0 ? (
+              <div className="py-8 text-center text-slate-400 space-y-2">
+                <HiOutlineClipboardList className="w-8 h-8 mx-auto text-slate-300" />
+                <p className="text-xs font-medium">No completed interviews yet</p>
+                <p className="text-[11px] text-slate-500">Your test results and AI feedback will appear here.</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-100">
+                {completedInterviews.slice(0, 4).map((interview) => (
+                  <div
+                    key={interview.id}
+                    onClick={() => navigate(`/interviews/${interview.id}/results`)}
+                    className="py-3 flex items-center justify-between hover:bg-slate-50/80 px-2 rounded-lg cursor-pointer transition-colors"
+                  >
+                    <div>
+                      <p className="text-xs font-bold text-slate-900">{interview.jobRole}</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        {formatDate(interview.completedAt || interview.startedAt)} • {interview.totalQuestions || 5} Questions
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      {interview.overallScore != null ? (
+                        <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded border ${
+                          interview.overallScore >= 8 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                          interview.overallScore >= 6 ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                          'bg-amber-50 text-amber-700 border-amber-200'
+                        }`}>
+                          {interview.overallScore.toFixed(1)} / 10
+                        </span>
+                      ) : (
+                        <span className="badge-neutral text-[10px]">Pending</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+        </div>
+
       </div>
     </AppLayout>
   );

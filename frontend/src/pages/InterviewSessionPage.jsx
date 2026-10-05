@@ -6,7 +6,7 @@ import {
   HiOutlineArrowRight, HiOutlineClock,
   HiOutlineCheckCircle, HiOutlineLightningBolt, HiOutlineSparkles,
   HiOutlineStop, HiOutlineMicrophone, HiOutlineChartBar,
-  HiOutlineVideoCamera, HiOutlineExclamation
+  HiOutlineVideoCamera, HiOutlineExclamation, HiOutlineVolumeUp
 } from 'react-icons/hi';
 
 export default function InterviewSessionPage() {
@@ -54,7 +54,7 @@ export default function InterviewSessionPage() {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      
+
       const setVoiceAndSpeak = () => {
         const voices = window.speechSynthesis.getVoices();
         if (voices.length > 0) {
@@ -118,6 +118,7 @@ export default function InterviewSessionPage() {
   // Request camera and setup stream
   useEffect(() => {
     let activeStream = null;
+
     const startWebcam = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -199,12 +200,10 @@ export default function InterviewSessionPage() {
       const rightEye = landmarks[263];
 
       if (nose && leftEye && rightEye) {
-        // Yaw estimation
         const distLeft = Math.sqrt(Math.pow(nose.x - leftEye.x, 2) + Math.pow(nose.y - leftEye.y, 2));
         const distRight = Math.sqrt(Math.pow(nose.x - rightEye.x, 2) + Math.pow(nose.y - rightEye.y, 2));
         const horizontalRatio = distLeft / distRight;
 
-        // Pitch estimation
         const forehead = landmarks[10];
         const chin = landmarks[152];
         let verticalRatio = 1.0;
@@ -214,7 +213,6 @@ export default function InterviewSessionPage() {
           verticalRatio = distTop / distBottom;
         }
 
-        // Detect if looking away (turned left/right or tilted up/down)
         if (horizontalRatio < 0.45 || horizontalRatio > 2.2) {
           currentViolation = "LOOKING_AWAY";
         } else if (verticalRatio < 0.45 || verticalRatio > 2.2) {
@@ -225,32 +223,30 @@ export default function InterviewSessionPage() {
 
     if (currentViolation) {
       let msg = "";
-      if (currentViolation === "NO_FACE") msg = "⚠️ Camera alert: No face detected! Remain in view.";
-      else if (currentViolation === "MULTIPLE_FACES") msg = "⚠️ Proctor warning: Multiple people detected!";
-      else if (currentViolation === "LOOKING_AWAY") msg = "⚠️ Attention warning: Keep your eyes on the screen!";
+      if (currentViolation === "NO_FACE") msg = "Camera alert: No face detected. Remain in view.";
+      else if (currentViolation === "MULTIPLE_FACES") msg = "Proctor warning: Multiple people detected in frame.";
+      else if (currentViolation === "LOOKING_AWAY") msg = "Attention alert: Maintain eye contact with the screen.";
 
       setProctorWarning(msg);
 
       if (lastViolationTypeRef.current === currentViolation) {
         violationCounterRef.current += 1;
-        // Trigger alert decrement if violation persists for ~3 seconds (12 detection frames)
         if (violationCounterRef.current >= 12) {
           violationCounterRef.current = 0;
           setWarnings(prev => {
             const nextWarnings = prev - 1;
             if (nextWarnings <= 0) {
               setCheated(true);
-              toast.error('Penalty triggered: Account locked due to persistent proctoring violations!', { duration: 6000 });
+              toast.error('Session terminated: Persistent proctoring violations recorded.', { duration: 6000 });
               api.post('/users/penalty').catch(() => {});
               setTimeout(() => {
                 localStorage.clear();
                 window.location.href = '/login';
               }, 5000);
             } else {
-              toast.error(`Proctoring violation recorded! Warnings remaining: ${nextWarnings}/3`, {
+              toast.error(`Proctoring violation recorded. Remaining warnings: ${nextWarnings}/3`, {
                 duration: 4000,
-                position: 'top-center',
-                style: { background: '#ef4444', color: '#fff', border: '1px solid #dc2626' }
+                position: 'top-center'
               });
             }
             return nextWarnings;
@@ -280,7 +276,6 @@ export default function InterviewSessionPage() {
         return;
       }
 
-      // Throttle detection to approx 4 times per second (every 250ms)
       if (time - lastDetectionTime < 250) {
         animationFrameId = requestAnimationFrame(detect);
         return;
@@ -310,8 +305,6 @@ export default function InterviewSessionPage() {
       }
     };
   }, [webcamStream, completed, cheated]);
-
-
 
   // Speech Recognition State
   const [isListening, setIsListening] = useState(false);
@@ -356,7 +349,7 @@ export default function InterviewSessionPage() {
       try {
         recognitionRef.current.start();
         setIsListening(true);
-        toast.success('Listening... Speak clearly into your microphone.');
+        toast.success('Dictation active. Speak clearly into your microphone.');
       } catch (err) {
         toast.error('Failed to start speech recognition');
       }
@@ -379,7 +372,7 @@ export default function InterviewSessionPage() {
         const nextWarnings = prev - 1;
         if (nextWarnings <= 0) {
           setCheated(true);
-          toast.error('Penalty triggered: Account locked for 24 hours!', { duration: 6000 });
+          toast.error('Penalty triggered: Account locked for 24 hours.', { duration: 6000 });
           api.post('/users/penalty').catch(() => {});
           
           setTimeout(() => {
@@ -388,16 +381,16 @@ export default function InterviewSessionPage() {
           }, 5000);
         } else {
           toast((t) => (
-            <span className="flex flex-col gap-1">
-              <span className="font-bold text-amber-500">Suspicious Tab Switch/Blur Detected!</span>
-              <span className="text-sm">Please stay focused on the interview. Remaining warnings: {nextWarnings}/3.</span>
-            </span>
+            <div className="flex flex-col gap-1">
+              <span className="font-semibold text-amber-900">Attention: Tab switch or window blur detected</span>
+              <span className="text-xs text-amber-700">Please keep full focus on the interview stage. Warnings remaining: {nextWarnings}/3</span>
+            </div>
           ), {
             style: {
-              border: '1px solid #d97706',
-              padding: '16px',
-              color: '#fff',
-              background: '#1e293b',
+              border: '1px solid #fde68a',
+              padding: '14px 16px',
+              color: '#92400e',
+              background: '#fffbeb',
             },
             icon: '⚠️',
             duration: 5000,
@@ -445,7 +438,6 @@ export default function InterviewSessionPage() {
         setInterview(res.data);
         setTotalQuestions(res.data.totalQuestions || 5);
 
-        // Get first question
         const qRes = await api.get(`/interviews/${id}/next-question`);
         setCurrentQuestion(qRes.data);
         setCurrentIndex(1);
@@ -467,7 +459,7 @@ export default function InterviewSessionPage() {
 
   const handleSubmitAnswer = async () => {
     if (!answer.trim()) {
-      toast.error('Please provide an answer');
+      toast.error('Please provide an answer before submitting');
       return;
     }
 
@@ -487,7 +479,7 @@ export default function InterviewSessionPage() {
       });
 
       setFeedback(res.data.feedback);
-      toast.success('Answer evaluated! ✨');
+      toast.success('Answer evaluated successfully ✨');
     } catch (err) {
       toast.error('Failed to submit answer');
     } finally {
@@ -527,7 +519,7 @@ export default function InterviewSessionPage() {
     try {
       setCompleted(true);
       await api.post(`/interviews/${id}/complete`);
-      toast.success('Interview ended!');
+      toast.success('Interview ended');
       navigate(`/interviews/${id}/results`);
     } catch (err) {
       setCompleted(false);
@@ -537,10 +529,13 @@ export default function InterviewSessionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-900">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-400 text-lg">Loading interview...</p>
+      <div className="min-h-screen flex items-center justify-center bg-porcelain-50">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="w-10 h-10 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div>
+            <p className="text-slate-800 font-semibold text-base">Preparing Interview Studio</p>
+            <p className="text-slate-400 text-xs mt-1">Calibrating question set & AI proctoring services...</p>
+          </div>
         </div>
       </div>
     );
@@ -548,19 +543,18 @@ export default function InterviewSessionPage() {
 
   if (cheated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-900 p-4">
-        <div className="glass-card p-12 max-w-lg w-full text-center border-red-500/30 animate-fade-in">
-          <div className="w-24 h-24 rounded-full bg-red-500/10 border border-red-500/20 mx-auto flex items-center justify-center mb-6 shadow-2xl shadow-red-500/10">
-            <HiOutlineStop className="w-12 h-12 text-red-500 animate-pulse" />
+      <div className="min-h-screen flex items-center justify-center bg-porcelain-50 p-4">
+        <div className="bg-white border border-rose-200 rounded-2xl p-10 max-w-lg w-full text-center shadow-subtle animate-fade-in">
+          <div className="w-16 h-16 rounded-full bg-rose-50 border border-rose-200 mx-auto flex items-center justify-center mb-5 text-rose-600">
+            <HiOutlineStop className="w-8 h-8" />
           </div>
-          <h1 className="text-3xl font-display font-bold text-red-500 mb-3">Penalty Triggered!</h1>
-          <p className="text-gray-400 mb-8 leading-relaxed">
-            Suspicious activities or proctoring warnings exceeded limitations.
-            Your test has been terminated and your account has been temporarily locked for 24 hours.
-            You will be redirected automatically.
+          <h1 className="text-2xl font-display font-bold text-slate-900 mb-2">Session Terminated</h1>
+          <p className="text-slate-600 text-sm mb-6 leading-relaxed">
+            Persistent proctoring or tab-switching violations exceeded the threshold limit.
+            Your session has been stopped and access temporarily locked for 24 hours.
           </p>
-          <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
-            <div className="h-full bg-red-500 animate-pulse" style={{ width: '100%' }} />
+          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+            <div className="h-full bg-rose-500 animate-pulse w-full" />
           </div>
         </div>
       </div>
@@ -569,304 +563,364 @@ export default function InterviewSessionPage() {
 
   if (completed) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-900">
-        <div className="flex flex-col items-center gap-4 animate-fade-in">
-          <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-400 text-lg font-medium">Analyzing results and loading feedback...</p>
+      <div className="min-h-screen flex items-center justify-center bg-porcelain-50">
+        <div className="flex flex-col items-center gap-4 text-center animate-fade-in">
+          <div className="w-10 h-10 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div>
+            <p className="text-slate-800 font-semibold text-base">Generating Performance Report</p>
+            <p className="text-slate-400 text-xs mt-1">Synthesizing multidimensional feedback and metrics...</p>
+          </div>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-surface-900 flex flex-col">
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-6px); }
-        }
-        @keyframes ripple {
-          0% { transform: scale(0.95); opacity: 0.5; }
-          50% { transform: scale(1.08); opacity: 0.8; }
-          100% { transform: scale(1.2); opacity: 0; }
-        }
-        .avatar-float {
-          animation: float 3s ease-in-out infinite;
-        }
-        .ripple-ring-1 {
-          animation: ripple 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        .ripple-ring-2 {
-          animation: ripple 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-          animation-delay: 0.6s;
-        }
-      `}</style>
+  const avatarLabels = {
+    Neha: { title: 'Neha', subtitle: 'Technical Recruiter • Indian English' },
+    Aditya: { title: 'Aditya', subtitle: 'Staff Engineer • Tech Lead Persona' },
+    RoboRecruit: { title: 'RoboRecruit', subtitle: 'Algorithmic Evaluator • Precise Persona' },
+  };
 
-      {/* Top Bar */}
-      <header className="h-16 bg-surface-800/60 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 lg:px-8">
+  const personaMeta = avatarLabels[interviewerAvatar] || avatarLabels.Neha;
+
+  return (
+    <div className="min-h-screen bg-porcelain-50 flex flex-col font-sans text-slate-800 selection:bg-blue-100 selection:text-blue-900">
+      {/* Top Focus Studio Bar */}
+      <header className="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/90 flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-30 shadow-xs">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
-              <span className="text-xs font-bold text-white">IQ</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              IQ
             </div>
-            <span className="text-sm font-display font-semibold text-white hidden sm:block">Mock Interview</span>
+            <div>
+              <span className="text-sm font-semibold text-slate-900 hidden sm:inline-block">Interview Studio</span>
+              <span className="text-[11px] text-slate-400 block sm:hidden font-medium">Studio</span>
+            </div>
           </div>
-          <div className="h-6 w-px bg-white/10" />
+          <div className="h-4 w-px bg-slate-200 hidden sm:block" />
           <div className="flex items-center gap-2">
             <span className="badge-info text-xs">{interview?.jobRole}</span>
-            <span className="badge-warning text-xs">{interview?.difficulty}</span>
+            <span className="badge-neutral text-xs uppercase">{interview?.difficulty}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Warning Indicator */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold">
-            Warnings: {warnings}/3
+        <div className="flex items-center gap-3">
+          {/* Warnings Counter */}
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border ${
+            warnings === 3
+              ? 'bg-slate-50 border-slate-200 text-slate-600'
+              : warnings === 2
+              ? 'bg-amber-50 border-amber-200 text-amber-700'
+              : 'bg-rose-50 border-rose-200 text-rose-700 animate-pulse'
+          }`}>
+            <span>Proctor:</span>
+            <span className="font-mono font-bold">{warnings}/3 strikes</span>
           </div>
-          {/* Timer */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-            <HiOutlineClock className="w-4 h-4 text-gray-400" />
-            <span className="text-sm font-mono text-white">{formatTime(timeElapsed)}</span>
+
+          {/* Time Elapsed */}
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-slate-100/90 border border-slate-200/80 text-slate-700">
+            <HiOutlineClock className="w-3.5 h-3.5 text-slate-500" />
+            <span className="text-xs font-mono font-semibold">{formatTime(timeElapsed)}</span>
           </div>
+
           {/* Progress */}
-          <div className="hidden sm:flex items-center gap-2">
-            <span className="text-sm text-gray-400">
-              <span className="text-white font-semibold">{currentIndex}</span> / {totalQuestions}
+          <div className="hidden md:flex items-center gap-2.5 pl-1">
+            <span className="text-xs font-mono text-slate-500">
+              <strong className="text-slate-900 font-bold">{currentIndex}</strong>/{totalQuestions}
             </span>
-            <div className="w-24 h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden">
               <div
-                className="h-full gradient-bg rounded-full transition-all duration-500"
+                className="h-full bg-blue-600 rounded-full transition-all duration-300"
                 style={{ width: `${(currentIndex / totalQuestions) * 100}%` }}
               />
             </div>
           </div>
-          {/* End Interview */}
+
+          {/* End Button */}
           <button
             id="end-interview-btn"
             onClick={handleEndInterview}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all text-sm"
+            className="btn-ghost text-xs py-1.5 px-2.5 text-rose-600 hover:bg-rose-50 hover:text-rose-700 flex items-center gap-1 font-semibold rounded-lg transition-colors"
+            title="Conclude current interview session"
           >
-            <HiOutlineStop className="w-4 h-4" />
-            <span className="hidden sm:inline">End</span>
+            <HiOutlineStop className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">End Session</span>
           </button>
         </div>
       </header>
 
-      {/* Main Content: Split Grid Layout */}
-      <div className="flex-1 max-w-7xl mx-auto w-full p-4 lg:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* Main Studio Arena */}
+      <main className="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          {/* Left Column: Questions, Answers & Feedback */}
+          {/* Left Column: Question Prompt & Response Form */}
           <div className="lg:col-span-8 space-y-6">
             
-            {/* Question Card */}
-            <div className="glass-card p-8 animate-fade-in">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-xl bg-primary-500/10 flex-shrink-0">
-                  <HiOutlineLightningBolt className="w-6 h-6 text-primary-400" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider font-semibold">Question {currentIndex}</p>
-                  <h2 className="text-xl font-display font-semibold text-white leading-relaxed">
-                    {currentQuestion?.questionText || 'Loading question...'}
-                  </h2>
+            {/* Question Prompt Card */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-xs relative overflow-hidden animate-fade-in">
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    Question {currentIndex} of {totalQuestions}
+                  </span>
                   {currentQuestion?.category && (
-                    <span className="badge-info mt-3 inline-block text-xs">{currentQuestion.category}</span>
+                    <span className="badge-neutral text-[11px]">{currentQuestion.category}</span>
                   )}
                 </div>
+                <button
+                  onClick={() => speakQuestion(currentQuestion?.questionText)}
+                  className={`text-xs px-2.5 py-1 rounded-md border flex items-center gap-1.5 font-medium transition-all ${
+                    isAvatarSpeaking
+                      ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-xs'
+                      : 'bg-slate-50 border-slate-200 hover:bg-slate-100 text-slate-600'
+                  }`}
+                  title="Play audio pronunciation"
+                >
+                  <HiOutlineVolumeUp className={`w-3.5 h-3.5 ${isAvatarSpeaking ? 'animate-bounce' : ''}`} />
+                  <span>{isAvatarSpeaking ? 'Speaking...' : 'Listen'}</span>
+                </button>
               </div>
+
+              <h2 className="text-xl sm:text-2xl font-display font-semibold text-slate-900 leading-snug">
+                {currentQuestion?.questionText || 'Loading question content...'}
+              </h2>
             </div>
 
-            {/* Answer / Input Card or Feedback Card */}
+            {/* Answer Input or Feedback View */}
             {!feedback ? (
-              <div className="space-y-4 animate-slide-up">
-                <div className="glass-card p-6">
-                  <label htmlFor="answer-textarea" className="block text-sm font-medium text-gray-300 mb-3">
-                    Your Answer
-                  </label>
+              <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4 animate-fade-in">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="answer-textarea" className="text-sm font-semibold text-slate-900">
+                      Your Response
+                    </label>
+                    <span className="text-xs text-slate-400 font-mono">
+                      ({answer.length} chars)
+                    </span>
+                  </div>
+
+                  {/* Speech Dictation Button */}
+                  <button
+                    type="button"
+                    onClick={toggleListening}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                      isListening
+                        ? 'bg-rose-50 border-rose-300 text-rose-700 animate-pulse'
+                        : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
+                    }`}
+                  >
+                    <HiOutlineMicrophone className={`w-3.5 h-3.5 ${isListening ? 'text-rose-600' : 'text-slate-500'}`} />
+                    <span>{isListening ? 'Listening...' : 'Voice Dictation'}</span>
+                  </button>
+                </div>
+
+                <div className="relative">
                   <textarea
                     ref={textareaRef}
                     id="answer-textarea"
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
-                    placeholder="Provide your answer here... You can type or use the voice dictation option below."
+                    placeholder="Structure your answer clearly. Mention architectural decisions, edge cases, trade-offs, and reasoning..."
                     rows={8}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder-gray-600 resize-none focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-sm leading-relaxed"
+                    className="w-full bg-slate-50/70 border border-slate-200 rounded-xl p-4 font-mono text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none transition-all leading-relaxed resize-y"
                   />
-                  <div className="flex items-center justify-between mt-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-600">{answer.length} characters</span>
-                      <button
-                        type="button"
-                        onClick={toggleListening}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
-                          isListening
-                            ? 'bg-red-500/20 border-red-500/30 text-red-400 animate-pulse'
-                            : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
-                        }`}
-                      >
-                        <HiOutlineMicrophone className="w-4 h-4" />
-                        {isListening ? 'Stop Listening' : 'Speak Answer'}
-                      </button>
-                    </div>
-                    <button
-                      id="submit-answer-btn"
-                      onClick={handleSubmitAnswer}
-                      disabled={submitting || !answer.trim()}
-                      className="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {submitting ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          Evaluating...
-                        </>
-                      ) : (
-                        <>
-                          <HiOutlineSparkles className="w-4 h-4" />
-                          Submit Answer
-                        </>
-                      )}
-                    </button>
-                  </div>
                 </div>
-              </div>
-            ) : (
-              /* Feedback Section */
-              <div className="space-y-4 animate-fade-in">
-                <div className="glass-card p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <HiOutlineSparkles className="w-5 h-5 text-primary-400" />
-                    <h3 className="text-lg font-semibold text-white">AI Feedback</h3>
-                  </div>
 
-                  {/* Score Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
-                    {[
-                      { label: 'Accuracy', score: feedback.technicalAccuracy },
-                      { label: 'Completeness', score: feedback.completeness },
-                      { label: 'Communication', score: feedback.communication },
-                      { label: 'Relevance', score: feedback.relevance },
-                      { label: 'Overall', score: feedback.overallScore },
-                    ].map(({ label, score }) => (
-                      <div key={label} className="p-3 rounded-xl bg-white/5 text-center">
-                        <p className={`text-2xl font-bold ${
-                          score >= 8 ? 'text-emerald-400' :
-                          score >= 6 ? 'text-amber-400' : 'text-red-400'
-                        }`}>
-                          {score}/10
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">{label}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Strengths & Weaknesses */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                    {feedback.strengths && (
-                      <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
-                        <h4 className="text-sm font-semibold text-emerald-400 mb-2">💪 Strengths</h4>
-                        <p className="text-sm text-gray-300 leading-relaxed">{feedback.strengths}</p>
-                      </div>
-                    )}
-                    {feedback.weaknesses && (
-                      <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/10">
-                        <h4 className="text-sm font-semibold text-red-400 mb-2">📌 Areas to Improve</h4>
-                        <p className="text-sm text-gray-300 leading-relaxed">{feedback.weaknesses}</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {feedback.improvements && (
-                    <div className="p-4 rounded-xl bg-primary-500/5 border border-primary-500/10 mb-6">
-                      <h4 className="text-sm font-semibold text-primary-400 mb-2">💡 Suggestions</h4>
-                      <p className="text-sm text-gray-300 leading-relaxed">{feedback.improvements}</p>
-                    </div>
-                  )}
-
-                  {/* Next Button */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                  <p className="text-xs text-slate-400">
+                    💡 Tip: Be concise, cite concrete metrics, and explain technical rationales.
+                  </p>
                   <button
-                    id="next-question-btn"
-                    onClick={handleNextQuestion}
-                    className="btn-primary w-full flex items-center justify-center gap-2"
+                    id="submit-answer-btn"
+                    onClick={handleSubmitAnswer}
+                    disabled={submitting || !answer.trim()}
+                    className="btn-primary w-full sm:w-auto px-6 py-2.5 flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
                   >
-                    {currentIndex >= totalQuestions ? (
+                    {submitting ? (
                       <>
-                        <HiOutlineCheckCircle className="w-5 h-5" />
-                        Finish Interview
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Evaluating...</span>
                       </>
                     ) : (
                       <>
-                        Next Question
-                        <HiOutlineArrowRight className="w-5 h-5" />
+                        <HiOutlineSparkles className="w-4 h-4" />
+                        <span>Submit Answer</span>
                       </>
                     )}
                   </button>
                 </div>
               </div>
+            ) : (
+              /* Post-Answer Evaluation Card */
+              <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-xs space-y-6 animate-fade-in">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                      <HiOutlineSparkles className="w-4 h-4" />
+                    </span>
+                    <div>
+                      <h3 className="text-base font-semibold text-slate-900">AI Evaluation Feedback</h3>
+                      <p className="text-xs text-slate-500">Multidimensional grading by our assessment engine</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs text-slate-500 block">Overall Score</span>
+                    <span className="text-2xl font-display font-bold text-blue-600">
+                      {feedback.overallScore}/10
+                    </span>
+                  </div>
+                </div>
+
+                {/* Score Matrix */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    { label: 'Accuracy', score: feedback.technicalAccuracy },
+                    { label: 'Completeness', score: feedback.completeness },
+                    { label: 'Communication', score: feedback.communication },
+                    { label: 'Relevance', score: feedback.relevance },
+                  ].map(({ label, score }) => (
+                    <div key={label} className="p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-center">
+                      <p className={`text-xl font-bold font-display ${
+                        (score || 0) >= 8 ? 'text-emerald-600' :
+                        (score || 0) >= 6 ? 'text-amber-600' : 'text-rose-600'
+                      }`}>
+                        {score || 0}<span className="text-xs font-normal text-slate-400">/10</span>
+                      </p>
+                      <p className="text-xs text-slate-600 font-medium mt-0.5">{label}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Strengths & Weaknesses */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {feedback.strengths && (
+                    <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 text-slate-800">
+                      <h4 className="text-xs font-semibold text-emerald-800 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                        <HiOutlineCheckCircle className="w-4 h-4 text-emerald-600" />
+                        Identified Strengths
+                      </h4>
+                      <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{feedback.strengths}</p>
+                    </div>
+                  )}
+                  {feedback.weaknesses && (
+                    <div className="p-4 rounded-xl bg-rose-50/70 border border-rose-200 text-slate-800">
+                      <h4 className="text-xs font-semibold text-rose-800 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                        <HiOutlineExclamation className="w-4 h-4 text-rose-600" />
+                        Areas for Growth
+                      </h4>
+                      <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{feedback.weaknesses}</p>
+                    </div>
+                  )}
+                </div>
+
+                {feedback.improvements && (
+                  <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-200 text-slate-800">
+                    <h4 className="text-xs font-semibold text-blue-800 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                      <HiOutlineLightningBolt className="w-4 h-4 text-blue-600" />
+                      Actionable Recommendations
+                    </h4>
+                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{feedback.improvements}</p>
+                  </div>
+                )}
+
+                {/* Next Step Action */}
+                <button
+                  id="next-question-btn"
+                  onClick={handleNextQuestion}
+                  className="btn-primary w-full py-3 flex items-center justify-center gap-2 font-medium text-sm shadow-xs"
+                >
+                  {currentIndex >= totalQuestions ? (
+                    <>
+                      <HiOutlineCheckCircle className="w-4 h-4" />
+                      <span>Complete & View Comprehensive Report</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Proceed to Next Question</span>
+                      <HiOutlineArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </div>
             )}
           </div>
 
-          {/* Right Column: Speaking Avatar and Webcam Feed */}
-          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-8">
+          {/* Right Column: Minimalist AI Waveform HUD + Candidate Webcam */}
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
             
-            {/* AI Interviewer Avatar Card */}
-            <div className="glass-card p-6 text-center border-white/10 flex flex-col items-center justify-center gap-4 relative overflow-hidden">
-              <div className="absolute top-3 left-3 bg-white/5 border border-white/10 text-xs px-2.5 py-1 rounded-full text-gray-400">
-                Interviewer
-              </div>
-              
-              <div className="mt-4">
-                <InterviewerAvatar name={interviewerAvatar} isSpeaking={isAvatarSpeaking} />
-              </div>
-
-              <div className="mt-2 text-center">
-                <h3 className="text-lg font-display font-semibold text-white">{interviewerAvatar}</h3>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {interviewerAvatar === 'Neha' && 'Indian Recruiter (Female)'}
-                  {interviewerAvatar === 'Aditya' && 'Tech Lead (Male)'}
-                  {interviewerAvatar === 'RoboRecruit' && 'AI Robot Coach'}
-                </p>
+            {/* Minimalist AI Waveform HUD */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs space-y-4">
+              <div className="flex items-center justify-between text-xs pb-1">
+                <span className="font-semibold text-slate-900">AI Voice Synthesizer</span>
+                <span className={`font-mono text-[11px] font-semibold flex items-center gap-1.5 ${
+                  isAvatarSpeaking ? 'text-blue-600' : 'text-slate-400'
+                }`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${
+                    isAvatarSpeaking ? 'bg-blue-600 animate-pulse' : 'bg-slate-300'
+                  }`} />
+                  {isAvatarSpeaking ? 'Active Voice' : 'Standby'}
+                </span>
               </div>
 
-              {/* Sound visualizer frequencies */}
-              <div className="w-full flex justify-center py-2">
+              {/* Waveform Cassette Screen */}
+              <div className="bg-slate-900 rounded-xl h-28 flex items-center justify-center gap-1.5 px-6 relative overflow-hidden shadow-inner">
                 {isAvatarSpeaking ? (
-                  <div className="flex items-end justify-center gap-1.5 h-6">
-                    <div className="w-1 bg-primary-400 rounded-full animate-bounce h-5" style={{ animationDelay: '0.1s', animationDuration: '0.6s' }} />
-                    <div className="w-1 bg-sky-400 rounded-full animate-bounce h-3" style={{ animationDelay: '0.2s', animationDuration: '0.8s' }} />
-                    <div className="w-1 bg-teal-400 rounded-full animate-bounce h-6" style={{ animationDelay: '0.3s', animationDuration: '0.5s' }} />
-                    <div className="w-1 bg-blue-500 rounded-full animate-bounce h-4" style={{ animationDelay: '0.4s', animationDuration: '0.7s' }} />
-                    <div className="w-1 bg-primary-500 rounded-full animate-bounce h-2" style={{ animationDelay: '0.5s', animationDuration: '0.6s' }} />
-                  </div>
+                  <>
+                    <div className="wave-bar w-1.5 rounded-full bg-blue-400" style={{ animationDelay: '0.0s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-sky-300" style={{ animationDelay: '0.15s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-blue-500" style={{ animationDelay: '0.3s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-indigo-400" style={{ animationDelay: '0.45s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-cyan-300" style={{ animationDelay: '0.2s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-blue-400" style={{ animationDelay: '0.35s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-sky-400" style={{ animationDelay: '0.1s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-indigo-300" style={{ animationDelay: '0.25s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-blue-300" style={{ animationDelay: '0.4s' }} />
+                  </>
                 ) : (
-                  <div className="flex items-end justify-center gap-1.5 h-6 opacity-30">
-                    <div className="w-1 h-1.5 bg-gray-500 rounded-full" />
-                    <div className="w-1 h-1.5 bg-gray-500 rounded-full" />
-                    <div className="w-1 h-1.5 bg-gray-500 rounded-full" />
-                    <div className="w-1 h-1.5 bg-gray-500 rounded-full" />
-                    <div className="w-1 h-1.5 bg-gray-500 rounded-full" />
+                  <div className="flex items-center gap-2">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+                      <div key={i} className="w-1.5 h-1.5 rounded-full bg-slate-700" />
+                    ))}
                   </div>
                 )}
+                
+                <span className="absolute bottom-2 right-3 font-mono text-[9px] uppercase tracking-wider text-slate-500">
+                  {isAvatarSpeaking ? 'Streaming PCM' : 'Idle'}
+                </span>
               </div>
+
+              {/* Persona Metadata */}
+              <div className="text-center pt-1">
+                <p className="text-sm font-semibold text-slate-900">{personaMeta.title}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{personaMeta.subtitle}</p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => speakQuestion(currentQuestion?.questionText)}
+                className="btn-secondary w-full text-xs py-2 flex items-center justify-center gap-1.5"
+              >
+                <HiOutlineVolumeUp className="w-3.5 h-3.5 text-slate-500" />
+                <span>Replay Question Audio</span>
+              </button>
             </div>
 
-            {/* Candidate Webcam Feed Card */}
-            <div className="glass-card p-4 border-white/10 relative overflow-hidden">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-gray-400 flex items-center gap-1.5">
-                  <HiOutlineVideoCamera className="w-4 h-4" />
+            {/* Candidate Webcam Feed */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs space-y-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-slate-900 flex items-center gap-1.5">
+                  <HiOutlineVideoCamera className="w-3.5 h-3.5 text-slate-500" />
                   Candidate Feed
                 </span>
                 {webcamStream && (
-                  <div className="bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 z-10 animate-pulse">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                    LIVE
-                  </div>
+                  <span className="badge-success text-[10px] font-mono flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    PROCTOR ON
+                  </span>
                 )}
               </div>
 
-              {/* Video elements & warnings */}
-              <div className="relative w-full aspect-video rounded-xl bg-black/40 overflow-hidden border border-white/5">
+              <div className="relative aspect-video rounded-xl bg-slate-950 overflow-hidden border border-slate-200">
                 {webcamStream ? (
                   <>
                     <video
@@ -876,33 +930,28 @@ export default function InterviewSessionPage() {
                       muted
                       className="w-full h-full object-cover -scale-x-100"
                     />
-                    
-                    {/* Proctoring Warning Overlay */}
+
+                    {/* Proctor Alert Overlay */}
                     {proctorWarning && (
-                      <div className="absolute inset-0 bg-red-950/75 backdrop-blur-sm flex items-center justify-center p-4 text-center z-20 animate-fade-in border border-red-500/30">
-                        <div className="flex flex-col items-center gap-2">
-                          <div className="w-10 h-10 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center animate-bounce">
-                            <HiOutlineExclamation className="w-6 h-6 text-red-400" />
-                          </div>
-                          <p className="text-sm font-bold text-red-400 leading-tight">
+                      <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center p-3 text-center z-20 animate-fade-in border-2 border-rose-500">
+                        <div className="flex flex-col items-center gap-1.5">
+                          <HiOutlineExclamation className="w-6 h-6 text-rose-400 animate-bounce" />
+                          <p className="text-xs font-semibold text-rose-300">
                             {proctorWarning}
                           </p>
-                          <p className="text-[10px] text-gray-400">
-                            Avoid penalty lockouts by maintaining visual focus.
+                          <p className="text-[10px] text-slate-400">
+                            Keep head centered & looking at the display.
                           </p>
                         </div>
                       </div>
                     )}
                   </>
                 ) : (
-                  /* Camera permission / inactive placeholder */
-                  <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 bg-white/5 border border-dashed border-white/10 rounded-xl">
-                    <div className="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-3">
-                      <HiOutlineExclamation className="w-5 h-5 text-amber-500" />
-                    </div>
-                    <p className="text-xs font-semibold text-white">Camera Access Required</p>
-                    <p className="text-[10px] text-gray-500 mt-1 max-w-[200px]">
-                      Enable webcam access to proceed. Stay visible to avoid automated proctoring strikes.
+                  <div className="w-full h-full flex flex-col items-center justify-center text-center p-4 bg-slate-50 border border-dashed border-slate-200 rounded-xl">
+                    <HiOutlineExclamation className="w-5 h-5 text-amber-500 mb-1" />
+                    <p className="text-xs font-semibold text-slate-800">Camera Feed Inactive</p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">
+                      Enable webcam permissions to satisfy proctor verification.
                     </p>
                   </div>
                 )}
@@ -912,161 +961,7 @@ export default function InterviewSessionPage() {
           </div>
 
         </div>
-      </div>
-    </div>
-  );
-}
-
-// Inline Interviewer Avatar Graphic Components
-function InterviewerAvatar({ name, isSpeaking }) {
-  if (name === 'Neha') {
-    return (
-      <div className={`relative ${isSpeaking ? 'avatar-float' : ''}`}>
-        {isSpeaking && (
-          <>
-            <div className="absolute inset-0 rounded-full bg-teal-500/10 border-2 border-teal-500/20 ripple-ring-1 z-0" />
-            <div className="absolute inset-0 rounded-full bg-teal-500/10 border-2 border-teal-500/20 ripple-ring-2 z-0" />
-          </>
-        )}
-        <svg viewBox="0 0 200 200" className="w-36 h-36 mx-auto drop-shadow-2xl relative z-10">
-          <defs>
-            <linearGradient id="nehaBg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#1e3a8a" />
-              <stop offset="100%" stopColor="#0d9488" />
-            </linearGradient>
-            <linearGradient id="nehaSkin" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#f3b08c" />
-              <stop offset="100%" stopColor="#e28c68" />
-            </linearGradient>
-            <linearGradient id="nehaBlazer" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#0f766e" />
-              <stop offset="100%" stopColor="#115e59" />
-            </linearGradient>
-          </defs>
-          <rect width="200" height="200" rx="40" fill="url(#nehaBg)" />
-          <path d="M 50 150 C 50 80, 150 80, 150 150" fill="#0f172a" />
-          <rect x="90" y="125" width="20" height="25" fill="#e28c68" rx="5" />
-          <ellipse cx="100" cy="95" rx="40" ry="45" fill="url(#nehaSkin)" />
-          <path d="M 60 90 C 55 60, 145 60, 140 90 C 130 55, 70 55, 60 90 Z" fill="#0f172a" />
-          <path d="M 60 90 C 70 80, 95 80, 100 95 C 105 80, 130 80, 140 90 C 145 100, 140 120, 140 120 C 140 120, 150 100, 145 90" fill="#0f172a" />
-          <circle cx="85" cy="95" r="4" fill="#1e293b" />
-          <circle cx="115" cy="95" r="4" fill="#1e293b" />
-          <path d="M 77 88 Q 85 84 93 89" stroke="#0f172a" strokeWidth="2" fill="none" strokeLinecap="round" />
-          <path d="M 107 89 Q 115 84 123 88" stroke="#0f172a" strokeWidth="2" fill="none" strokeLinecap="round" />
-          <circle cx="85" cy="95" r="12" stroke="#f59e0b" strokeWidth="2" fill="none" opacity="0.9" />
-          <circle cx="115" cy="95" r="12" stroke="#f59e0b" strokeWidth="2" fill="none" opacity="0.9" />
-          <line x1="97" y1="95" x2="103" y2="95" stroke="#f59e0b" strokeWidth="2" />
-          <path d="M 100 95 L 98 105 L 102 105 Z" fill="#d97706" opacity="0.4" />
-          <path d={isSpeaking ? "M 90 115 Q 100 125 110 115 Z" : "M 92 114 Q 100 120 108 114"} 
-                stroke="#e11d48" strokeWidth="3" fill={isSpeaking ? "#be123c" : "none"} strokeLinecap="round" />
-          <circle cx="100" cy="82" r="2.5" fill="#dc2626" />
-          <path d="M 80 150 L 100 170 L 120 150 Z" fill="#f8fafc" />
-          <path d="M 40 200 C 40 160, 70 145, 100 145 C 130 145, 160 160, 160 200 Z" fill="url(#nehaBlazer)" opacity="0.95" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (name === 'Aditya') {
-    return (
-      <div className={`relative ${isSpeaking ? 'avatar-float' : ''}`}>
-        {isSpeaking && (
-          <>
-            <div className="absolute inset-0 rounded-full bg-indigo-500/10 border-2 border-indigo-500/20 ripple-ring-1 z-0" />
-            <div className="absolute inset-0 rounded-full bg-indigo-500/10 border-2 border-indigo-500/20 ripple-ring-2 z-0" />
-          </>
-        )}
-        <svg viewBox="0 0 200 200" className="w-36 h-36 mx-auto drop-shadow-2xl relative z-10">
-          <defs>
-            <linearGradient id="adityaBg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#1e3a8a" />
-              <stop offset="100%" stopColor="#4f46e5" />
-            </linearGradient>
-            <linearGradient id="adityaSkin" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#f3b08c" />
-              <stop offset="100%" stopColor="#d5825d" />
-            </linearGradient>
-            <linearGradient id="adityaBlazer" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#1e293b" />
-              <stop offset="100%" stopColor="#334155" />
-            </linearGradient>
-          </defs>
-          <rect width="200" height="200" rx="40" fill="url(#adityaBg)" />
-          <path d="M 55 90 C 55 50, 145 50, 145 90" fill="#020617" />
-          <rect x="90" y="130" width="20" height="20" fill="#d5825d" />
-          <ellipse cx="100" cy="98" rx="38" ry="42" fill="url(#adityaSkin)" />
-          <path d="M 60 85 Q 100 50 140 80 Q 145 60 130 55 Q 100 50 65 65 Q 58 75 60 85 Z" fill="#020617" />
-          <path d="M 64 96 C 64 125, 136 125, 136 96 C 136 112, 126 138, 100 138 C 74 138, 64 112, 64 96 Z" fill="#020617" opacity="0.95" />
-          <path d="M 80 112 Q 100 108 120 112 Q 100 115 80 112" fill="#020617" />
-          <circle cx="85" cy="94" r="3.5" fill="#0f172a" />
-          <circle cx="115" cy="94" r="3.5" fill="#0f172a" />
-          <path d="M 75 86 Q 85 81 95 86" stroke="#020617" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          <path d="M 105 86 Q 115 81 125 86" stroke="#020617" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          <rect x="73" y="87" width="24" height="15" rx="4" stroke="#0284c7" strokeWidth="2" fill="none" />
-          <rect x="103" y="87" width="24" height="15" rx="4" stroke="#0284c7" strokeWidth="2" fill="none" />
-          <line x1="97" y1="94" x2="103" y2="94" stroke="#0284c7" strokeWidth="2" />
-          <path d="M 100 94 L 98 104 L 102 104 Z" fill="#9a3412" opacity="0.3" />
-          <path d={isSpeaking ? "M 92 118 Q 100 126 108 118 Z" : "M 93 118 Q 100 122 107 118"} 
-                stroke="#dc2626" strokeWidth="2.5" fill={isSpeaking ? "#991b1b" : "none"} strokeLinecap="round" />
-          <path d="M 80 145 L 100 165 L 120 145 Z" fill="#bae6fd" />
-          <path d="M 40 200 C 40 155, 68 140, 100 140 C 132 140, 160 155, 160 200 Z" fill="url(#adityaBlazer)" opacity="0.95" />
-        </svg>
-      </div>
-    );
-  }
-
-  // RoboRecruit
-  return (
-    <div className={`relative ${isSpeaking ? 'avatar-float' : ''}`}>
-      {isSpeaking && (
-        <>
-          <div className="absolute inset-0 rounded-full bg-cyan-500/10 border-2 border-cyan-500/20 ripple-ring-1 z-0" />
-          <div className="absolute inset-0 rounded-full bg-cyan-500/10 border-2 border-cyan-500/20 ripple-ring-2 z-0" />
-        </>
-      )}
-      <svg viewBox="0 0 200 200" className="w-36 h-36 mx-auto drop-shadow-2xl relative z-10">
-        <defs>
-          <linearGradient id="roboBg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#0f172a" />
-            <stop offset="100%" stopColor="#1e293b" />
-          </linearGradient>
-          <linearGradient id="roboMetal" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#cbd5e1" />
-            <stop offset="100%" stopColor="#64748b" />
-          </linearGradient>
-        </defs>
-        <rect width="200" height="200" rx="40" fill="url(#roboBg)" />
-        <rect x="97" y="20" width="6" height="30" fill="#94a3b8" />
-        <circle cx="100" cy="18" r="7" fill={isSpeaking ? "#22d3ee" : "#0891b2"} className={isSpeaking ? "animate-pulse" : ""} />
-        <rect x="42" y="70" width="10" height="40" rx="4" fill="#475569" />
-        <rect x="148" y="70" width="10" height="40" rx="4" fill="#475569" />
-        <rect x="85" y="130" width="30" height="25" fill="#475569" rx="2" />
-        <line x1="85" y1="140" x2="115" y2="140" stroke="#1e293b" strokeWidth="2" />
-        <line x1="85" y1="146" x2="115" y2="146" stroke="#1e293b" strokeWidth="2" />
-        <path d="M 50 200 C 50 160, 70 150, 100 150 C 130 150, 150 160, 150 200 Z" fill="url(#roboMetal)" />
-        <circle cx="100" cy="175" r="10" fill="#0891b2" opacity="0.8" />
-        <rect x="52" y="50" width="96" height="85" rx="24" fill="url(#roboMetal)" stroke="#94a3b8" strokeWidth="2" />
-        <rect x="62" y="65" width="76" height="36" rx="10" fill="#0f172a" stroke="#334155" strokeWidth="2" />
-        {isSpeaking ? (
-          <>
-            <path d="M 70 83 Q 100 75 130 83" stroke="#22d3ee" strokeWidth="4" fill="none" strokeLinecap="round" className="animate-pulse" />
-            <circle cx="80" cy="83" r="3" fill="#22d3ee" className="animate-ping" />
-            <circle cx="120" cy="83" r="3" fill="#22d3ee" className="animate-ping" />
-          </>
-        ) : (
-          <>
-            <line x1="72" y1="83" x2="90" y2="83" stroke="#06b6d4" strokeWidth="3" strokeLinecap="round" />
-            <line x1="110" y1="83" x2="128" y2="83" stroke="#06b6d4" strokeWidth="3" strokeLinecap="round" />
-          </>
-        )}
-        <g transform="translate(75, 110)">
-          {isSpeaking ? (
-            <rect x="0" y="-5" width="50" height="10" rx="3" fill="#22d3ee" className="animate-pulse" />
-          ) : (
-            <line x1="5" y1="0" x2="45" y2="0" stroke="#0891b2" strokeWidth="3" strokeLinecap="round" />
-          )}
-        </g>
-      </svg>
+      </main>
     </div>
   );
 }

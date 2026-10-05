@@ -4,9 +4,9 @@ import api from '../api/axios';
 import toast from 'react-hot-toast';
 import {
   HiOutlineUserGroup, HiOutlineChatAlt2, HiOutlineExclamationCircle,
-  HiOutlineTrendingUp, HiOutlineMail, HiOutlineClock, HiOutlineChevronRight,
+  HiOutlineTrendingUp, HiOutlineMail, HiOutlineClock,
   HiOutlineExternalLink, HiOutlineSearch, HiOutlineAcademicCap,
-  HiOutlineLocationMarker, HiOutlineLink, HiOutlineCheck
+  HiOutlineLocationMarker, HiOutlineLink, HiOutlineCheck, HiOutlineX
 } from 'react-icons/hi';
 
 export default function MentorHubPage() {
@@ -44,9 +44,9 @@ export default function MentorHubPage() {
     fetchMentorData();
   }, []);
 
-  const studentsOnly = users.filter(u => 
+  const studentsOnly = users.filter(u =>
     u.roles?.includes('ROLE_STUDENT') &&
-    (u.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (u.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
      u.email?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
@@ -63,345 +63,358 @@ export default function MentorHubPage() {
 
   const handleResolveFeedback = (id) => {
     setFeedback(prev => prev.map(f => f.id === id ? { ...f, status: 'RESOLVED' } : f));
-    toast.success('Feedback marked as resolved!');
+    toast.success('Feedback item marked as resolved');
   };
 
   return (
     <AppLayout>
-      {/* Header */}
-      <div className="mb-8 animate-fade-in">
-        <div className="flex items-center gap-2 mb-1">
-          <HiOutlineUserGroup className="w-5 h-5 text-primary-400" />
-          <span className="text-sm text-primary-400 font-medium font-display">Mentor Workspace</span>
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="pb-2 border-b border-slate-200/80">
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
+              Mentor Console
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
+            Mentor Workspace & Integrity Audits
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Oversee assigned candidate cohorts, audit proctoring infractions, and review feedback submissions.
+          </p>
         </div>
-        <h1 className="text-3xl font-display font-bold text-white">
-          Mentor <span className="gradient-text">Hub</span>
-        </h1>
-        <p className="text-gray-400 mt-2">Oversee student preparation, audit integrity logs, and review platform feedback.</p>
-      </div>
 
-      {/* Stats row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="glass-card p-5 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-gray-400 font-medium font-display">Assigned Students</p>
-            <h3 className="text-2xl font-bold text-white mt-1">
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
+            <div className="flex items-center justify-between text-slate-400 mb-2">
+              <span className="text-xs font-semibold text-slate-600">Assigned Cohort</span>
+              <HiOutlineUserGroup className="w-4 h-4 text-blue-600" />
+            </div>
+            <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">
               {users.filter(u => u.roles?.includes('ROLE_STUDENT')).length}
-            </h3>
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">Active candidates</p>
           </div>
-          <div className="p-3 bg-blue-500/10 rounded-xl">
-            <HiOutlineUserGroup className="w-6 h-6 text-blue-400" />
-          </div>
-        </div>
 
-        <div className="glass-card p-5 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-gray-400 font-medium font-display">Avg Interview Score</p>
-            <h3 className="text-2xl font-bold text-white mt-1">
-              {stats.averageInterviewScore ? stats.averageInterviewScore.toFixed(1) : '0.0'}/10
-            </h3>
+          <div className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
+            <div className="flex items-center justify-between text-slate-400 mb-2">
+              <span className="text-xs font-semibold text-slate-600">Cohort Mean Score</span>
+              <HiOutlineTrendingUp className="w-4 h-4 text-emerald-600" />
+            </div>
+            <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">
+              {stats.averageInterviewScore ? stats.averageInterviewScore.toFixed(1) : '0.0'}<span className="text-xs font-normal text-slate-400">/10</span>
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">Average interview score</p>
           </div>
-          <div className="p-3 bg-emerald-500/10 rounded-xl">
-            <HiOutlineTrendingUp className="w-6 h-6 text-emerald-400" />
-          </div>
-        </div>
 
-        <div className="glass-card p-5 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-gray-400 font-medium font-display">Unresolved Complaints</p>
-            <h3 className="text-2xl font-bold text-white mt-1">
+          <div className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
+            <div className="flex items-center justify-between text-slate-400 mb-2">
+              <span className="text-xs font-semibold text-slate-600">Pending Feedback</span>
+              <HiOutlineChatAlt2 className="w-4 h-4 text-amber-600" />
+            </div>
+            <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">
               {feedback.filter(f => f.status === 'PENDING').length}
-            </h3>
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">Awaiting review</p>
           </div>
-          <div className="p-3 bg-amber-500/10 rounded-xl">
-            <HiOutlineChatAlt2 className="w-6 h-6 text-amber-400" />
-          </div>
-        </div>
 
-        <div className="glass-card p-5 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-gray-400 font-medium font-display">Integrity Infractions</p>
-            <h3 className="text-2xl font-bold text-white mt-1">
+          <div className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
+            <div className="flex items-center justify-between text-slate-400 mb-2">
+              <span className="text-xs font-semibold text-slate-600">Integrity Flags</span>
+              <HiOutlineExclamationCircle className="w-4 h-4 text-rose-600" />
+            </div>
+            <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">
               {violations.length}
-            </h3>
-          </div>
-          <div className="p-3 bg-red-500/10 rounded-xl">
-            <HiOutlineExclamationCircle className="w-6 h-6 text-red-400" />
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">Total recorded strikes</p>
           </div>
         </div>
-      </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-white/10 mb-6">
-        <button
-          onClick={() => setActiveTab('students')}
-          className={`px-5 py-3 text-sm font-medium border-b-2 transition-all ${
-            activeTab === 'students' ? 'border-primary-500 text-white' : 'border-transparent text-gray-400 hover:text-white'
-          }`}
-        >
-          Student Directory
-        </button>
-        <button
-          onClick={() => setActiveTab('feedback')}
-          className={`px-5 py-3 text-sm font-medium border-b-2 transition-all ${
-            activeTab === 'feedback' ? 'border-primary-500 text-white' : 'border-transparent text-gray-400 hover:text-white'
-          }`}
-        >
-          Student Feedback ({feedback.filter(f => f.status === 'PENDING').length})
-        </button>
-        <button
-          onClick={() => setActiveTab('violations')}
-          className={`px-5 py-3 text-sm font-medium border-b-2 transition-all ${
-            activeTab === 'violations' ? 'border-primary-500 text-white' : 'border-transparent text-gray-400 hover:text-white'
-          }`}
-        >
-          Integrity Violations
-        </button>
-      </div>
-
-      {/* Tab Contents */}
-      {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <div className="w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+        {/* Tab Controls */}
+        <div className="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200/80 max-w-lg">
+          <button
+            onClick={() => setActiveTab('students')}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
+              activeTab === 'students'
+                ? 'bg-white text-slate-900 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Candidate Directory
+          </button>
+          <button
+            onClick={() => setActiveTab('feedback')}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
+              activeTab === 'feedback'
+                ? 'bg-white text-slate-900 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Feedback ({feedback.filter(f => f.status === 'PENDING').length})
+          </button>
+          <button
+            onClick={() => setActiveTab('violations')}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
+              activeTab === 'violations'
+                ? 'bg-white text-slate-900 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Integrity Logs
+          </button>
         </div>
-      ) : (
-        <div className="space-y-6">
-          {activeTab === 'students' && (
-            <div className="space-y-4">
-              {/* Search bar */}
-              <div className="relative max-w-md">
-                <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Search students by name or email..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-primary-500/50"
-                />
+
+        {/* Content Body */}
+        {loading ? (
+          <div className="flex items-center justify-center py-20 bg-white rounded-2xl border border-slate-200/90">
+            <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : (
+          <div className="space-y-4">
+            
+            {/* Student Directory Tab */}
+            {activeTab === 'students' && (
+              <div className="space-y-4">
+                <div className="relative max-w-md">
+                  <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search candidate by name or email..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 rounded-lg bg-white border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none shadow-xs"
+                  />
+                </div>
+
+                <div className="bg-white border border-slate-200/90 rounded-xl overflow-hidden shadow-xs">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-200 bg-slate-50/70 text-slate-600">
+                        <th className="p-3.5 font-semibold">Candidate Name</th>
+                        <th className="p-3.5 font-semibold">Email</th>
+                        <th className="p-3.5 font-semibold">Phone</th>
+                        <th className="p-3.5 font-semibold text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 text-slate-700">
+                      {studentsOnly.length === 0 ? (
+                        <tr>
+                          <td colSpan="4" className="p-8 text-center text-slate-400">
+                            No students matching your search criteria.
+                          </td>
+                        </tr>
+                      ) : (
+                        studentsOnly.map(student => (
+                          <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
+                            <td className="p-3.5 font-semibold text-slate-900">{student.fullName}</td>
+                            <td className="p-3.5 font-mono text-slate-600">{student.email}</td>
+                            <td className="p-3.5 text-slate-500">{student.phone || '--'}</td>
+                            <td className="p-3.5 text-right">
+                              <button
+                                onClick={() => setSelectedUser(student)}
+                                className="btn-secondary text-xs py-1 px-3 shadow-xs"
+                              >
+                                Inspect Profile
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
+            )}
 
-              {/* Table */}
-              <div className="glass-card overflow-hidden">
-                <table className="w-full text-left border-collapse text-sm">
+            {/* Feedback Tab */}
+            {activeTab === 'feedback' && (
+              <div className="space-y-3">
+                {feedback.length === 0 ? (
+                  <div className="bg-white border border-slate-200/90 rounded-xl p-8 text-center text-slate-400 text-xs">
+                    No student feedback items recorded in the registry.
+                  </div>
+                ) : (
+                  feedback.map(item => (
+                    <div
+                      key={item.id}
+                      className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4"
+                    >
+                      <div className="space-y-1.5 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="badge-info text-[10px] uppercase font-semibold">
+                            {item.category || 'SUGGESTION'}
+                          </span>
+                          {item.status === 'PENDING' ? (
+                            <span className="badge-warning text-[10px] uppercase">PENDING</span>
+                          ) : (
+                            <span className="badge-success text-[10px] uppercase">RESOLVED</span>
+                          )}
+                          <span className="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+                            <HiOutlineClock className="w-3.5 h-3.5" />
+                            {formatDateTime(item.createdAt)}
+                          </span>
+                        </div>
+                        <p className="text-xs sm:text-sm text-slate-800 font-medium leading-relaxed">{item.message}</p>
+                        <p className="text-[11px] text-slate-400">Author: {item.username}</p>
+                      </div>
+
+                      {item.status === 'PENDING' && (
+                        <button
+                          onClick={() => handleResolveFeedback(item.id)}
+                          className="self-start md:self-center btn-secondary text-xs py-1.5 px-3 flex items-center gap-1 font-semibold text-emerald-700 hover:bg-emerald-50 shadow-xs"
+                        >
+                          <HiOutlineCheck className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Mark Resolved</span>
+                        </button>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {/* Integrity Violations Tab */}
+            {activeTab === 'violations' && (
+              <div className="bg-white border border-slate-200/90 rounded-xl overflow-hidden shadow-xs">
+                <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="border-b border-white/10 text-gray-400">
-                      <th className="p-4 font-display font-semibold">Student Name</th>
-                      <th className="p-4 font-display font-semibold">Email</th>
-                      <th className="p-4 font-display font-semibold">Phone</th>
-                      <th className="p-4 font-display font-semibold text-right">Details</th>
+                    <tr className="border-b border-slate-200 bg-slate-50/70 text-slate-600">
+                      <th className="p-3.5 font-semibold">User</th>
+                      <th className="p-3.5 font-semibold">Violation Type</th>
+                      <th className="p-3.5 font-semibold">Context Details</th>
+                      <th className="p-3.5 font-semibold text-right">Timestamp</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5 text-gray-300">
-                    {studentsOnly.length === 0 ? (
+                  <tbody className="divide-y divide-slate-100 text-slate-700">
+                    {violations.length === 0 ? (
                       <tr>
-                        <td colSpan="4" className="p-8 text-center text-gray-500">No students found.</td>
+                        <td colSpan="4" className="p-8 text-center text-slate-400">
+                          Zero integrity infractions recorded across all candidate sessions.
+                        </td>
                       </tr>
                     ) : (
-                      studentsOnly.map(student => (
-                        <tr key={student.id} className="hover:bg-white/[0.02] transition-colors">
-                          <td className="p-4 font-semibold text-white">{student.fullName}</td>
-                          <td className="p-4">{student.email}</td>
-                          <td className="p-4">{student.phone || '--'}</td>
-                          <td className="p-4 text-right">
-                            <button
-                              onClick={() => setSelectedUser(student)}
-                              className="px-3 py-1.5 rounded-lg bg-primary-500/10 hover:bg-primary-500/20 text-primary-400 text-xs font-semibold border border-primary-500/20 transition-all"
-                            >
-                              Inspect Profile
-                            </button>
+                      violations.map(v => (
+                        <tr key={v.id} className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-3.5 font-semibold text-slate-900">{v.username}</td>
+                          <td className="p-3.5">
+                            <span className="badge-danger text-[10px] uppercase font-semibold">
+                              {v.violationType}
+                            </span>
                           </td>
+                          <td className="p-3.5 text-slate-600">{v.details}</td>
+                          <td className="p-3.5 text-right font-mono text-slate-400 text-[11px]">{formatDateTime(v.timestamp)}</td>
                         </tr>
                       ))
                     )}
                   </tbody>
                 </table>
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === 'feedback' && (
-            <div className="space-y-4">
-              {feedback.length === 0 ? (
-                <div className="glass-card p-8 text-center text-gray-500">
-                  No feedback or complaints submitted yet.
+          </div>
+        )}
+
+        {/* Profile Inspection Modal */}
+        {selectedUser && (
+          <div className="fixed inset-0 bg-slate-900/60 z-50 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-xl shadow-subtle animate-scale-up overflow-hidden">
+              <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
+                    {selectedUser.fullName?.charAt(0) || 'U'}
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900">{selectedUser.fullName}</h3>
+                    <p className="text-xs text-slate-500 font-mono">{selectedUser.email}</p>
+                  </div>
                 </div>
-              ) : (
-                feedback.map(item => (
-                  <div key={item.id} className="glass-card p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-primary-500/10 text-primary-400">
-                          {item.category || 'SUGGESTION'}
-                        </span>
-                        {item.status === 'PENDING' ? (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">PENDING</span>
-                        ) : (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">RESOLVED</span>
-                        )}
-                        <span className="text-xs text-gray-500 flex items-center gap-1">
-                          <HiOutlineClock className="w-3.5 h-3.5" />
-                          {formatDateTime(item.createdAt)}
-                        </span>
-                      </div>
-                      <p className="text-white text-sm mt-2">{item.message}</p>
-                      <p className="text-xs text-gray-400">Submitted by: {item.username}</p>
-                    </div>
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                >
+                  <HiOutlineX className="w-5 h-5" />
+                </button>
+              </div>
 
-                    {item.status === 'PENDING' && (
-                      <button
-                        onClick={() => handleResolveFeedback(item.id)}
-                        className="self-start md:self-center px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/25 flex items-center gap-1 transition-all"
+              <div className="p-5 space-y-4 text-xs">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                    <span className="text-slate-400 font-semibold block mb-1">Phone Number</span>
+                    <p className="font-semibold text-slate-800">{selectedUser.phone || 'Not recorded'}</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                    <span className="text-slate-400 font-semibold block mb-1">Location</span>
+                    <p className="font-semibold text-slate-800">{selectedUser.address || 'Not recorded'}</p>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+                  <span className="text-slate-400 font-semibold block">Education & Degree</span>
+                  <p className="text-slate-700 whitespace-pre-line leading-relaxed">
+                    {selectedUser.education || 'No educational background submitted.'}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <span className="text-slate-400 font-semibold block">External Developer Portfolios</span>
+                  <div className="flex flex-wrap gap-3">
+                    {selectedUser.githubUrl ? (
+                      <a
+                        href={selectedUser.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-blue-600 hover:underline font-medium"
                       >
-                        <HiOutlineCheck className="w-3.5 h-3.5" /> Resolve
-                      </button>
+                        GitHub <HiOutlineExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <span className="text-slate-400">GitHub (unlinked)</span>
+                    )}
+
+                    {selectedUser.linkedinUrl ? (
+                      <a
+                        href={selectedUser.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-blue-600 hover:underline font-medium"
+                      >
+                        LinkedIn <HiOutlineExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <span className="text-slate-400">LinkedIn (unlinked)</span>
+                    )}
+
+                    {selectedUser.leetcodeUrl ? (
+                      <a
+                        href={selectedUser.leetcodeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-blue-600 hover:underline font-medium"
+                      >
+                        LeetCode <HiOutlineExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <span className="text-slate-400">LeetCode (unlinked)</span>
                     )}
                   </div>
-                ))
-              )}
-            </div>
-          )}
-
-          {activeTab === 'violations' && (
-            <div className="glass-card overflow-hidden">
-              <table className="w-full text-left border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-white/10 text-gray-400">
-                    <th className="p-4 font-display font-semibold">User</th>
-                    <th className="p-4 font-display font-semibold">Type</th>
-                    <th className="p-4 font-display font-semibold">Violation details</th>
-                    <th className="p-4 font-display font-semibold">Occurred At</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5 text-gray-300">
-                  {violations.length === 0 ? (
-                    <tr>
-                      <td colSpan="4" className="p-8 text-center text-gray-500">No integrity infractions logged.</td>
-                    </tr>
-                  ) : (
-                    violations.map(v => (
-                      <tr key={v.id} className="hover:bg-white/[0.01] transition-colors">
-                        <td className="p-4 font-semibold text-white">{v.username}</td>
-                        <td className="p-4">
-                          <span className="px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 text-xs border border-red-500/20">
-                            {v.violationType}
-                          </span>
-                        </td>
-                        <td className="p-4 text-gray-400">{v.details}</td>
-                        <td className="p-4 text-xs text-gray-500">{formatDateTime(v.timestamp)}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Inspect Profile Modal */}
-      {selectedUser && (
-        <div className="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="glass-card w-full max-w-2xl overflow-hidden shadow-2xl animate-fade-in">
-            {/* Modal Header */}
-            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
-                  {selectedUser.fullName?.charAt(0)}
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white font-display">{selectedUser.fullName}</h3>
-                  <p className="text-xs text-gray-400">{selectedUser.email}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setSelectedUser(null)}
-                className="text-gray-400 hover:text-white text-sm font-semibold transition-colors"
-              >
-                Close
-              </button>
-            </div>
-
-            {/* Modal Body */}
-            <div className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                    <HiOutlineMail className="w-4 h-4 text-primary-400" />
-                    <span>Contact Info</span>
-                  </div>
-                  <p className="text-sm text-white font-semibold">{selectedUser.email}</p>
-                  <p className="text-xs text-gray-300">{selectedUser.phone || 'No phone number provided'}</p>
-                </div>
-
-                <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                    <HiOutlineLocationMarker className="w-4 h-4 text-primary-400" />
-                    <span>Address / Location</span>
-                  </div>
-                  <p className="text-sm text-white font-semibold">{selectedUser.address || 'No address registered'}</p>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-2">
-                <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                  <HiOutlineAcademicCap className="w-4 h-4 text-primary-400" />
-                  <span>Education Profile</span>
-                </div>
-                <p className="text-sm text-white whitespace-pre-line leading-relaxed">
-                  {selectedUser.education || 'No educational background filled out yet.'}
-                </p>
-              </div>
-
-              <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-3">
-                <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                  <HiOutlineLink className="w-4 h-4 text-primary-400" />
-                  <span>External Profiles</span>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {selectedUser.githubUrl ? (
-                    <a
-                      href={selectedUser.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300"
-                    >
-                      GitHub Profile <HiOutlineExternalLink className="w-3 h-3" />
-                    </a>
-                  ) : (
-                    <span className="text-xs text-gray-500">GitHub (Not linked)</span>
-                  )}
-
-                  {selectedUser.linkedinUrl ? (
-                    <a
-                      href={selectedUser.linkedinUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300"
-                    >
-                      LinkedIn Profile <HiOutlineExternalLink className="w-3 h-3" />
-                    </a>
-                  ) : (
-                    <span className="text-xs text-gray-500">LinkedIn (Not linked)</span>
-                  )}
-
-                  {selectedUser.leetcodeUrl ? (
-                    <a
-                      href={selectedUser.leetcodeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300"
-                    >
-                      LeetCode Profile <HiOutlineExternalLink className="w-3 h-3" />
-                    </a>
-                  ) : (
-                    <span className="text-xs text-gray-500">LeetCode (Not linked)</span>
-                  )}
-                </div>
+              <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  className="btn-secondary text-xs py-1.5 px-4"
+                >
+                  Close Inspection
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+      </div>
     </AppLayout>
   );
 }

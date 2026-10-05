@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import AppLayout from '../components/layout/AppLayout';
 import api from '../api/axios';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, BarElement, Title, Tooltip, Legend, Filler } from 'chart.js';
-import { Line, Doughnut, Bar } from 'react-chartjs-2';
+import { Line, Doughnut } from 'react-chartjs-2';
 import {
-  HiOutlineChartBar, HiOutlineTrendingUp, HiOutlineAcademicCap,
+  HiOutlineChartBar, HiOutlineTrendingUp,
   HiOutlineLightningBolt, HiOutlineClipboardList, HiOutlineClock
 } from 'react-icons/hi';
 
@@ -14,13 +14,12 @@ export default function AnalyticsPage() {
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const isLight = document.documentElement.classList.contains('light');
-  const chartTextColor = isLight ? '#475569' : 'rgba(255,255,255,0.7)';
-  const chartGridColor = isLight ? 'rgba(15,23,42,0.08)' : 'rgba(255,255,255,0.1)';
-  const tooltipBg = isLight ? '#ffffff' : '#1e293b';
-  const tooltipBorder = isLight ? 'rgba(15,23,42,0.12)' : 'rgba(255,255,255,0.1)';
-  const tooltipTitle = isLight ? '#0f172a' : '#fff';
-  const tooltipBody = isLight ? '#475569' : 'rgba(255,255,255,0.8)';
+  const chartTextColor = '#64748b';
+  const chartGridColor = '#f1f5f9';
+  const tooltipBg = '#0f172a';
+  const tooltipBorder = '#1e293b';
+  const tooltipTitle = '#ffffff';
+  const tooltipBody = '#cbd5e1';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,17 +40,19 @@ export default function AnalyticsPage() {
     ? (interviews.reduce((sum, i) => sum + (i.overallScore || 0), 0) / totalInterviews).toFixed(1)
     : '--';
   const totalTimeMinutes = interviews.reduce((sum, i) => sum + ((i.timeTakenSeconds || 0) / 60), 0);
-  const totalTimeStr = totalTimeMinutes > 60 ? `${Math.floor(totalTimeMinutes / 60)}h ${Math.round(totalTimeMinutes % 60)}m` : `${Math.round(totalTimeMinutes)}m`;
+  const totalTimeStr = totalTimeMinutes > 60
+    ? `${Math.floor(totalTimeMinutes / 60)}h ${Math.round(totalTimeMinutes % 60)}m`
+    : `${Math.round(totalTimeMinutes)}m`;
 
   const easyCount = interviews.filter(i => i.difficulty === 'EASY').length;
   const mediumCount = interviews.filter(i => i.difficulty === 'MEDIUM').length;
   const hardCount = interviews.filter(i => i.difficulty === 'HARD').length;
 
   const stats = [
-    { label: 'Total Interviews', value: totalInterviews.toString(), icon: HiOutlineClipboardList, color: 'from-primary-500 to-purple-500' },
-    { label: 'Average Score', value: avgScore === '--' ? '--' : `${avgScore}/10`, icon: HiOutlineTrendingUp, color: 'from-emerald-500 to-teal-500' },
-    { label: 'Difficulties Tried', value: `${[easyCount > 0, mediumCount > 0, hardCount > 0].filter(Boolean).length}/3`, icon: HiOutlineLightningBolt, color: 'from-amber-500 to-orange-500' },
-    { label: 'Total Time', value: totalInterviews > 0 ? totalTimeStr : '0m', icon: HiOutlineClock, color: 'from-pink-500 to-rose-500' },
+    { label: 'Completed Sessions', value: totalInterviews.toString(), icon: HiOutlineClipboardList, hint: 'All time simulated' },
+    { label: 'Average Score', value: avgScore === '--' ? '--' : `${avgScore}/10`, icon: HiOutlineTrendingUp, hint: 'Across all difficulties' },
+    { label: 'Tiers Explored', value: `${[easyCount > 0, mediumCount > 0, hardCount > 0].filter(Boolean).length}/3`, icon: HiOutlineLightningBolt, hint: 'Easy, Medium, Hard' },
+    { label: 'Total Practice Time', value: totalInterviews > 0 ? totalTimeStr : '0m', icon: HiOutlineClock, hint: 'Active answering time' },
   ];
 
   // Line Chart Data — Score over time
@@ -68,15 +69,15 @@ export default function AnalyticsPage() {
       {
         label: 'Overall Score',
         data: sortedInterviews.map(i => i.overallScore || 0),
-        borderColor: '#6366f1',
-        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+        borderColor: '#2563eb',
+        backgroundColor: 'rgba(37, 99, 235, 0.06)',
         borderWidth: 2,
-        pointBackgroundColor: '#6366f1',
-        pointBorderColor: '#fff',
+        pointBackgroundColor: '#2563eb',
+        pointBorderColor: '#ffffff',
         pointBorderWidth: 2,
-        pointRadius: 5,
-        pointHoverRadius: 7,
-        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        tension: 0.35,
         fill: true,
       },
     ],
@@ -93,20 +94,20 @@ export default function AnalyticsPage() {
         borderWidth: 1,
         titleColor: tooltipTitle,
         bodyColor: tooltipBody,
-        padding: 12,
+        padding: 10,
         cornerRadius: 8,
       },
     },
     scales: {
       x: {
         grid: { color: chartGridColor, drawBorder: false },
-        ticks: { color: chartTextColor, font: { size: 11 } },
+        ticks: { color: chartTextColor, font: { size: 11, family: 'Inter' } },
       },
       y: {
         min: 0,
         max: 10,
         grid: { color: chartGridColor, drawBorder: false },
-        ticks: { color: chartTextColor, stepSize: 2, font: { size: 11 } },
+        ticks: { color: chartTextColor, stepSize: 2, font: { size: 11, family: 'Inter' } },
       },
     },
   };
@@ -118,17 +119,13 @@ export default function AnalyticsPage() {
       {
         data: [easyCount, mediumCount, hardCount],
         backgroundColor: [
-          'rgba(52, 211, 153, 0.8)',
-          'rgba(251, 191, 36, 0.8)',
-          'rgba(248, 113, 113, 0.8)',
+          '#10b981',
+          '#2563eb',
+          '#f59e0b',
         ],
-        borderColor: [
-          'rgba(52, 211, 153, 1)',
-          'rgba(251, 191, 36, 1)',
-          'rgba(248, 113, 113, 1)',
-        ],
+        borderColor: '#ffffff',
         borderWidth: 2,
-        hoverOffset: 6,
+        hoverOffset: 4,
       },
     ],
   };
@@ -141,10 +138,10 @@ export default function AnalyticsPage() {
         position: 'bottom',
         labels: {
           color: chartTextColor,
-          padding: 20,
-          font: { size: 12 },
+          padding: 16,
+          font: { size: 12, family: 'Inter' },
           usePointStyle: true,
-          pointStyleWidth: 10,
+          pointStyleWidth: 8,
         },
       },
       tooltip: {
@@ -153,11 +150,11 @@ export default function AnalyticsPage() {
         borderWidth: 1,
         titleColor: tooltipTitle,
         bodyColor: tooltipBody,
-        padding: 12,
+        padding: 10,
         cornerRadius: 8,
       },
     },
-    cutout: '65%',
+    cutout: '68%',
   };
 
   // Skill bars from unique job roles
@@ -182,9 +179,9 @@ export default function AnalyticsPage() {
     return (
       <AppLayout>
         <div className="flex items-center justify-center py-32">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-            <p className="text-gray-400">Loading analytics...</p>
+          <div className="flex flex-col items-center gap-3 text-center">
+            <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            <p className="text-slate-500 text-xs font-medium">Aggregating telemetry analytics...</p>
           </div>
         </div>
       </AppLayout>
@@ -193,118 +190,150 @@ export default function AnalyticsPage() {
 
   return (
     <AppLayout>
-      {/* Header */}
-      <div className="mb-8 animate-fade-in">
-        <div className="flex items-center gap-2 mb-1">
-          <HiOutlineChartBar className="w-5 h-5 text-purple-400" />
-          <span className="text-sm text-purple-400 font-medium">Analytics</span>
-        </div>
-        <h1 className="text-3xl font-display font-bold text-white">
-          Your <span className="gradient-text">Performance</span>
-        </h1>
-        <p className="text-gray-400 mt-2">Track your interview preparation progress and skill development.</p>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map((stat, index) => (
-          <div
-            key={stat.label}
-            className="glass-card-hover p-6 animate-slide-up"
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} inline-flex mb-3`}>
-              <stat.icon className="w-5 h-5 text-white" />
-            </div>
-            <p className="text-2xl font-bold text-white">{stat.value}</p>
-            <p className="text-sm text-gray-400">{stat.label}</p>
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="pb-2 border-b border-slate-200/80">
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
+              Telemetry Insights
+            </span>
           </div>
-        ))}
-      </div>
-
-      {totalInterviews === 0 ? (
-        /* Empty State */
-        <div className="glass-card p-12 text-center animate-fade-in">
-          <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
-            <HiOutlineChartBar className="w-10 h-10 text-gray-600" />
-          </div>
-          <h2 className="text-xl font-display font-bold text-white mb-2">No Data Yet</h2>
-          <p className="text-gray-400 max-w-md mx-auto">
-            Complete your first interview to see performance charts, score trends, and detailed analytics here.
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
+            Performance Analytics & Growth
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Track interview preparation progress, score trajectories across question domains, and consistency trends.
           </p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Score Trend Line Chart */}
-          <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '400ms' }}>
-            <h2 className="text-lg font-display font-semibold text-white mb-6">Score Trends</h2>
-            <div className="h-64">
-              {sortedInterviews.length > 0 ? (
-                <Line data={lineData} options={lineOptions} />
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-500 text-sm">
-                  Complete interviews to see score trends
-                </div>
-              )}
-            </div>
-          </div>
 
-          {/* Difficulty Distribution Doughnut */}
-          <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '500ms' }}>
-            <h2 className="text-lg font-display font-semibold text-white mb-6">Difficulty Distribution</h2>
-            <div className="h-64">
-              <Doughnut data={doughnutData} options={doughnutOptions} />
-            </div>
-          </div>
-
-          {/* Role Performance */}
-          <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '600ms' }}>
-            <h2 className="text-lg font-display font-semibold text-white mb-6">Performance by Role</h2>
-            <div className="space-y-5">
-              {skillBars.length > 0 ? (
-                skillBars.map(({ name, level, maxLevel }) => (
-                  <div key={name}>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-300 font-medium">{name}</span>
-                      <span className="text-xs text-gray-500">{level}%</span>
-                    </div>
-                    <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                      <div
-                        className="h-full gradient-bg rounded-full transition-all duration-700"
-                        style={{ width: `${(level / maxLevel) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-500 text-sm">
-                  No role data available
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Leaderboard Placeholder */}
-          <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '700ms' }}>
-            <h2 className="text-lg font-display font-semibold text-white mb-6">AI Recommendations</h2>
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-                <HiOutlineLightningBolt className="w-8 h-8 text-gray-600" />
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat) => (
+            <div
+              key={stat.label}
+              className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs"
+            >
+              <div className="flex items-center justify-between text-slate-400 mb-2">
+                <span className="text-xs font-semibold text-slate-600">{stat.label}</span>
+                <stat.icon className="w-4 h-4 text-slate-400" />
               </div>
-              <p className="text-gray-400">
-                {totalInterviews >= 3
-                  ? 'Focus on improving your weak areas identified in recent interviews.'
-                  : 'Complete at least 3 interviews for AI-powered learning suggestions.'}
-              </p>
-              <p className="text-gray-500 text-sm mt-1">
-                {totalInterviews >= 3
-                  ? `Based on ${totalInterviews} interviews analyzed`
-                  : `${3 - totalInterviews} more interview(s) needed`}
-              </p>
+              <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">{stat.value}</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">{stat.hint}</p>
             </div>
-          </div>
+          ))}
         </div>
-      )}
+
+        {totalInterviews === 0 ? (
+          <div className="bg-white border border-slate-200/90 rounded-2xl p-12 text-center shadow-xs">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
+              <HiOutlineChartBar className="w-6 h-6" />
+            </div>
+            <h2 className="text-base font-semibold text-slate-900 mb-1">Telemetry Data Needed</h2>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              Complete your first mock interview simulation to populate score trajectories, competency breakdowns, and difficulty distributions.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {/* Score Trend Line Chart */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4">
+              <div>
+                <h2 className="text-base font-semibold text-slate-900">Score Trajectory</h2>
+                <p className="text-xs text-slate-500">Chronological score trend over recent completed interviews</p>
+              </div>
+              <div className="h-64">
+                {sortedInterviews.length > 0 ? (
+                  <Line data={lineData} options={lineOptions} />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-slate-400 text-xs">
+                    Complete additional interviews to plot trend line
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Difficulty Distribution Doughnut */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4">
+              <div>
+                <h2 className="text-base font-semibold text-slate-900">Difficulty Distribution</h2>
+                <p className="text-xs text-slate-500">Breakdown of practice sessions by calibrated difficulty</p>
+              </div>
+              <div className="h-64">
+                <Doughnut data={doughnutData} options={doughnutOptions} />
+              </div>
+            </div>
+
+            {/* Performance by Role */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4">
+              <div>
+                <h2 className="text-base font-semibold text-slate-900">Discipline Mastery</h2>
+                <p className="text-xs text-slate-500">Aggregated composite performance by job role and topic</p>
+              </div>
+              <div className="space-y-4 pt-1">
+                {skillBars.length > 0 ? (
+                  skillBars.map(({ name, level, maxLevel }) => (
+                    <div key={name}>
+                      <div className="flex items-center justify-between mb-1.5 text-xs">
+                        <span className="font-semibold text-slate-800">{name}</span>
+                        <span className="font-mono text-slate-500">{level}%</span>
+                      </div>
+                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-blue-600 rounded-full transition-all duration-500"
+                          style={{ width: `${(level / maxLevel) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-slate-400 text-xs">
+                    No role-specific data accumulated yet
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Recommendations & Action Plan */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4">
+              <div>
+                <h2 className="text-base font-semibold text-slate-900">Targeted AI Guidance</h2>
+                <p className="text-xs text-slate-500">Automated diagnostic suggestions based on your responses</p>
+              </div>
+              
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+                <div className="flex items-center gap-1.5 font-semibold text-slate-900">
+                  <HiOutlineLightningBolt className="w-4 h-4 text-blue-600" />
+                  <span>Preparation Status</span>
+                </div>
+                <p className="text-slate-600 leading-relaxed">
+                  {totalInterviews >= 3
+                    ? 'Your communication clarity is consistent. Focus on deepening architectural edge-case explanations in hard difficulty rounds.'
+                    : `Complete ${3 - totalInterviews} more interview(s) to unlock granular cross-session competency clustering.`}
+                </p>
+              </div>
+
+              <div className="space-y-2 text-xs text-slate-600">
+                <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
+                  <span>Consistency Frequency</span>
+                  <span className="font-semibold text-slate-900">
+                    {totalInterviews > 5 ? 'High (Regular Practice)' : 'Developing Cadence'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
+                  <span>Dominant Track</span>
+                  <span className="font-semibold text-slate-900">
+                    {skillBars[0]?.name || 'Varied'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        )}
+
+      </div>
     </AppLayout>
   );
 }

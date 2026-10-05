@@ -7,10 +7,10 @@ import {
   HiOutlineChartBar, HiOutlineChevronDown, HiOutlineClipboardList,
   HiOutlineClock, HiOutlineLightningBolt, HiOutlineSparkles,
   HiOutlineCheckCircle, HiOutlineAcademicCap, HiOutlineArrowRight,
-  HiOutlineTrendingUp
+  HiOutlineTrendingUp, HiOutlineRefresh
 } from 'react-icons/hi';
 
-function CircularProgress({ score, size = 160, strokeWidth = 10 }) {
+function CleanScoreDial({ score, size = 140, strokeWidth = 8 }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const [offset, setOffset] = useState(circumference);
@@ -19,27 +19,23 @@ function CircularProgress({ score, size = 160, strokeWidth = 10 }) {
     const timer = setTimeout(() => {
       const progress = ((score || 0) / 10) * circumference;
       setOffset(circumference - progress);
-    }, 300);
+    }, 200);
     return () => clearTimeout(timer);
   }, [score, circumference]);
 
-  const scoreColor = score >= 8 ? '#34d399' : score >= 6 ? '#fbbf24' : '#f87171';
+  const strokeColor =
+    score >= 8 ? '#16a34a' :
+    score >= 6 ? '#2563eb' :
+    score >= 4 ? '#d97706' : '#dc2626';
 
   return (
     <div className="relative inline-flex items-center justify-center">
       <svg width={size} height={size} className="transform -rotate-90">
-        <defs>
-          <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#6366f1" />
-            <stop offset="50%" stopColor="#a855f7" />
-            <stop offset="100%" stopColor="#ec4899" />
-          </linearGradient>
-        </defs>
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="rgba(255,255,255,0.05)"
+          stroke="#e2e8f0"
           strokeWidth={strokeWidth}
           fill="none"
         />
@@ -47,7 +43,7 @@ function CircularProgress({ score, size = 160, strokeWidth = 10 }) {
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="url(#scoreGradient)"
+          stroke={strokeColor}
           strokeWidth={strokeWidth}
           fill="none"
           strokeLinecap="round"
@@ -57,10 +53,10 @@ function CircularProgress({ score, size = 160, strokeWidth = 10 }) {
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-4xl font-bold font-display" style={{ color: scoreColor }}>
+        <span className="text-3xl font-bold font-display tracking-tight text-slate-900">
           {score?.toFixed(1) || '0.0'}
         </span>
-        <span className="text-xs text-gray-500 mt-1">out of 10</span>
+        <span className="text-[11px] font-mono text-slate-400 mt-0.5">/ 10</span>
       </div>
     </div>
   );
@@ -79,7 +75,7 @@ export default function InterviewResultsPage() {
         const res = await api.get(`/interviews/${id}/results`);
         setResults(res.data);
       } catch (err) {
-        toast.error('Failed to load results');
+        toast.error('Failed to load interview results');
         navigate('/interviews');
       } finally {
         setLoading(false);
@@ -90,10 +86,10 @@ export default function InterviewResultsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-900">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-400 text-lg">Loading results...</p>
+      <div className="min-h-screen flex items-center justify-center bg-porcelain-50">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="w-9 h-9 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-slate-600 text-sm font-medium">Aggregating interview feedback & scores...</p>
         </div>
       </div>
     );
@@ -115,187 +111,237 @@ export default function InterviewResultsPage() {
 
   return (
     <AppLayout>
-      {/* Header */}
-      <div className="mb-8 animate-fade-in">
-        <div className="flex items-center gap-2 mb-1">
-          <HiOutlineChartBar className="w-5 h-5 text-primary-400" />
-          <span className="text-sm text-primary-400 font-medium">Interview Results</span>
-        </div>
-        <h1 className="text-3xl font-display font-bold text-white">
-          Your <span className="gradient-text">Performance</span>
-        </h1>
-        <p className="text-gray-400 mt-2">
-          {results?.jobRole && <span className="text-white font-medium">{results.jobRole}</span>}
-          {results?.difficulty && <span className="ml-2 badge-warning text-xs">{results.difficulty}</span>}
-        </p>
-      </div>
-
-      {/* Overall Score Circle */}
-      <div className="glass-card p-8 mb-8 animate-fade-in">
-        <div className="flex flex-col lg:flex-row items-center gap-8">
-          <div className="flex-shrink-0">
-            <CircularProgress score={overallScore} />
-          </div>
-          <div className="flex-1 text-center lg:text-left">
-            <h2 className="text-2xl font-display font-bold text-white mb-2">
-              {overallScore >= 8 ? 'Excellent Performance! 🌟' :
-               overallScore >= 6 ? 'Good Job! 💪' :
-               overallScore >= 4 ? 'Keep Practicing! 📚' : 'Room for Improvement 🚀'}
-            </h2>
-            <p className="text-gray-400 max-w-lg">
-              {overallScore >= 8
-                ? 'You demonstrated strong knowledge and communication skills across the interview questions.'
-                : overallScore >= 6
-                ? 'You showed good understanding but there are areas where you can improve further.'
-                : 'Focus on the feedback below to strengthen your weak areas and practice more.'}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Summary Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Total Questions', value: totalQuestions, icon: HiOutlineClipboardList, color: 'from-primary-500 to-purple-500' },
-          { label: 'Average Score', value: `${avgScore}/10`, icon: HiOutlineTrendingUp, color: 'from-emerald-500 to-teal-500' },
-          { label: 'Time Taken', value: formatTime(results?.totalTimeTaken || results?.timeTakenSeconds), icon: HiOutlineClock, color: 'from-amber-500 to-orange-500' },
-          { label: 'Difficulty', value: results?.difficulty || '--', icon: HiOutlineLightningBolt, color: 'from-pink-500 to-rose-500' },
-        ].map((stat, index) => (
-          <div
-            key={stat.label}
-            className="glass-card-hover p-5 animate-slide-up"
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            <div className={`p-2.5 rounded-xl bg-gradient-to-br ${stat.color} inline-flex mb-3`}>
-              <stat.icon className="w-5 h-5 text-white" />
+      <div className="max-w-5xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200/80">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
+                Performance Evaluation
+              </span>
+              <span className="badge-neutral text-xs">{results?.jobRole || 'General'}</span>
+              {results?.difficulty && (
+                <span className="badge-neutral text-xs uppercase">{results.difficulty}</span>
+              )}
             </div>
-            <p className="text-xl font-bold text-white">{stat.value}</p>
-            <p className="text-sm text-gray-400 mt-1">{stat.label}</p>
+            <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
+              Interview Debrief & Assessment
+            </h1>
           </div>
-        ))}
-      </div>
 
-      {/* Per-Question Results */}
-      <div className="mb-8">
-        <h2 className="text-xl font-display font-bold text-white mb-4">
-          <HiOutlineAcademicCap className="w-5 h-5 inline mr-2 text-primary-400" />
-          Question-by-Question Breakdown
-        </h2>
-        <div className="space-y-3">
-          {questions.map((q, index) => {
-            const fb = q.feedback || {};
-            const isExpanded = expandedId === index;
-            const qScore = fb.overallScore || 0;
-
-            return (
-              <div
-                key={index}
-                className="glass-card-hover overflow-hidden animate-slide-up"
-                style={{ animationDelay: `${(index + 4) * 80}ms` }}
-              >
-                {/* Question Header */}
-                <button
-                  onClick={() => setExpandedId(isExpanded ? null : index)}
-                  className="w-full flex items-start gap-4 p-5 text-left"
-                >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold ${
-                    qScore >= 8 ? 'bg-emerald-500/10 text-emerald-400' :
-                    qScore >= 6 ? 'bg-amber-500/10 text-amber-400' : 'bg-red-500/10 text-red-400'
-                  }`}>
-                    {qScore}/10
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white leading-relaxed">
-                      {q.questionText || q.question?.questionText || `Question ${index + 1}`}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      {(q.category || q.question?.category?.name) && (
-                        <span className="badge-info text-xs">{q.category || q.question?.category?.name}</span>
-                      )}
-                      <span className="text-xs text-gray-500">Q{index + 1}</span>
-                    </div>
-                  </div>
-                  <HiOutlineChevronDown className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
-                </button>
-
-                {/* Expanded Content */}
-                {isExpanded && (
-                  <div className="px-5 pb-5 space-y-4 animate-fade-in">
-                    {/* User's Answer */}
-                    {q.answerText && (
-                      <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">Your Answer</p>
-                        <p className="text-sm text-gray-300 leading-relaxed">{q.answerText}</p>
-                      </div>
-                    )}
-
-                    {/* Score Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                      {[
-                        { label: 'Accuracy', score: fb.technicalAccuracy },
-                        { label: 'Completeness', score: fb.completeness },
-                        { label: 'Communication', score: fb.communication },
-                        { label: 'Relevance', score: fb.relevance },
-                        { label: 'Overall', score: fb.overallScore },
-                      ].map(({ label, score }) => (
-                        <div key={label} className="p-3 rounded-xl bg-white/5 text-center">
-                          <p className={`text-2xl font-bold ${
-                            score >= 8 ? 'text-emerald-400' :
-                            score >= 6 ? 'text-amber-400' : 'text-red-400'
-                          }`}>
-                            {score || 0}/10
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">{label}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Strengths & Weaknesses */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {fb.strengths && (
-                        <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
-                          <h4 className="text-sm font-semibold text-emerald-400 mb-2">💪 Strengths</h4>
-                          <p className="text-sm text-gray-300 leading-relaxed">{fb.strengths}</p>
-                        </div>
-                      )}
-                      {fb.weaknesses && (
-                        <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/10">
-                          <h4 className="text-sm font-semibold text-red-400 mb-2">📌 Areas to Improve</h4>
-                          <p className="text-sm text-gray-300 leading-relaxed">{fb.weaknesses}</p>
-                        </div>
-                      )}
-                    </div>
-
-                    {fb.improvements && (
-                      <div className="p-4 rounded-xl bg-primary-500/5 border border-primary-500/10">
-                        <h4 className="text-sm font-semibold text-primary-400 mb-2">💡 Suggestions</h4>
-                        <p className="text-sm text-gray-300 leading-relaxed">{fb.improvements}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => navigate('/interviews')}
+              className="btn-primary text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-xs"
+            >
+              <HiOutlineRefresh className="w-3.5 h-3.5" />
+              <span>New Session</span>
+            </button>
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="btn-secondary text-xs py-2 px-3.5 flex items-center gap-1.5"
+            >
+              <span>Dashboard</span>
+              <HiOutlineArrowRight className="w-3.5 h-3.5 text-slate-500" />
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 animate-slide-up">
-        <button
-          onClick={() => navigate('/interviews')}
-          className="btn-primary inline-flex items-center justify-center gap-2"
-        >
-          <HiOutlineSparkles className="w-5 h-5" />
-          Practice Again
-        </button>
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="btn-secondary inline-flex items-center justify-center gap-2"
-        >
-          <HiOutlineArrowRight className="w-5 h-5" />
-          Back to Dashboard
-        </button>
+        {/* Hero Score Card */}
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-xs">
+          <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+            <div className="flex-shrink-0">
+              <CleanScoreDial score={overallScore} />
+            </div>
+
+            <div className="flex-1 text-center sm:text-left space-y-2">
+              <div className="inline-flex items-center gap-1.5">
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-md border ${
+                  overallScore >= 8
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                    : overallScore >= 6
+                    ? 'bg-blue-50 border-blue-200 text-blue-800'
+                    : 'bg-amber-50 border-amber-200 text-amber-800'
+                }`}>
+                  {overallScore >= 8 ? 'Strong Hire Indicator' :
+                   overallScore >= 6 ? 'Competent Performance' :
+                   overallScore >= 4 ? 'Needs Development' : 'Foundation Level'}
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-display font-semibold text-slate-900">
+                {overallScore >= 8
+                  ? 'Exemplary Technical Mastery & Delivery'
+                  : overallScore >= 6
+                  ? 'Solid Domain Knowledge with Minor Gaps'
+                  : 'Key Concepts Require Further Practice'}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
+                {overallScore >= 8
+                  ? 'Your answers demonstrated structured thinking, accurate technical depth, and clear communication. Review the fine-grained insights below to reach perfection.'
+                  : overallScore >= 6
+                  ? 'Good performance overall. You articulated core principles well, but could bolster system trade-offs and edge-case handling.'
+                  : 'Review the areas for growth and suggested improvements below to refine your technical responses before real-world rounds.'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Summary Metric Tiles */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Total Questions', value: totalQuestions, icon: HiOutlineClipboardList, hint: 'Answered' },
+            { label: 'Average Score', value: `${avgScore}/10`, icon: HiOutlineTrendingUp, hint: 'Per question mean' },
+            { label: 'Time Elapsed', value: formatTime(results?.totalTimeTaken || results?.timeTakenSeconds), icon: HiOutlineClock, hint: 'Total duration' },
+            { label: 'Difficulty Track', value: results?.difficulty || 'Medium', icon: HiOutlineLightningBolt, hint: 'Calibrated level' },
+          ].map((stat) => (
+            <div key={stat.label} className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
+              <div className="flex items-center justify-between text-slate-400 mb-2">
+                <span className="text-xs font-semibold text-slate-600">{stat.label}</span>
+                <stat.icon className="w-4 h-4 text-slate-400" />
+              </div>
+              <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">{stat.value}</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">{stat.hint}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Question-by-Question Accordion */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
+              <HiOutlineAcademicCap className="w-5 h-5 text-blue-600" />
+              Question-by-Question Analysis
+            </h2>
+            <span className="text-xs text-slate-500 font-mono">
+              {questions.length} items evaluated
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {questions.map((q, index) => {
+              const fb = q.feedback || {};
+              const isExpanded = expandedId === index;
+              const qScore = fb.overallScore || 0;
+
+              return (
+                <div
+                  key={index}
+                  className="bg-white border border-slate-200/90 rounded-xl overflow-hidden shadow-xs transition-colors hover:border-slate-300"
+                >
+                  {/* Question Header Accordion Trigger */}
+                  <button
+                    onClick={() => setExpandedId(isExpanded ? null : index)}
+                    className="w-full flex items-start gap-4 p-4 sm:p-5 text-left focus:outline-none"
+                  >
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 font-display font-bold text-sm border ${
+                      qScore >= 8
+                        ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                        : qScore >= 6
+                        ? 'bg-blue-50 border-blue-200 text-blue-700'
+                        : 'bg-rose-50 border-rose-200 text-rose-700'
+                    }`}>
+                      {qScore}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-mono text-xs font-semibold text-slate-400">
+                          Q{index + 1}
+                        </span>
+                        {(q.category || q.question?.category?.name) && (
+                          <span className="badge-neutral text-[10px] uppercase">
+                            {q.category || q.question?.category?.name}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm font-semibold text-slate-900 leading-snug">
+                        {q.questionText || q.question?.questionText || `Question ${index + 1}`}
+                      </p>
+                    </div>
+
+                    <HiOutlineChevronDown
+                      className={`w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-200 mt-1 ${
+                        isExpanded ? 'rotate-180 text-blue-600' : ''
+                      }`}
+                    />
+                  </button>
+
+                  {/* Expanded Content */}
+                  {isExpanded && (
+                    <div className="px-4 sm:px-6 pb-5 space-y-4 border-t border-slate-100 pt-4 bg-slate-50/50">
+                      
+                      {/* Candidate Answer */}
+                      {q.answerText && (
+                        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+                          <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1.5 font-semibold">
+                            Submitted Response
+                          </p>
+                          <p className="text-xs sm:text-sm font-mono text-slate-800 leading-relaxed whitespace-pre-wrap">
+                            {q.answerText}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Score Breakdown Pills */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        {[
+                          { label: 'Accuracy', score: fb.technicalAccuracy },
+                          { label: 'Completeness', score: fb.completeness },
+                          { label: 'Communication', score: fb.communication },
+                          { label: 'Relevance', score: fb.relevance },
+                        ].map(({ label, score }) => (
+                          <div key={label} className="p-2.5 rounded-lg bg-white border border-slate-200/70 text-center">
+                            <p className={`text-base font-bold font-display ${
+                              (score || 0) >= 8 ? 'text-emerald-600' :
+                              (score || 0) >= 6 ? 'text-blue-600' : 'text-rose-600'
+                            }`}>
+                              {score || 0}<span className="text-[10px] font-normal text-slate-400">/10</span>
+                            </p>
+                            <p className="text-[11px] text-slate-500 font-medium">{label}</p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Strengths & Weaknesses */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {fb.strengths && (
+                          <div className="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-slate-800">
+                            <h4 className="text-xs font-semibold text-emerald-800 mb-1 flex items-center gap-1.5">
+                              <HiOutlineCheckCircle className="w-4 h-4 text-emerald-600" />
+                              Key Strengths
+                            </h4>
+                            <p className="text-xs text-slate-700 leading-relaxed">{fb.strengths}</p>
+                          </div>
+                        )}
+                        {fb.weaknesses && (
+                          <div className="p-3.5 rounded-xl bg-rose-50/80 border border-rose-200 text-slate-800">
+                            <h4 className="text-xs font-semibold text-rose-800 mb-1 flex items-center gap-1.5">
+                              <HiOutlineSparkles className="w-4 h-4 text-rose-600" />
+                              Areas for Improvement
+                            </h4>
+                            <p className="text-xs text-slate-700 leading-relaxed">{fb.weaknesses}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {fb.improvements && (
+                        <div className="p-3.5 rounded-xl bg-blue-50/80 border border-blue-200 text-slate-800">
+                          <h4 className="text-xs font-semibold text-blue-800 mb-1 flex items-center gap-1.5">
+                            <HiOutlineLightningBolt className="w-4 h-4 text-blue-600" />
+                            Suggested Strategy
+                          </h4>
+                          <p className="text-xs text-slate-700 leading-relaxed">{fb.improvements}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
       </div>
     </AppLayout>
   );

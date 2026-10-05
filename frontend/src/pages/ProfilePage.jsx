@@ -4,7 +4,7 @@ import AppLayout from '../components/layout/AppLayout';
 import api, { getServerBaseUrl } from '../api/axios';
 import toast from 'react-hot-toast';
 import {
-  HiOutlineUser, HiOutlineMail, HiOutlineLockClosed, HiOutlineShieldCheck,
+  HiOutlineUser, HiOutlineMail, HiOutlineLockClosed,
   HiOutlineChartBar, HiOutlineClipboardList, HiOutlineTrendingUp,
   HiOutlineSparkles, HiOutlineCheckCircle, HiOutlineEye, HiOutlineEyeOff,
   HiOutlineCamera, HiOutlineLocationMarker, HiOutlineAcademicCap,
@@ -86,12 +86,11 @@ export default function ProfilePage() {
       });
       setProfile(res.data);
 
-      // Update localStorage so other components see name updates
       const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
       storedUser.fullName = res.data.fullName;
       localStorage.setItem('user', JSON.stringify(storedUser));
 
-      toast.success('Profile details saved! 🎉');
+      toast.success('Profile credentials saved ✨');
     } catch (err) {
       toast.error('Failed to save profile details');
     } finally {
@@ -115,13 +114,13 @@ export default function ProfilePage() {
     const formData = new FormData();
     formData.append('file', file);
 
-    const uploadToastId = toast.loading('Uploading profile picture...');
+    const uploadToastId = toast.loading('Uploading profile image...');
     try {
       const res = await api.post('/users/profile/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setProfile(prev => ({ ...prev, avatarUrl: res.data.avatarUrl }));
-      toast.success('Profile picture updated! 📸', { id: uploadToastId });
+      toast.success('Profile avatar updated 📸', { id: uploadToastId });
     } catch (err) {
       toast.error('Failed to upload profile picture', { id: uploadToastId });
     }
@@ -129,19 +128,18 @@ export default function ProfilePage() {
 
   const handleImportResume = async () => {
     setImportingResume(true);
-    const importToastId = toast.loading('Auto-filling details from resume...');
+    const importToastId = toast.loading('Extracting attributes from your resume...');
     try {
       const res = await api.post('/users/profile/import-resume');
       setProfile(res.data);
 
-      // Update localStorage name if it changed
       const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
       storedUser.fullName = res.data.fullName;
       localStorage.setItem('user', JSON.stringify(storedUser));
 
-      toast.success('Profile auto-filled from your latest resume! 📄', { id: importToastId });
+      toast.success('Profile auto-populated from resume 📄', { id: importToastId });
     } catch (err) {
-      const msg = err.response?.data?.message || 'Failed to auto-fill details. Make sure you upload a resume first.';
+      const msg = err.response?.data?.message || 'Upload a resume first to auto-fill details.';
       toast.error(msg, { id: importToastId });
     } finally {
       setImportingResume(false);
@@ -164,7 +162,7 @@ export default function ProfilePage() {
     setChangingPassword(true);
     try {
       await api.put('/auth/change-password', { currentPassword, newPassword });
-      toast.success('Password changed successfully! 🔒');
+      toast.success('Password updated successfully 🔒');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -189,315 +187,357 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      {/* Header */}
-      <div className="mb-8 animate-fade-in">
-        <div className="flex items-center gap-2 mb-1">
-          <HiOutlineUser className="w-5 h-5 text-primary-400" />
-          <span className="text-sm text-primary-400 font-medium">Profile</span>
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="pb-2 border-b border-slate-200/80">
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
+              Account Management
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
+            Candidate Profile & Credentials
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Manage your personal contact details, verified educational profile, and external portfolios.
+          </p>
         </div>
-        <h1 className="text-3xl font-display font-bold text-white">
-          My <span className="gradient-text">Profile</span>
-        </h1>
-        <p className="text-gray-400 mt-2">Manage your account details, academic credentials, and links.</p>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Profile Card & Stats */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="glass-card p-8 text-center animate-slide-up">
-            {/* Avatar with Camera Icon Trigger */}
-            <div
-              onClick={handleAvatarClick}
-              className="group relative w-24 h-24 rounded-full bg-gradient-to-br from-primary-400 via-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-primary-500/30 cursor-pointer overflow-hidden border-2 border-white/10 hover:border-primary-500/50 transition-all duration-300"
-            >
-              {getAvatarSrc() ? (
-                <img
-                  src={getAvatarSrc()}
-                  alt={profile.fullName}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-              ) : (
-                <span className="text-3xl font-bold text-white font-display">
-                  {getInitials(profile.fullName || user?.fullName)}
-                </span>
-              )}
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity duration-300">
-                <HiOutlineCamera className="w-6 h-6 text-white" />
-                <span className="text-[10px] font-medium mt-1">Change</span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* Left Column: Avatar & Summary */}
+          <div className="lg:col-span-4 space-y-4">
+            
+            {/* Identity Card */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 text-center shadow-xs space-y-4">
+              <div
+                onClick={handleAvatarClick}
+                className="group relative w-20 h-20 rounded-full bg-blue-600 text-white flex items-center justify-center mx-auto shadow-xs cursor-pointer overflow-hidden border-2 border-white hover:ring-2 hover:ring-blue-500 transition-all"
+                title="Click to change profile picture"
+              >
+                {getAvatarSrc() ? (
+                  <img
+                    src={getAvatarSrc()}
+                    alt={profile.fullName}
+                    className="w-full h-full object-cover group-hover:opacity-80 transition-opacity"
+                  />
+                ) : (
+                  <span className="text-2xl font-bold font-display">
+                    {getInitials(profile.fullName || user?.fullName)}
+                  </span>
+                )}
+                <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity">
+                  <HiOutlineCamera className="w-5 h-5" />
+                  <span className="text-[9px] uppercase tracking-wider font-semibold mt-0.5">Edit</span>
+                </div>
+              </div>
+
+              <input
+                type="file"
+                ref={avatarInputRef}
+                onChange={handleAvatarChange}
+                accept="image/*"
+                className="hidden"
+              />
+
+              <div>
+                <h2 className="text-base font-semibold text-slate-900">
+                  {profile.fullName || user?.fullName || 'Candidate'}
+                </h2>
+                <p className="text-xs text-slate-500 font-mono mt-0.5">
+                  {profile.email || user?.email}
+                </p>
+                <div className="mt-2.5">
+                  <span className="badge-neutral text-[10px] uppercase font-semibold">
+                    {user?.roles?.[0]?.replace('ROLE_', '') || 'Student'}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleImportResume}
+                disabled={importingResume}
+                className="btn-secondary w-full text-xs py-2 flex items-center justify-center gap-1.5 shadow-xs"
+              >
+                <HiOutlineDocumentText className="w-4 h-4 text-slate-500" />
+                <span>{importingResume ? 'Importing...' : 'Auto-fill from Resume'}</span>
+              </button>
+            </div>
+
+            {/* Quick Metrics */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs space-y-3">
+              <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2">
+                Simulation Performance
+              </h3>
+              <div className="space-y-2.5 text-xs">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200/70">
+                  <div className="flex items-center gap-2 text-slate-600">
+                    <HiOutlineClipboardList className="w-4 h-4 text-blue-600" />
+                    <span>Total Interviews</span>
+                  </div>
+                  <span className="font-bold text-slate-900 font-mono">{stats.total}</span>
+                </div>
+
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200/70">
+                  <div className="flex items-center gap-2 text-slate-600">
+                    <HiOutlineTrendingUp className="w-4 h-4 text-emerald-600" />
+                    <span>Average Score</span>
+                  </div>
+                  <span className="font-bold text-slate-900 font-mono">{stats.avgScore}/10</span>
+                </div>
+
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200/70">
+                  <div className="flex items-center gap-2 text-slate-600">
+                    <HiOutlineChartBar className="w-4 h-4 text-amber-600" />
+                    <span>Best Score</span>
+                  </div>
+                  <span className="font-bold text-slate-900 font-mono">{stats.bestScore}/10</span>
+                </div>
               </div>
             </div>
-            
-            <input
-              type="file"
-              ref={avatarInputRef}
-              onChange={handleAvatarChange}
-              accept="image/*"
-              className="hidden"
-            />
 
-            <h2 className="text-xl font-display font-bold text-white">{profile.fullName || user?.fullName || 'User'}</h2>
-            <p className="text-gray-400 text-sm mt-1">{profile.email || user?.email}</p>
-            <div className="mt-3">
-              <span className="badge-info text-xs">{user?.roles?.[0]?.replace('ROLE_', '') || 'Student'}</span>
-            </div>
-
-            {/* Import Resume Details Button */}
-            <button
-              onClick={handleImportResume}
-              disabled={importingResume}
-              className="w-full mt-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/10 hover:from-emerald-500 hover:to-teal-500 border border-emerald-500/30 hover:border-transparent text-sm font-semibold text-white transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              <HiOutlineDocumentText className="w-4.5 h-4.5" />
-              {importingResume ? 'Auto-filling...' : 'Auto-fill from Resume'}
-            </button>
           </div>
 
-          {/* Quick Stats */}
-          <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '100ms' }}>
-            <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Interview Stats</h3>
-            <div className="space-y-4">
-              {[
-                { label: 'Total Interviews', value: stats.total, icon: HiOutlineClipboardList, color: 'text-primary-400' },
-                { label: 'Average Score', value: `${stats.avgScore}/10`, icon: HiOutlineTrendingUp, color: 'text-emerald-400' },
-                { label: 'Best Score', value: `${stats.bestScore}/10`, icon: HiOutlineChartBar, color: 'text-amber-400' },
-              ].map(({ label, value, icon: Icon, color }) => (
-                <div key={label} className="flex items-center justify-between p-3 rounded-xl bg-white/5">
-                  <div className="flex items-center gap-3">
-                    <Icon className={`w-5 h-5 ${color}`} />
-                    <span className="text-sm text-gray-300">{label}</span>
-                  </div>
-                  <span className="text-sm font-bold text-white">{value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Edit details form and change password */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Account Details Form */}
-          <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '200ms' }}>
-            <div className="flex items-center gap-2 mb-6">
-              <HiOutlineSparkles className="w-5 h-5 text-primary-400" />
-              <h3 className="text-lg font-display font-semibold text-white">Profile Details</h3>
-            </div>
+          {/* Right Column: Forms */}
+          <div className="lg:col-span-8 space-y-6">
             
-            <form onSubmit={handleSaveProfile} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Full name */}
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2 font-medium">Full Name</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                      <HiOutlineUser className="w-5 h-5" />
+            {/* Profile Form */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-xs space-y-5">
+              <div className="border-b border-slate-100 pb-3">
+                <h3 className="text-base font-semibold text-slate-900">Personal Details</h3>
+                <p className="text-xs text-slate-500">Contact coordinates and education history</p>
+              </div>
+
+              <form onSubmit={handleSaveProfile} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Full Legal Name
+                    </label>
+                    <div className="relative">
+                      <HiOutlineUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                      <input
+                        type="text"
+                        value={profile.fullName || ''}
+                        onChange={(e) => setProfile(prev => ({ ...prev, fullName: e.target.value }))}
+                        className="input-field pl-10"
+                        placeholder="John Doe"
+                        required
+                      />
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Phone Number
+                    </label>
+                    <div className="relative">
+                      <HiOutlineGlobeAlt className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                      <input
+                        type="tel"
+                        value={profile.phone || ''}
+                        onChange={(e) => setProfile(prev => ({ ...prev, phone: e.target.value }))}
+                        className="input-field pl-10"
+                        placeholder="+91 9876543210"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Location & Address
+                  </label>
+                  <div className="relative">
+                    <HiOutlineLocationMarker className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
                     <input
                       type="text"
-                      value={profile.fullName || ''}
-                      onChange={(e) => setProfile(prev => ({ ...prev, fullName: e.target.value }))}
+                      value={profile.address || ''}
+                      onChange={(e) => setProfile(prev => ({ ...prev, address: e.target.value }))}
                       className="input-field pl-10"
-                      placeholder="Enter full name"
+                      placeholder="City, State, Country"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Academic Background
+                  </label>
+                  <div className="relative">
+                    <HiOutlineAcademicCap className="absolute left-3.5 top-3 text-slate-400 w-4 h-4" />
+                    <textarea
+                      value={profile.education || ''}
+                      onChange={(e) => setProfile(prev => ({ ...prev, education: e.target.value }))}
+                      className="input-field pl-10 h-20 resize-none leading-relaxed"
+                      placeholder="e.g. B.Tech Computer Science, IIIT Hyderabad (2022-2026)"
+                    />
+                  </div>
+                </div>
+
+                {/* Social / Portfolios */}
+                <div className="pt-2">
+                  <h4 className="text-xs font-semibold text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3 flex items-center gap-1.5">
+                    <HiOutlineLink className="w-3.5 h-3.5 text-blue-600" />
+                    <span>External Engineering Profiles</span>
+                  </h4>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">GitHub URL</label>
+                      <input
+                        type="url"
+                        value={profile.githubUrl || ''}
+                        onChange={(e) => setProfile(prev => ({ ...prev, githubUrl: e.target.value }))}
+                        className="input-field text-xs"
+                        placeholder="https://github.com/..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">LinkedIn URL</label>
+                      <input
+                        type="url"
+                        value={profile.linkedinUrl || ''}
+                        onChange={(e) => setProfile(prev => ({ ...prev, linkedinUrl: e.target.value }))}
+                        className="input-field text-xs"
+                        placeholder="https://linkedin.com/in/..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">LeetCode URL</label>
+                      <input
+                        type="url"
+                        value={profile.leetcodeUrl || ''}
+                        onChange={(e) => setProfile(prev => ({ ...prev, leetcodeUrl: e.target.value }))}
+                        className="input-field text-xs"
+                        placeholder="https://leetcode.com/..."
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={savingProfile}
+                    className="btn-primary text-xs py-2 px-5 flex items-center gap-1.5 shadow-xs"
+                  >
+                    {savingProfile ? (
+                      <>
+                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Saving...</span>
+                      </>
+                    ) : (
+                      <>
+                        <HiOutlineCheckCircle className="w-4 h-4" />
+                        <span>Save Changes</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Change Password Card */}
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-xs space-y-4">
+              <div className="border-b border-slate-100 pb-3">
+                <h3 className="text-base font-semibold text-slate-900">Security & Password</h3>
+                <p className="text-xs text-slate-500">Update your account authentication credentials</p>
+              </div>
+
+              <form onSubmit={handleChangePassword} className="space-y-3.5">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Current Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showCurrentPass ? 'text' : 'password'}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="input-field pr-10 font-mono"
+                      placeholder="Enter current password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPass(!showCurrentPass)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      {showCurrentPass ? <HiOutlineEyeOff className="w-4 h-4" /> : <HiOutlineEye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                      New Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showNewPass ? 'text' : 'password'}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="input-field pr-10 font-mono"
+                        placeholder="Min 6 characters"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPass(!showNewPass)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      >
+                        {showNewPass ? <HiOutlineEyeOff className="w-4 h-4" /> : <HiOutlineEye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Confirm New Password
+                    </label>
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="input-field font-mono"
+                      placeholder="Repeat new password"
                       required
                     />
                   </div>
                 </div>
 
-                {/* Phone number */}
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2 font-medium">Phone Number</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                      <HiOutlineGlobeAlt className="w-5 h-5" />
-                    </div>
-                    <input
-                      type="tel"
-                      value={profile.phone || ''}
-                      onChange={(e) => setProfile(prev => ({ ...prev, phone: e.target.value }))}
-                      className="input-field pl-10"
-                      placeholder="Phone number"
-                    />
-                  </div>
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={changingPassword}
+                    className="btn-secondary text-xs py-2 px-5 flex items-center gap-1.5 shadow-xs"
+                  >
+                    {changingPassword ? (
+                      <>
+                        <div className="w-3.5 h-3.5 border-2 border-slate-600 border-t-transparent rounded-full animate-spin" />
+                        <span>Updating Password...</span>
+                      </>
+                    ) : (
+                      <>
+                        <HiOutlineLockClosed className="w-3.5 h-3.5" />
+                        <span>Update Password</span>
+                      </>
+                    )}
+                  </button>
                 </div>
-              </div>
-
-              {/* Address */}
-              <div>
-                <label className="block text-sm text-gray-400 mb-2 font-medium">Address</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                    <HiOutlineLocationMarker className="w-5 h-5" />
-                  </div>
-                  <input
-                    type="text"
-                    value={profile.address || ''}
-                    onChange={(e) => setProfile(prev => ({ ...prev, address: e.target.value }))}
-                    className="input-field pl-10"
-                    placeholder="Street, City, Country"
-                  />
-                </div>
-              </div>
-
-              {/* Education */}
-              <div>
-                <label className="block text-sm text-gray-400 mb-2 font-medium">Education Credentials</label>
-                <div className="relative">
-                  <div className="absolute top-3 left-3 pointer-events-none text-gray-500">
-                    <HiOutlineAcademicCap className="w-5 h-5" />
-                  </div>
-                  <textarea
-                    value={profile.education || ''}
-                    onChange={(e) => setProfile(prev => ({ ...prev, education: e.target.value }))}
-                    className="input-field pl-10 pt-2 h-24 resize-none"
-                    placeholder="Describe your degrees and academic history..."
-                  />
-                </div>
-              </div>
-
-              {/* Social / Developer Links */}
-              <div className="space-y-4">
-                <h4 className="text-sm font-semibold text-white uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2">
-                  <HiOutlineLink className="w-4.5 h-4.5 text-primary-400" />
-                  Professional Links
-                </h4>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* GitHub */}
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1.5 font-medium">GitHub Link</label>
-                    <input
-                      type="url"
-                      value={profile.githubUrl || ''}
-                      onChange={(e) => setProfile(prev => ({ ...prev, githubUrl: e.target.value }))}
-                      className="input-field py-1.5 text-sm"
-                      placeholder="https://github.com/..."
-                    />
-                  </div>
-
-                  {/* LinkedIn */}
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1.5 font-medium">LinkedIn Link</label>
-                    <input
-                      type="url"
-                      value={profile.linkedinUrl || ''}
-                      onChange={(e) => setProfile(prev => ({ ...prev, linkedinUrl: e.target.value }))}
-                      className="input-field py-1.5 text-sm"
-                      placeholder="https://linkedin.com/in/..."
-                    />
-                  </div>
-
-                  {/* LeetCode */}
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1.5 font-medium">LeetCode Link</label>
-                    <input
-                      type="url"
-                      value={profile.leetcodeUrl || ''}
-                      onChange={(e) => setProfile(prev => ({ ...prev, leetcodeUrl: e.target.value }))}
-                      className="input-field py-1.5 text-sm"
-                      placeholder="https://leetcode.com/..."
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Save Button */}
-              <button
-                type="submit"
-                disabled={savingProfile}
-                className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
-              >
-                {savingProfile ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <HiOutlineCheckCircle className="w-4 h-4" />
-                    Save Details
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-
-          {/* Change Password Card */}
-          <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '300ms' }}>
-            <div className="flex items-center gap-2 mb-6">
-              <HiOutlineLockClosed className="w-5 h-5 text-primary-400" />
-              <h3 className="text-lg font-display font-semibold text-white">Change Password</h3>
+              </form>
             </div>
-            <form onSubmit={handleChangePassword} className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">Current Password</label>
-                <div className="relative">
-                  <input
-                    type={showCurrentPass ? 'text' : 'password'}
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="input-field pr-10"
-                    placeholder="Enter current password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowCurrentPass(!showCurrentPass)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
-                  >
-                    {showCurrentPass ? <HiOutlineEyeOff className="w-4 h-4" /> : <HiOutlineEye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">New Password</label>
-                <div className="relative">
-                  <input
-                    type={showNewPass ? 'text' : 'password'}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="input-field pr-10"
-                    placeholder="Enter new password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowNewPass(!showNewPass)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
-                  >
-                    {showNewPass ? <HiOutlineEyeOff className="w-4 h-4" /> : <HiOutlineEye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">Confirm New Password</label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="input-field"
-                  placeholder="Confirm new password"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={changingPassword}
-                className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
-              >
-                {changingPassword ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Updating...
-                  </>
-                ) : (
-                  <>
-                    <HiOutlineCheckCircle className="w-4 h-4" />
-                    Update Password
-                  </>
-                )}
-              </button>
-            </form>
+
           </div>
+
         </div>
+
       </div>
     </AppLayout>
   );

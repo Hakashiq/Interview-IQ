@@ -1,62 +1,48 @@
 import { useNavigate } from 'react-router-dom';
-import { HiOutlineHome, HiOutlineArrowRight } from 'react-icons/hi';
+import { HiOutlineHome, HiOutlineArrowLeft } from 'react-icons/hi';
+import ParticleBackground from '../components/layout/ParticleBackground';
 
 export default function NotFoundPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-surface-900 flex items-center justify-center relative overflow-hidden px-4">
-      {/* Floating Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary-500/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-pink-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
+    <div className="min-h-screen bg-porcelain-50 flex items-center justify-center relative overflow-hidden px-4 selection:bg-blue-100 selection:text-blue-900">
+      <ParticleBackground />
 
-        {/* Decorative grid dots */}
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-        }} />
-      </div>
+      <div className="relative z-10 text-center max-w-md w-full animate-fade-in">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-8 shadow-subtle space-y-4">
+          <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 font-mono font-bold text-lg mx-auto flex items-center justify-center">
+            404
+          </div>
 
-      {/* Content */}
-      <div className="relative z-10 text-center animate-fade-in">
-        {/* Large 404 Text */}
-        <h1 className="text-[10rem] sm:text-[14rem] font-display font-extrabold leading-none gradient-text select-none mb-2">
-          404
-        </h1>
+          <h1 className="text-xl font-display font-bold text-slate-900">
+            Page Not Found
+          </h1>
 
-        {/* Glass Card */}
-        <div className="glass-card p-8 max-w-md mx-auto -mt-8">
-          <h2 className="text-2xl font-display font-bold text-white mb-3">
-            Oops! Page not found
-          </h2>
-          <p className="text-gray-400 mb-8 leading-relaxed">
-            The page you&apos;re looking for doesn&apos;t exist or has been moved.
-            Let&apos;s get you back on track.
+          <p className="text-xs text-slate-500 leading-relaxed">
+            The endpoint or requested view does not exist or has been relocated to a different route.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="pt-2 flex flex-col sm:flex-row gap-2.5 justify-center">
             <button
               onClick={() => navigate('/dashboard')}
-              className="btn-primary inline-flex items-center justify-center gap-2"
+              className="btn-primary text-xs py-2 px-4 inline-flex items-center justify-center gap-1.5 shadow-xs"
             >
-              <HiOutlineHome className="w-5 h-5" />
-              Back to Dashboard
+              <HiOutlineHome className="w-4 h-4" />
+              <span>Back to Dashboard</span>
             </button>
             <button
               onClick={() => navigate(-1)}
-              className="btn-secondary inline-flex items-center justify-center gap-2"
+              className="btn-secondary text-xs py-2 px-4 inline-flex items-center justify-center gap-1.5 shadow-xs"
             >
-              <HiOutlineArrowRight className="w-5 h-5 rotate-180" />
-              Go Back
+              <HiOutlineArrowLeft className="w-4 h-4" />
+              <span>Go Back</span>
             </button>
           </div>
         </div>
 
-        {/* Subtle footer text */}
-        <p className="text-gray-600 text-sm mt-8">
-          InterviewIQ — AI-Powered Mock Interviews
+        <p className="text-slate-400 text-[11px] mt-6">
+          InterviewIQ Studio • 404 Route Resolver
         </p>
       </div>
     </div>
