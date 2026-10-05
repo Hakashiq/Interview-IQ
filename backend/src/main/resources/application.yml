@@ -1,14 +1,14 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   application:
     name: interviewiq-backend
 
   datasource:
-    url: jdbc:mysql://localhost:3306/interviewiq?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
-    password: root123
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/interviewiq?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root123}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 20
@@ -18,7 +18,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
     show-sql: false
     properties:
       hibernate:
@@ -28,8 +28,8 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${SPRING_REDIS_HOST:${SPRING_DATA_REDIS_HOST:localhost}}
+      port: ${SPRING_REDIS_PORT:6379}
       timeout: 6000ms
 
   cache:
@@ -44,23 +44,23 @@ spring:
     virtual:
       enabled: true
 
-# JWT Configuration
+# Application Specific Configurations
 app:
   jwt:
-    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970337336763979244226452948404D6351655468576D5A7134743777217A25432A46
-    access-token-expiration: 86400000    # 24 hours
-    refresh-token-expiration: 604800000  # 7 days
+    secret: ${APP_JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970337336763979244226452948404D6351655468576D5A7134743777217A25432A46}
+    access-token-expiration: ${APP_JWT_ACCESS_TOKEN_EXPIRATION:86400000}    # 24 hours
+    refresh-token-expiration: ${APP_JWT_REFRESH_TOKEN_EXPIRATION:604800000}  # 7 days
 
   ai-service:
     url: ${AI_SERVICE_URL:http://localhost:8000}
 
   upload:
-    dir: ./uploads
-    resume-dir: ./uploads/resumes
-    audio-dir: ./uploads/audio
+    dir: ${APP_UPLOAD_DIR:./uploads}
+    resume-dir: ${APP_UPLOAD_RESUME_DIR:./uploads/resumes}
+    audio-dir: ${APP_UPLOAD_AUDIO_DIR:./uploads/audio}
 
   cors:
-    allowed-origins: http://localhost:5173,http://localhost:3000
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://localhost}
 
 logging:
   level:

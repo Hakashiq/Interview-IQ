@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import AppLayout from '../components/layout/AppLayout';
-import api from '../api/axios';
+import api, { getServerBaseUrl } from '../api/axios';
 import toast from 'react-hot-toast';
 import {
   HiOutlineUser, HiOutlineMail, HiOutlineLockClosed, HiOutlineShieldCheck,
@@ -184,9 +184,7 @@ export default function ProfilePage() {
   const getAvatarSrc = () => {
     if (!profile.avatarUrl) return null;
     if (profile.avatarUrl.startsWith('http')) return profile.avatarUrl;
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
-    const baseUrl = apiUrl.replace('/api', '');
-    return `${baseUrl}${profile.avatarUrl}`;
+    return `${getServerBaseUrl()}${profile.avatarUrl}`;
   };
 
   return (

@@ -11,5 +11,6 @@ public class StartInterviewRequest {
     private String difficulty;
     @NotBlank(message = "Mode is required")
     private String mode;
+    @Builder.Default
     private int questionCount = 5;
 }

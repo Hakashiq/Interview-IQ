@@ -4,9 +4,10 @@ services:
   mysql:
     image: mysql:8.0
     container_name: interviewiq-mysql
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: interviewiq
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-interviewiq}
     ports:
       - "3306:3306"
     volumes:
@@ -22,6 +23,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: interviewiq-redis
+    restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
@@ -37,6 +39,7 @@ services:
   nginx:
     image: nginx:alpine
     container_name: interviewiq-nginx
+    restart: unless-stopped
     ports:
       - "80:80"
     volumes:
@@ -51,25 +54,31 @@ services:
   backend:
     build: ./backend
     container_name: interviewiq-backend
+    restart: unless-stopped
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/interviewiq?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root123
-      SPRING_REDIS_HOST: redis
-      AI_SERVICE_URL: http://ai-service:8000
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:mysql://mysql:3306/interviewiq?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-root}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-root123}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST:-redis}
+      AI_SERVICE_URL: ${AI_SERVICE_URL:-http://ai-service:8000}
+      APP_JWT_SECRET: ${APP_JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970337336763979244226452948404D6351655468576D5A7134743777217A25432A46}
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000,http://localhost}
     depends_on:
       mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
+      ai-service:
+        condition: service_started
     networks:
       - interviewiq-net
 
   ai-service:
     build: ./ai-service
     container_name: interviewiq-ai
+    restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
@@ -78,10 +87,14 @@ services:
       - interviewiq-net
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-/api}
     container_name: interviewiq-frontend
+    restart: unless-stopped
     ports:
-      - "5173:5173"
+      - "5173:80"
     networks:
       - interviewiq-net
 

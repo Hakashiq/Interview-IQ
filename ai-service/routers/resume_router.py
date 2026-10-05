@@ -620,3 +620,40 @@ async def score_resume(request: ResumeScoreRequest):
     except Exception as e:
         logger.error(f"Resume scoring failed: {e}. Falling back to live heuristic scoring.", exc_info=True)
         return _score_resume_heuristically(request.text, request.skills)
+
+
+@router.post("/extract-skills")
+async def extract_skills(payload: Dict[str, str]):
+    """Extract known technical skills from text using COMMON_SKILLS keyword matching and Gemini."""
+    text = payload.get("text", "")
+    if not text:
+        return {"skills": []}
+
+    matched = set()
+    text_lower = text.lower()
+    for skill in COMMON_SKILLS:
+        # Match whole word pattern
+        pattern = r'\b' + re.escape(skill.lower()) + r'\b'
+        if re.search(pattern, text_lower):
+            matched.add(skill)
+
+    # If Gemini is available, supplement extracted skills
+    model = get_gemini_model(temperature=0.2)
+    if model:
+        try:
+            prompt = (
+                f"Extract all technical skills, programming languages, databases, tools, and frameworks from this text:\n\n"
+                f"{text[:2000]}\n\n"
+                f"Return ONLY a JSON array of strings, e.g. [\"Java\", \"Docker\"]. No other text."
+            )
+            response = model.generate_content(prompt)
+            skills_list = parse_gemini_json(response.text)
+            if isinstance(skills_list, list):
+                for s in skills_list:
+                    if isinstance(s, str) and s.strip():
+                        matched.add(s.strip())
+        except Exception as e:
+            logger.debug(f"Gemini skill extraction fallback: {e}")
+
+    return {"skills": sorted(list(matched))}
+

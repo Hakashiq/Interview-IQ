@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEye, HiOutlineEyeOff, HiOutlineUser, HiOutlinePhone, HiOutlineIdentification, HiOutlineAcademicCap } from 'react-icons/hi';
 import ParticleBackground from '../components/layout/ParticleBackground';
-import api from '../api/axios';
+import api, { getServerBaseUrl } from '../api/axios';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -279,8 +279,7 @@ export default function RegisterPage() {
                         <button
                           type="button"
                           onClick={() => {
-                            const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
-                            const fullUrl = apiBase.replace('/api', '') + idCardPath;
+                            const fullUrl = getServerBaseUrl() + idCardPath;
                             window.open(fullUrl, '_blank');
                           }}
                           className="text-xs text-primary-400 hover:text-primary-300 hover:underline transition-colors mt-0.5"

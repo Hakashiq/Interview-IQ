@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import AppLayout from '../components/layout/AppLayout';
-import api from '../api/axios';
+import api, { getServerBaseUrl } from '../api/axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -599,7 +599,7 @@ export default function AdminPage() {
               
               <div className="relative border border-white/10 rounded-2xl overflow-hidden bg-black/30 max-h-[60vh] w-full flex items-center justify-center">
                 <img
-                  src={(import.meta.env.VITE_API_URL || 'http://localhost:8080/api').replace('/api', '') + selectedIdCard.path}
+                  src={getServerBaseUrl() + selectedIdCard.path}
                   alt={`${selectedIdCard.fullName}'s ID Card`}
                   className="max-h-[50vh] max-w-full object-contain"
                   onError={(e) => {

@@ -1,0 +1,44 @@
+# Environment and Secrets
+.env
+*.env
+*.env.local
+*.env.production
+*.env.development
+.env.*.local
+
+# Build artifacts
+target/
+dist/
+build/
+out/
+*.jar
+*.war
+
+# Dependencies
+node_modules/
+.venv/
+env/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE & Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs and runtime data
+*.log
+logs/
+uploads/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Presentation / Export files
+temp_verify/
