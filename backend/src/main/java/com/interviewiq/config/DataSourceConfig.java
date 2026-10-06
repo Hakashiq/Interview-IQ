@@ -53,6 +53,20 @@ public class DataSourceConfig {
                 String path = uri.getPath() != null ? uri.getPath() : "/defaultdb";
                 String query = uri.getQuery();
 
+                if (host != null && !host.equals("localhost") && !host.equals("mysql")) {
+                    try {
+                        java.net.InetAddress.getByName(host);
+                    } catch (java.net.UnknownHostException uhe) {
+                        logger.error("===============================================================================");
+                        logger.error("DATABASE DNS ERROR: Cannot resolve hostname '{}'!", host);
+                        logger.error("The domain is non-existent. Possible causes:");
+                        logger.error("1. Aiven/Cloud MySQL service is PAUSED or POWERED OFF in your cloud console.");
+                        logger.error("2. Aiven free tier service was deleted, expired, or recreated with a new host.");
+                        logger.error("3. Update SPRING_DATASOURCE_URL in your Render Environment settings.");
+                        logger.error("===============================================================================");
+                    }
+                }
+
                 StringBuilder queryBuilder = new StringBuilder();
                 if (query != null && !query.isEmpty()) {
                     query = query.replace("ssl-mode=REQUIRED", "sslMode=REQUIRED")
