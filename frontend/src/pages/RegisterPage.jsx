@@ -36,13 +36,13 @@ export default function RegisterPage() {
     try {
       const res = await api.post('/auth/register/id-card', fileData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': undefined,
         },
       });
       setIdCardPath(res.data.idCardPath);
-      toast.success('ID card uploaded successfully ✨');
+      toast.success('Document uploaded successfully ✨');
     } catch (err) {
-      const msg = err.response?.data?.message || 'Failed to upload ID card';
+      const msg = err.response?.data?.message || 'Failed to upload document. You can still create your account without it.';
       toast.error(msg);
       console.error(err);
     } finally {
@@ -83,14 +83,17 @@ export default function RegisterPage() {
       toast.error('Password must be at least 8 characters');
       return;
     }
-    if (!idCardPath) {
-      toast.error('Please upload your institutional or student ID card');
-      return;
-    }
-
     setLoading(true);
     try {
-      await register(formData.fullName, formData.email, formData.password, formData.phone, formData.role, idCardPath, formData.education);
+      await register(
+        formData.fullName,
+        formData.email,
+        formData.password,
+        formData.phone,
+        formData.role,
+        idCardPath || null,
+        formData.education
+      );
       toast.success('Account created! Welcome to InterviewIQ 🚀');
     } catch (err) {
       const message = err.response?.data?.message || 'Registration failed';
@@ -305,9 +308,12 @@ export default function RegisterPage() {
 
             {/* ID Card Verification Upload */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                Institutional ID Verification ({formData.role === 'MENTOR' ? 'Mentor Credential' : 'Student ID'})
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Institutional ID Verification ({formData.role === 'MENTOR' ? 'Mentor Credential' : 'Student ID'})
+                </label>
+                <span className="text-[11px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Optional</span>
+              </div>
 
               {!idCardPath ? (
                 <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl cursor-pointer bg-slate-50 hover:bg-blue-50/20 transition-all p-3">
@@ -315,19 +321,19 @@ export default function RegisterPage() {
                     {uploadingId ? (
                       <div className="flex items-center gap-2">
                         <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-xs text-slate-600">Uploading ID document...</span>
+                        <span className="text-xs text-slate-600">Uploading document...</span>
                       </div>
                     ) : (
                       <>
                         <HiOutlineIdentification className="w-5 h-5 text-slate-400 mb-1" />
-                        <span className="text-xs font-semibold text-slate-700">Click to upload ID photo</span>
-                        <span className="text-[10px] text-slate-400">JPG, PNG or WEBP (Max 10MB)</span>
+                        <span className="text-xs font-semibold text-slate-700">Click to upload ID photo or document</span>
+                        <span className="text-[10px] text-slate-400">PDF, JPG, PNG or WEBP (Max 10MB)</span>
                       </>
                     )}
                   </div>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,application/pdf,.pdf"
                     onChange={handleIdCardUpload}
                     disabled={uploadingId}
                     className="hidden"
@@ -338,16 +344,18 @@ export default function RegisterPage() {
                   <div className="flex items-center gap-2.5">
                     <HiOutlineCheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                     <div>
-                      <p className="text-xs font-semibold text-emerald-900">ID Verification Card Attached</p>
+                      <p className="text-xs font-semibold text-emerald-900">
+                        {idCardPath.toLowerCase().endsWith('.pdf') ? 'ID Document (PDF) Attached' : 'ID Photo Attached'}
+                      </p>
                       <button
                         type="button"
                         onClick={() => {
                           const fullUrl = getServerBaseUrl() + idCardPath;
                           window.open(fullUrl, '_blank');
                         }}
-                        className="text-[11px] text-blue-600 hover:underline"
+                        className="text-[11px] text-blue-600 hover:underline font-medium"
                       >
-                        Inspect uploaded preview
+                        Inspect uploaded preview ↗
                       </button>
                     </div>
                   </div>

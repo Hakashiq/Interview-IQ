@@ -589,16 +589,32 @@ export default function AdminPage() {
                 Uploaded by <strong className="text-slate-900">{selectedIdCard.fullName}</strong>:
               </div>
 
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 max-h-[50vh] flex items-center justify-center p-2">
-                <img
-                  src={getServerBaseUrl() + selectedIdCard.path}
-                  alt={`${selectedIdCard.fullName}'s ID Card`}
-                  className="max-h-[45vh] max-w-full object-contain"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://placehold.co/600x400/f8fafc/64748b?text=Image+Load+Failed';
-                  }}
-                />
+              <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 min-h-[30vh] max-h-[50vh] flex items-center justify-center p-2">
+                {selectedIdCard.path?.toLowerCase().endsWith('.pdf') ? (
+                  <div className="w-full h-[45vh] flex flex-col items-center justify-center p-4 text-center">
+                    <HiOutlineIdentification className="w-12 h-12 text-blue-600 mb-2" />
+                    <p className="text-sm font-semibold text-slate-800">PDF Verification Document</p>
+                    <p className="text-xs text-slate-500 mb-4">This candidate uploaded an institutional PDF document.</p>
+                    <a
+                      href={getServerBaseUrl() + selectedIdCard.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5"
+                    >
+                      Open PDF in New Window ↗
+                    </a>
+                  </div>
+                ) : (
+                  <img
+                    src={getServerBaseUrl() + selectedIdCard.path}
+                    alt={`${selectedIdCard.fullName}'s ID Card`}
+                    className="max-h-[45vh] max-w-full object-contain"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://placehold.co/600x400/f8fafc/64748b?text=Image+Load+Failed';
+                    }}
+                  />
+                )}
               </div>
 
               <div className="flex justify-end pt-2">

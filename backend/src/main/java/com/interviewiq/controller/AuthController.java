@@ -74,21 +74,21 @@ public class AuthController {
 
     private final String idCardDir = "./uploads/id_cards";
 
-    @PostMapping("/register/id-card")
+    @PostMapping(value = "/register/id-card", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String, String>> uploadIdCard(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             throw new BadRequestException("File is empty");
         }
 
-        String originalFilename = file.getOriginalFilename();
-        if (originalFilename == null) {
-            throw new BadRequestException("Filename is invalid");
-        }
+        String originalFilename = org.springframework.util.StringUtils.cleanPath(
+                java.util.Objects.requireNonNullElse(file.getOriginalFilename(), "document.png")
+        );
+        int dotIndex = originalFilename.lastIndexOf('.');
+        String extension = (dotIndex >= 0) ? originalFilename.substring(dotIndex + 1).toLowerCase() : "png";
 
-        String extension = originalFilename.substring(originalFilename.lastIndexOf('.') + 1).toLowerCase();
-        List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "webp");
+        List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "webp", "pdf");
         if (!allowedExtensions.contains(extension)) {
-            throw new BadRequestException("Only image files (JPG, PNG, WEBP) are allowed");
+            throw new BadRequestException("Only PDF and image files (PDF, JPG, PNG, WEBP) are allowed");
         }
 
         try {
@@ -105,7 +105,7 @@ public class AuthController {
             response.put("idCardPath", viewUrl);
             return ResponseEntity.ok(response);
         } catch (IOException e) {
-            throw new BadRequestException("Failed to upload ID card: " + e.getMessage());
+            throw new BadRequestException("Failed to upload ID document: " + e.getMessage());
         }
     }
 
@@ -114,15 +114,19 @@ public class AuthController {
         try {
             Path filePath = Paths.get(idCardDir).resolve(filename).normalize();
             Resource resource = new UrlResource(filePath.toUri());
-            if (resource.exists()) {
+            if (resource.exists() && resource.isReadable()) {
                 String contentType = "image/jpeg";
-                if (filename.toLowerCase().endsWith(".png")) {
+                String lower = filename.toLowerCase();
+                if (lower.endsWith(".png")) {
                     contentType = "image/png";
-                } else if (filename.toLowerCase().endsWith(".webp")) {
+                } else if (lower.endsWith(".webp")) {
                     contentType = "image/webp";
+                } else if (lower.endsWith(".pdf")) {
+                    contentType = "application/pdf";
                 }
                 return ResponseEntity.ok()
                         .contentType(MediaType.parseMediaType(contentType))
+                        .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
                         .body(resource);
             } else {
                 return ResponseEntity.notFound().build();
