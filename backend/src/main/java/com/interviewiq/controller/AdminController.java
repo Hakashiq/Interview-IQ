@@ -70,6 +70,10 @@ public class AdminController {
             throw new BadRequestException("Email, full name, and password are required");
         }
 
+        if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z\\d\\s]).{8,50}$")) {
+            throw new BadRequestException("Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character");
+        }
+
         if (userRepository.existsByEmail(email)) {
             throw new BadRequestException("Email is already registered on the platform");
         }

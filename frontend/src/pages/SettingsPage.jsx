@@ -13,6 +13,8 @@ import {
   HiOutlineCurrencyDollar, HiOutlineCollection, HiOutlineDocumentText,
   HiOutlineKey, HiOutlineExclamation
 } from 'react-icons/hi';
+import { validatePassword } from '../utils/passwordValidator';
+import PasswordRequirementsList from '../components/common/PasswordRequirementsList';
 
 function ToggleSwitch({ enabled, onChange, label, description }) {
   return (
@@ -208,13 +210,20 @@ export default function SettingsPage() {
       toast.error('Passwords do not match');
       return;
     }
+
+    const validation = validatePassword(password.newPassword);
+    if (!validation.isValid) {
+      toast.error(validation.message);
+      return;
+    }
+
     try {
-      await api.put('/api/auth/change-password', {
+      await api.put('/auth/change-password', {
         currentPassword: password.currentPassword,
         newPassword: password.newPassword
       });
       setPassword({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      toast.success('Password updated successfully!');
+      toast.success('Password updated successfully! 🔒');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to update password');
     }

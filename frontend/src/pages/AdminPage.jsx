@@ -10,6 +10,8 @@ import {
   HiOutlineBan, HiOutlineRefresh, HiOutlineMail, HiOutlinePhone,
   HiOutlineIdentification, HiOutlineX
 } from 'react-icons/hi';
+import { validatePassword } from '../utils/passwordValidator';
+import PasswordRequirementsList from '../components/common/PasswordRequirementsList';
 
 export default function AdminPage() {
   const { user: currentUser } = useAuth();
@@ -67,6 +69,13 @@ export default function AdminPage() {
 
   const handleAddUser = async (e) => {
     e.preventDefault();
+
+    const validation = validatePassword(newUserForm.password);
+    if (!validation.isValid) {
+      toast.error(validation.message);
+      return;
+    }
+
     try {
       await api.post('/admin/users', newUserForm);
       toast.success('User account registered successfully ✨');
@@ -367,15 +376,19 @@ export default function AdminPage() {
                                 <span>{u.email}</span>
                                 {u.phone && <span>• {u.phone}</span>}
                               </div>
-                              {u.idCardPath && (
+                              {u.idCardPath ? (
                                 <button
                                   type="button"
-                                  onClick={() => setSelectedIdCard({ fullName: u.fullName, path: u.idCardPath })}
-                                  className="text-[10px] text-blue-600 hover:underline mt-1 flex items-center gap-1 font-medium"
+                                  onClick={() => setSelectedIdCard(u)}
+                                  className="text-[10px] text-blue-600 hover:text-blue-800 hover:underline mt-1 flex items-center gap-1 font-semibold"
                                 >
-                                  <HiOutlineIdentification className="w-3 h-3" />
-                                  <span>View Verification ID</span>
+                                  <HiOutlineIdentification className="w-3.5 h-3.5" />
+                                  <span>Review KYC Document</span>
                                 </button>
+                              ) : (
+                                <span className="text-[10px] text-slate-400 mt-1 flex items-center gap-1 font-mono">
+                                  No KYC Attached
+                                </span>
                               )}
                             </div>
                           </div>
@@ -517,11 +530,14 @@ export default function AdminPage() {
                   <input
                     type="password"
                     required
-                    placeholder="Min 6 characters"
+                    placeholder="Min 8 chars, 1 upper, 1 lower, 1 num, 1 spl"
                     value={newUserForm.password}
                     onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
                     className="input-field font-mono"
                   />
+                  {newUserForm.password && (
+                    <PasswordRequirementsList password={newUserForm.password} />
+                  )}
                 </div>
 
                 <div>
@@ -568,14 +584,14 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Verification ID Modal */}
+        {/* Verification ID / KYC Review Modal */}
         {selectedIdCard && (
           <div className="fixed inset-0 bg-slate-900/60 z-50 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
             <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-subtle animate-scale-up overflow-hidden space-y-4 p-6">
               <div className="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h3 className="text-base font-semibold text-slate-900 flex items-center gap-2">
                   <HiOutlineIdentification className="w-5 h-5 text-blue-600" />
-                  Verification Document Preview
+                  Candidate KYC Verification
                 </h3>
                 <button
                   onClick={() => setSelectedIdCard(null)}
@@ -585,30 +601,51 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              <div className="text-xs text-slate-600">
-                Uploaded by <strong className="text-slate-900">{selectedIdCard.fullName}</strong>:
+              {/* Candidate Info for quick cross-check */}
+              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-xs space-y-1.5">
+                <div className="flex justify-between">
+                  <span className="text-slate-500 font-medium">Candidate Name:</span>
+                  <span className="text-slate-900 font-semibold">{selectedIdCard.fullName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500 font-medium">Email:</span>
+                  <span className="text-slate-700 font-mono text-[11px]">{selectedIdCard.email}</span>
+                </div>
+                {selectedIdCard.education && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-500 font-medium">Institution & Degree:</span>
+                    <span className="text-slate-800 font-medium">{selectedIdCard.education}</span>
+                  </div>
+                )}
+                {selectedIdCard.phone && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-500 font-medium">Phone:</span>
+                    <span className="text-slate-700 font-mono text-[11px]">{selectedIdCard.phone}</span>
+                  </div>
+                )}
               </div>
 
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 min-h-[30vh] max-h-[50vh] flex items-center justify-center p-2">
-                {selectedIdCard.path?.toLowerCase().endsWith('.pdf') ? (
-                  <div className="w-full h-[45vh] flex flex-col items-center justify-center p-4 text-center">
+              {/* Document Preview Box */}
+              <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 min-h-[28vh] max-h-[46vh] flex items-center justify-center p-2">
+                {(selectedIdCard.path || selectedIdCard.idCardPath)?.toLowerCase().endsWith('.pdf') ? (
+                  <div className="w-full h-[40vh] flex flex-col items-center justify-center p-4 text-center">
                     <HiOutlineIdentification className="w-12 h-12 text-blue-600 mb-2" />
                     <p className="text-sm font-semibold text-slate-800">PDF Verification Document</p>
-                    <p className="text-xs text-slate-500 mb-4">This candidate uploaded an institutional PDF document.</p>
+                    <p className="text-xs text-slate-500 mb-4">Official credential in PDF format.</p>
                     <a
-                      href={getServerBaseUrl() + selectedIdCard.path}
+                      href={getServerBaseUrl() + (selectedIdCard.path || selectedIdCard.idCardPath)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5"
                     >
-                      Open PDF in New Window ↗
+                      Open Document in New Tab ↗
                     </a>
                   </div>
                 ) : (
                   <img
-                    src={getServerBaseUrl() + selectedIdCard.path}
+                    src={getServerBaseUrl() + (selectedIdCard.path || selectedIdCard.idCardPath)}
                     alt={`${selectedIdCard.fullName}'s ID Card`}
-                    className="max-h-[45vh] max-w-full object-contain"
+                    className="max-h-[42vh] max-w-full object-contain"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = 'https://placehold.co/600x400/f8fafc/64748b?text=Image+Load+Failed';
@@ -617,14 +654,40 @@ export default function AdminPage() {
                 )}
               </div>
 
-              <div className="flex justify-end pt-2">
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100">
                 <button
                   type="button"
-                  onClick={() => setSelectedIdCard(null)}
-                  className="btn-secondary text-xs py-1.5 px-4"
+                  onClick={() => {
+                    handleBanUser(selectedIdCard.id, selectedIdCard.email, !!selectedIdCard.bannedUntil);
+                    setSelectedIdCard(null);
+                  }}
+                  className="btn-danger text-xs py-1.5 px-3 flex items-center gap-1.5"
                 >
-                  Close Document
+                  <HiOutlineBan className="w-3.5 h-3.5" />
+                  <span>Reject & Suspend</span>
                 </button>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedIdCard(null)}
+                    className="btn-secondary text-xs py-1.5 px-3"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      toast.success(`KYC Verified for ${selectedIdCard.fullName} ✨`);
+                      setSelectedIdCard(null);
+                    }}
+                    className="btn-primary text-xs py-1.5 px-3.5 flex items-center gap-1.5"
+                  >
+                    <HiOutlineShieldCheck className="w-4 h-4" />
+                    <span>Approve Credentials</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -10,6 +10,8 @@ import {
   HiOutlineCamera, HiOutlineLocationMarker, HiOutlineAcademicCap,
   HiOutlineLink, HiOutlineGlobeAlt, HiOutlineDocumentText
 } from 'react-icons/hi';
+import { validatePassword } from '../utils/passwordValidator';
+import PasswordRequirementsList from '../components/common/PasswordRequirementsList';
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -154,8 +156,9 @@ export default function ProfilePage() {
       return;
     }
 
-    if (newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters');
+    const validation = validatePassword(newPassword);
+    if (!validation.isValid) {
+      toast.error(validation.message);
       return;
     }
 
@@ -511,6 +514,10 @@ export default function ProfilePage() {
                     />
                   </div>
                 </div>
+
+                {newPassword && (
+                  <PasswordRequirementsList password={newPassword} />
+                )}
 
                 <div className="pt-2">
                   <button

@@ -9,6 +9,8 @@ import {
 } from 'react-icons/hi';
 import ParticleBackground from '../components/layout/ParticleBackground';
 import api, { getServerBaseUrl } from '../api/axios';
+import { validatePassword, getPasswordStrength } from '../utils/passwordValidator';
+import PasswordRequirementsList from '../components/common/PasswordRequirementsList';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -54,24 +56,6 @@ export default function RegisterPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const getPasswordStrength = () => {
-    const p = formData.password;
-    if (p.length === 0) return { level: 0, text: '', color: '' };
-    let score = 0;
-    if (p.length >= 8) score++;
-    if (/[A-Z]/.test(p)) score++;
-    if (/[0-9]/.test(p)) score++;
-    if (/[^A-Za-z0-9]/.test(p)) score++;
-
-    const levels = [
-      { level: 1, text: 'Weak', color: 'bg-rose-500' },
-      { level: 2, text: 'Fair', color: 'bg-amber-500' },
-      { level: 3, text: 'Good', color: 'bg-blue-500' },
-      { level: 4, text: 'Strong', color: 'bg-emerald-500' },
-    ];
-    return levels[score - 1] || levels[0];
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -79,10 +63,13 @@ export default function RegisterPage() {
       toast.error('Passwords do not match');
       return;
     }
-    if (formData.password.length < 8) {
-      toast.error('Password must be at least 8 characters');
+
+    const validation = validatePassword(formData.password);
+    if (!validation.isValid) {
+      toast.error(validation.message);
       return;
     }
+
     setLoading(true);
     try {
       await register(
@@ -103,7 +90,7 @@ export default function RegisterPage() {
     }
   };
 
-  const strength = getPasswordStrength();
+  const strength = getPasswordStrength(formData.password);
 
   return (
     <div className="min-h-screen bg-porcelain-50 flex items-center justify-center relative overflow-hidden py-12 px-4 selection:bg-blue-100 selection:text-blue-900">
@@ -289,20 +276,23 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Password Strength Indicator */}
+            {/* Password Strength Indicator & Requirements */}
             {formData.password && (
-              <div className="flex items-center gap-2 pt-0.5">
-                <div className="flex-1 flex gap-1">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                        i <= strength.level ? strength.color : 'bg-slate-200'
-                      }`}
-                    />
-                  ))}
+              <div className="space-y-1.5 pt-0.5">
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 flex gap-1">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                          i <= strength.score ? strength.color : 'bg-slate-200'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-[11px] font-mono text-slate-500">{strength.text}</span>
                 </div>
-                <span className="text-[11px] font-mono text-slate-500">{strength.text}</span>
+                <PasswordRequirementsList password={formData.password} />
               </div>
             )}
 
