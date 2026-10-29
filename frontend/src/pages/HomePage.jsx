@@ -9,7 +9,6 @@ import {
   HiOutlineBadgeCheck, HiOutlineUserGroup, HiOutlineLockClosed,
   HiOutlineMenu, HiOutlineX
 } from 'react-icons/hi';
-import ParticleBackground from '../components/layout/ParticleBackground';
 
 export default function HomePage() {
   const { user, logout } = useAuth();
@@ -73,10 +72,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-porcelain-50 text-slate-900 selection:bg-blue-100 selection:text-blue-900 relative overflow-x-hidden">
-      
-      {/* Background Ambience */}
-      <ParticleBackground />
+    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-100 selection:text-blue-900 relative overflow-x-hidden">
 
       {/* Navigation Header */}
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
@@ -372,7 +368,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
-              <p className="text-2xl sm:text-3xl font-extrabold text-slate-900">10,000+</p>
+              <p className="text-2xl sm:text-3xl font-extrabold text-slate-900">100+</p>
               <p className="text-xs text-slate-500 font-medium mt-1">Mock Interviews Completed</p>
             </div>
             <div>
