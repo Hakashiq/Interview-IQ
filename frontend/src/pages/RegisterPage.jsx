@@ -100,12 +100,14 @@ export default function RegisterPage() {
         
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 text-white font-bold text-base shadow-xs mb-3">
-            IQ
-          </div>
-          <h1 className="text-2xl font-display font-bold text-slate-900 tracking-tight">
-            Create an Account
-          </h1>
+          <Link to="/" className="inline-flex flex-col items-center group">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 group-hover:bg-blue-700 text-white font-bold text-base shadow-xs mb-3 transition-colors">
+              IQ
+            </div>
+            <h1 className="text-2xl font-display font-bold text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
+              InterviewIQ
+            </h1>
+          </Link>
           <p className="text-xs text-slate-500 mt-1">
             Join InterviewIQ to practice with AI proctored mock interview sessions
           </p>

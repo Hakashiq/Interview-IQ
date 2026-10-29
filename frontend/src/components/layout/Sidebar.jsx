@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
   HiOutlineViewGrid, HiOutlineClipboardList, HiOutlineDocumentText,
@@ -58,7 +58,7 @@ export default function Sidebar() {
     <div className="flex flex-col h-full bg-white text-slate-800">
       {/* Brand & Collapse Header */}
       <div className="p-4 border-b border-slate-200/80 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-3 min-w-0">
+        <Link to="/" className="flex items-center gap-3 min-w-0 hover:opacity-90 transition-opacity">
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xs shadow-xs flex-shrink-0">
             IQ
           </div>
@@ -68,7 +68,7 @@ export default function Sidebar() {
               <p className="text-[11px] text-slate-500 font-medium">AI Career Studio</p>
             </div>
           )}
-        </div>
+        </Link>
         <button
           onClick={toggleCollapse}
           className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors focus:outline-none flex-shrink-0"

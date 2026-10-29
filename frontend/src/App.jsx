@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -105,6 +106,9 @@ function PublicRoute({ children }) {
 function AppRoutes() {
   return (
     <Routes>
+      {/* Home Route */}
+      <Route path="/" element={<HomePage />} />
+
       {/* Public Routes */}
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
@@ -123,8 +127,7 @@ function AppRoutes() {
       <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
       <Route path="/mentor" element={<MentorRoute><MentorHubPage /></MentorRoute>} />
 
-      {/* Redirects */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      {/* Fallback */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
