@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AppLayout from '../components/layout/AppLayout';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
+import { playHoverTick, playMechanicalToggle } from '../utils/soundEffects';
 import {
   HiOutlineAcademicCap, HiOutlineCode, HiOutlineServer,
   HiOutlineChevronRight, HiOutlineSparkles, HiOutlineX,
@@ -13,6 +14,7 @@ const roadmapTracks = [
   {
     id: 'frontend',
     title: 'Frontend Engineer',
+    code: 'TRK-FE-01',
     description: 'Master client-side architecture, reactive UI frameworks, asynchronous state management, and modern browser APIs.',
     icon: HiOutlineCode,
     modules: [
@@ -24,6 +26,7 @@ const roadmapTracks = [
   {
     id: 'backend',
     title: 'Backend Engineer',
+    code: 'TRK-BE-02',
     description: 'Deep dive into server architecture, ACID database transactions, scaling bottlenecks, security, and framework internals.',
     icon: HiOutlineServer,
     modules: [
@@ -37,6 +40,7 @@ const roadmapTracks = [
   {
     id: 'devops-cs',
     title: 'Systems & DevOps',
+    code: 'TRK-SYS-03',
     description: 'Fundamental computer science foundations, OS processes, kernel networking stacks, and algorithmic problem-solving.',
     icon: HiOutlineTerminal,
     modules: [
@@ -62,6 +66,7 @@ export default function QuestionBankPage() {
     if (!selectedModule) return;
 
     setLaunching(true);
+    playMechanicalToggle(true);
     try {
       const response = await api.post('/interviews/start', {
         jobRole: selectedModule.name,
@@ -70,9 +75,10 @@ export default function QuestionBankPage() {
         questionCount: questionCount
       });
 
-      toast.success(`Practice simulation for ${selectedModule.name} initialized 🎯`);
+      toast.success(`Simulation chamber for ${selectedModule.name} initialized`);
       navigate(`/interviews/${response.data.id}/session`);
     } catch (err) {
+      playMechanicalToggle(false);
       const message = err.response?.data?.message || 'Failed to start simulation';
       toast.error(message);
     } finally {
@@ -86,36 +92,41 @@ export default function QuestionBankPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="pb-2 border-b border-slate-200/80">
+        <div className="pb-3 border-b border-ghost-ice/15">
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
-              Curriculum Bank
+            <span className="telemetry-chip-active text-[10px]">
+              MOD.04 // CURRICULUM BLUEPRINTS
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
-            Engineering Learning Roadmaps
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
+            Engineering Competency Roadmaps
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Standardized technical tracks modeled after industry developer competencies. Questions are dynamically generated per module.
+          <p className="text-xs sm:text-sm text-ghost-ice/60 font-ui mt-1">
+            Standardized technical curriculums modeled after industry engineer competencies. Dynamically generated AST test cases.
           </p>
         </div>
 
         {/* Track Switcher */}
-        <div className="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200/80 max-w-xl">
+        <div className="bg-[#000307] p-1 rounded-full flex items-center border border-ghost-ice/15 max-w-xl">
           {roadmapTracks.map((track) => {
             const Icon = track.icon;
             const isActive = activeTrack === track.id;
             return (
               <button
                 key={track.id}
-                onClick={() => setActiveTrack(track.id)}
-                className={`flex items-center justify-center gap-2 flex-1 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
+                onClick={() => {
+                  setActiveTrack(track.id);
+                  playMechanicalToggle(true);
+                }}
+                onMouseEnter={playHoverTick}
+                data-sfx="toggle"
+                className={`flex items-center justify-center gap-2 flex-1 py-2 px-3 rounded-full text-xs font-ui uppercase tracking-wider font-semibold transition-all ${
                   isActive
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
+                    : 'text-ghost-ice/60 hover:text-white'
                 }`}
               >
-                <Icon className="w-4 h-4 text-slate-500" />
+                <Icon className="w-4 h-4 text-ghost-ice" />
                 <span>{track.title}</span>
               </button>
             );
@@ -123,13 +134,16 @@ export default function QuestionBankPage() {
         </div>
 
         {/* Current Track Banner */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs flex items-start gap-4">
-          <div className="p-3 rounded-xl bg-blue-50 text-blue-600 flex-shrink-0">
+        <div className="ghost-panel p-5 sm:p-6 flex items-start gap-4">
+          <div className="p-3 rounded-xl bg-ghost-blue/15 border border-ghost-blue/30 text-ghost-blue flex-shrink-0">
             <currentTrack.icon className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-slate-900">{currentTrack.title} Track</h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">{currentTrack.description}</p>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="font-mono text-[9px] text-ghost-blue uppercase tracking-widest">{currentTrack.code}</span>
+            </div>
+            <h2 className="text-base font-display font-bold text-white">{currentTrack.title} Track</h2>
+            <p className="text-xs sm:text-sm text-ghost-ice/70 font-ui mt-1 leading-relaxed">{currentTrack.description}</p>
           </div>
         </div>
 
@@ -138,37 +152,40 @@ export default function QuestionBankPage() {
           {currentTrack.modules.map((module) => (
             <div
               key={module.name}
-              className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-xs hover:border-slate-300 hover:shadow-subtle transition-all flex flex-col justify-between"
+              className="ghost-panel p-5 hover:border-ghost-ice/30 transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <h3 className="text-sm font-semibold text-slate-900">
+                  <h3 className="text-sm font-display font-bold text-white">
                     {module.name}
                   </h3>
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded uppercase border ${
+                  <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full uppercase border ${
                     module.difficulty === 'EASY'
-                      ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                      ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300'
                       : module.difficulty === 'MEDIUM'
-                      ? 'bg-amber-50 border-amber-200 text-amber-800'
-                      : 'bg-rose-50 border-rose-200 text-rose-800'
+                      ? 'bg-ghost-blue/20 border-ghost-blue/40 text-ghost-ice'
+                      : 'bg-ghost-heat/20 border-ghost-heat/40 text-ghost-heat'
                   }`}>
                     {module.difficulty}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 leading-relaxed mb-6">
+                <p className="text-xs font-ui text-ghost-ice/60 leading-relaxed mb-6">
                   {module.desc}
                 </p>
               </div>
 
               <button
                 onClick={() => {
+                  playMechanicalToggle(true);
                   setSelectedModule(module);
                   setDifficulty(module.difficulty);
                 }}
-                className="btn-secondary w-full text-xs py-2 flex items-center justify-center gap-1.5 font-medium"
+                onMouseEnter={playHoverTick}
+                data-sfx="toggle"
+                className="ghost-button-void w-full text-xs py-2 flex items-center justify-center gap-1.5"
               >
                 <span>Launch Practice Module</span>
-                <HiOutlineChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                <HiOutlineChevronRight className="w-3.5 h-3.5 text-ghost-ice/40" />
               </button>
             </div>
           ))}
@@ -176,41 +193,53 @@ export default function QuestionBankPage() {
 
         {/* Launch Configuration Modal */}
         {selectedModule && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
-            <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-subtle relative animate-scale-up space-y-5">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#00050a]/80 backdrop-blur-md animate-fade-in">
+            <div className="ghost-panel max-w-md w-full p-6 shadow-2xl relative animate-scale-up space-y-5">
               <button
-                onClick={() => setSelectedModule(null)}
-                className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                onClick={() => {
+                  playMechanicalToggle(false);
+                  setSelectedModule(null);
+                }}
+                onMouseEnter={playHoverTick}
+                className="absolute top-4 right-4 p-1.5 rounded-lg text-ghost-ice/40 hover:text-white hover:bg-ghost-ice/10 transition-colors"
               >
                 <HiOutlineX className="w-5 h-5" />
               </button>
 
               <div>
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                  Quick Launch
+                <span className="font-mono text-[9px] text-ghost-blue uppercase tracking-widest">
+                  [QUICK MOUNT // MODULAR CHAMBER]
                 </span>
-                <h3 className="text-lg font-display font-semibold text-slate-900 mt-2">
+                <h3 className="text-lg font-display font-bold text-white mt-1">
                   Practice {selectedModule.name}
                 </h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  Calibrate the parameters for your adaptive mock interview before launching.
+                <p className="text-xs text-ghost-ice/60 font-ui mt-1 leading-relaxed">
+                  Calibrate parameters for your adaptive mock interview before mounting chamber.
                 </p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4 font-ui">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Difficulty Tier
+                  <label className="block text-[10px] font-mono uppercase tracking-widest text-ghost-ice/70 mb-2">
+                    Difficulty Calibration
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {['EASY', 'MEDIUM', 'HARD'].map((level) => (
                       <button
                         key={level}
-                        onClick={() => setDifficulty(level)}
-                        className={`py-2 rounded-lg text-xs font-bold border transition-all ${
+                        type="button"
+                        onClick={() => {
+                          setDifficulty(level);
+                          playMechanicalToggle(true);
+                        }}
+                        onMouseEnter={playHoverTick}
+                        data-sfx="toggle"
+                        className={`py-2 rounded-xl border text-xs font-mono font-bold transition-all ${
                           difficulty === level
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                            : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                            ? level === 'HARD'
+                              ? 'border-ghost-heat bg-ghost-heat/20 text-ghost-heat'
+                              : 'border-ghost-blue bg-ghost-blue/20 text-white'
+                            : 'border-ghost-ice/15 bg-[#000307] text-ghost-ice/60'
                         }`}
                       >
                         {level}
@@ -220,18 +249,24 @@ export default function QuestionBankPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Number of Questions
+                  <label className="block text-[10px] font-mono uppercase tracking-widest text-ghost-ice/70 mb-2">
+                    Inquiry Count
                   </label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[3, 5, 10, 15].map((count) => (
+                  <div className="flex gap-2">
+                    {[3, 5, 10].map((count) => (
                       <button
                         key={count}
-                        onClick={() => setQuestionCount(count)}
-                        className={`py-2 rounded-lg text-xs font-mono font-bold border transition-all ${
+                        type="button"
+                        onClick={() => {
+                          setQuestionCount(count);
+                          playMechanicalToggle(true);
+                        }}
+                        onMouseEnter={playHoverTick}
+                        data-sfx="toggle"
+                        className={`flex-1 py-2 rounded-xl border font-mono text-xs font-bold transition-all ${
                           questionCount === count
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                            : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                            ? 'border-ghost-blue bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
+                            : 'border-ghost-ice/15 bg-[#000307] text-ghost-ice/60'
                         }`}
                       >
                         {count} Qs
@@ -239,29 +274,23 @@ export default function QuestionBankPage() {
                     ))}
                   </div>
                 </div>
-              </div>
 
-              <div className="flex gap-2.5 pt-2">
-                <button
-                  onClick={() => setSelectedModule(null)}
-                  className="btn-secondary flex-1 text-xs py-2.5"
-                >
-                  Cancel
-                </button>
                 <button
                   onClick={handleStartTest}
                   disabled={launching}
-                  className="btn-primary flex-1 text-xs py-2.5 flex items-center justify-center gap-1.5 shadow-xs"
+                  onMouseEnter={playHoverTick}
+                  data-sfx="toggle"
+                  className="ghost-button-blue w-full py-2.5 mt-2 flex items-center justify-center gap-2"
                 >
                   {launching ? (
                     <>
-                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Starting...</span>
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      <span>MOUNTING CHAMBER...</span>
                     </>
                   ) : (
                     <>
                       <HiOutlineSparkles className="w-4 h-4" />
-                      <span>Start Module</span>
+                      <span>INITIALIZE MODULE SIMULATION</span>
                     </>
                   )}
                 </button>

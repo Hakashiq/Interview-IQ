@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import AppLayout from '../components/layout/AppLayout';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
+import { playHoverTick, playMechanicalToggle } from '../utils/soundEffects';
 import {
   HiOutlineUserGroup, HiOutlineChatAlt2, HiOutlineExclamationCircle,
   HiOutlineTrendingUp, HiOutlineMail, HiOutlineClock,
@@ -71,95 +72,110 @@ export default function MentorHubPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="pb-2 border-b border-slate-200/80">
+        <div className="pb-3 border-b border-ghost-ice/15">
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
-              Mentor Console
+            <span className="telemetry-chip-active text-[10px]">
+              MNT.01 // MENTOR CORRIDOR &amp; INTEGRITY AUDITS
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
-            Mentor Workspace & Integrity Audits
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
+            Mentor Workspace &amp; Cohort Telemetry
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Oversee assigned candidate cohorts, audit proctoring infractions, and review feedback submissions.
+          <p className="text-xs sm:text-sm text-ghost-ice/60 font-ui mt-1">
+            Oversee candidate cohorts, audit proctoring compliance infractions, and triage applicant feedback.
           </p>
         </div>
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-xs font-semibold text-slate-600">Assigned Cohort</span>
-              <HiOutlineUserGroup className="w-4 h-4 text-blue-600" />
+          <div className="ghost-panel p-4 sm:p-5">
+            <div className="flex items-center justify-between text-ghost-ice/50 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">Assigned Cohort</span>
+              <HiOutlineUserGroup className="w-4 h-4 text-ghost-blue" />
             </div>
-            <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">
+            <p className="text-2xl font-mono font-bold text-white tracking-tight">
               {users.filter(u => u.roles?.includes('ROLE_STUDENT')).length}
             </p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Active candidates</p>
+            <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">ACTIVE CANDIDATES</p>
           </div>
 
-          <div className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-xs font-semibold text-slate-600">Cohort Mean Score</span>
-              <HiOutlineTrendingUp className="w-4 h-4 text-emerald-600" />
+          <div className="ghost-panel p-4 sm:p-5">
+            <div className="flex items-center justify-between text-ghost-ice/50 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">Cohort Mean Score</span>
+              <HiOutlineTrendingUp className="w-4 h-4 text-emerald-400" />
             </div>
-            <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">
-              {stats.averageInterviewScore ? stats.averageInterviewScore.toFixed(1) : '0.0'}<span className="text-xs font-normal text-slate-400">/10</span>
+            <p className="text-2xl font-mono font-bold text-white tracking-tight">
+              {stats.averageInterviewScore ? stats.averageInterviewScore.toFixed(1) : '0.0'}<span className="text-xs font-normal text-ghost-ice/40">/10</span>
             </p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Average interview score</p>
+            <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">BENCHMARK MEAN</p>
           </div>
 
-          <div className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-xs font-semibold text-slate-600">Pending Feedback</span>
-              <HiOutlineChatAlt2 className="w-4 h-4 text-amber-600" />
+          <div className="ghost-panel p-4 sm:p-5">
+            <div className="flex items-center justify-between text-ghost-ice/50 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">Pending Triage</span>
+              <HiOutlineChatAlt2 className="w-4 h-4 text-amber-400" />
             </div>
-            <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">
+            <p className="text-2xl font-mono font-bold text-white tracking-tight">
               {feedback.filter(f => f.status === 'PENDING').length}
             </p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Awaiting review</p>
+            <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">AWAITING REVIEW</p>
           </div>
 
-          <div className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-xs font-semibold text-slate-600">Integrity Flags</span>
-              <HiOutlineExclamationCircle className="w-4 h-4 text-rose-600" />
+          <div className="ghost-panel p-4 sm:p-5">
+            <div className="flex items-center justify-between text-ghost-ice/50 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">Integrity Flags</span>
+              <HiOutlineExclamationCircle className="w-4 h-4 text-red-400" />
             </div>
-            <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">
+            <p className="text-2xl font-mono font-bold text-white tracking-tight">
               {violations.length}
             </p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Total recorded strikes</p>
+            <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">RECORDED STRIKES</p>
           </div>
         </div>
 
         {/* Tab Controls */}
-        <div className="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200/80 max-w-lg">
+        <div className="bg-[#000307] p-1 rounded-full flex items-center border border-ghost-ice/15 max-w-lg">
           <button
-            onClick={() => setActiveTab('students')}
-            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
+            onClick={() => {
+              setActiveTab('students');
+              playMechanicalToggle(true);
+            }}
+            onMouseEnter={playHoverTick}
+            data-sfx="toggle"
+            className={`flex-1 py-2 px-3 rounded-full text-xs font-ui uppercase tracking-wider font-semibold transition-all ${
               activeTab === 'students'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
+                : 'text-ghost-ice/60 hover:text-white'
             }`}
           >
             Candidate Directory
           </button>
           <button
-            onClick={() => setActiveTab('feedback')}
-            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
+            onClick={() => {
+              setActiveTab('feedback');
+              playMechanicalToggle(true);
+            }}
+            onMouseEnter={playHoverTick}
+            data-sfx="toggle"
+            className={`flex-1 py-2 px-3 rounded-full text-xs font-ui uppercase tracking-wider font-semibold transition-all ${
               activeTab === 'feedback'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
+                : 'text-ghost-ice/60 hover:text-white'
             }`}
           >
             Feedback ({feedback.filter(f => f.status === 'PENDING').length})
           </button>
           <button
-            onClick={() => setActiveTab('violations')}
-            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
+            onClick={() => {
+              setActiveTab('violations');
+              playMechanicalToggle(true);
+            }}
+            onMouseEnter={playHoverTick}
+            data-sfx="toggle"
+            className={`flex-1 py-2 px-3 rounded-full text-xs font-ui uppercase tracking-wider font-semibold transition-all ${
               activeTab === 'violations'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
+                : 'text-ghost-ice/60 hover:text-white'
             }`}
           >
             Integrity Logs
@@ -168,8 +184,8 @@ export default function MentorHubPage() {
 
         {/* Content Body */}
         {loading ? (
-          <div className="flex items-center justify-center py-20 bg-white rounded-2xl border border-slate-200/90">
-            <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="flex items-center justify-center py-20 ghost-panel">
+            <div className="w-8 h-8 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <div className="space-y-4">

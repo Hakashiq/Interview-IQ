@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import AppLayout from '../components/layout/AppLayout';
 import toast from 'react-hot-toast';
+import { playHoverTick, playMechanicalToggle } from '../utils/soundEffects';
 import {
   HiOutlineChartBar, HiOutlineChevronDown, HiOutlineClipboardList,
   HiOutlineClock, HiOutlineLightningBolt, HiOutlineSparkles,
@@ -24,9 +25,9 @@ function CleanScoreDial({ score, size = 140, strokeWidth = 8 }) {
   }, [score, circumference]);
 
   const strokeColor =
-    score >= 8 ? '#16a34a' :
-    score >= 6 ? '#2563eb' :
-    score >= 4 ? '#d97706' : '#dc2626';
+    score >= 8 ? '#10b981' :
+    score >= 6 ? '#007dff' :
+    score >= 4 ? '#ff5517' : '#9f0712';
 
   return (
     <div className="relative inline-flex items-center justify-center">
@@ -35,7 +36,7 @@ function CleanScoreDial({ score, size = 140, strokeWidth = 8 }) {
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#e2e8f0"
+          stroke="#0c1524"
           strokeWidth={strokeWidth}
           fill="none"
         />
@@ -53,10 +54,10 @@ function CleanScoreDial({ score, size = 140, strokeWidth = 8 }) {
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-3xl font-bold font-display tracking-tight text-slate-900">
+        <span className="text-3xl font-mono font-bold tracking-tight text-white">
           {score?.toFixed(1) || '0.0'}
         </span>
-        <span className="text-[11px] font-mono text-slate-400 mt-0.5">/ 10</span>
+        <span className="text-[10px] font-mono text-ghost-ice/40 uppercase mt-0.5">/ 10 PTS</span>
       </div>
     </div>
   );
@@ -86,10 +87,10 @@ export default function InterviewResultsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-porcelain-50">
-        <div className="flex flex-col items-center gap-3 text-center">
-          <div className="w-9 h-9 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
-          <p className="text-slate-600 text-sm font-medium">Aggregating interview feedback & scores...</p>
+      <div className="min-h-screen flex items-center justify-center bg-ghost-void text-ghost-ice devices-matrix-grid">
+        <div className="ghost-panel p-8 flex flex-col items-center gap-3 text-center">
+          <div className="w-8 h-8 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
+          <p className="text-ghost-ice/70 text-xs font-mono">Aggregating telemetry feedback &amp; scores...</p>
         </div>
       </div>
     );
@@ -109,47 +110,62 @@ export default function InterviewResultsPage() {
     return `${m}m ${s}s`;
   };
 
+  const handleToggleQuestion = (index) => {
+    const next = expandedId === index ? null : index;
+    setExpandedId(next);
+    playMechanicalToggle(next !== null);
+  };
+
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200/80">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-ghost-ice/15">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
-                Performance Evaluation
+              <span className="telemetry-chip-active text-[10px]">
+                AUDIT // PERFORMANCE DEBRIEF
               </span>
-              <span className="badge-neutral text-xs">{results?.jobRole || 'General'}</span>
+              <span className="telemetry-chip text-[10px]">{results?.jobRole || 'General'}</span>
               {results?.difficulty && (
-                <span className="badge-neutral text-xs uppercase">{results.difficulty}</span>
+                <span className="telemetry-chip text-[10px] uppercase">{results.difficulty}</span>
               )}
             </div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
-              Interview Debrief & Assessment
+            <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
+              Simulation Debrief &amp; Assessment
             </h1>
           </div>
 
           <div className="flex items-center gap-2.5">
             <button
-              onClick={() => navigate('/interviews')}
-              className="btn-primary text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-xs"
+              onClick={() => {
+                playMechanicalToggle(true);
+                navigate('/interviews');
+              }}
+              onMouseEnter={playHoverTick}
+              data-sfx="toggle"
+              className="ghost-button-blue text-xs py-2 px-4 flex items-center gap-1.5"
             >
               <HiOutlineRefresh className="w-3.5 h-3.5" />
-              <span>New Session</span>
+              <span>New Chamber</span>
             </button>
             <button
-              onClick={() => navigate('/dashboard')}
-              className="btn-secondary text-xs py-2 px-3.5 flex items-center gap-1.5"
+              onClick={() => {
+                playMechanicalToggle(true);
+                navigate('/dashboard');
+              }}
+              onMouseEnter={playHoverTick}
+              className="ghost-button-void text-xs py-2 px-4 flex items-center gap-1.5"
             >
               <span>Dashboard</span>
-              <HiOutlineArrowRight className="w-3.5 h-3.5 text-slate-500" />
+              <HiOutlineArrowRight className="w-3.5 h-3.5 text-ghost-ice/50" />
             </button>
           </div>
         </div>
 
         {/* Hero Score Card */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <div className="ghost-panel p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
             <div className="flex-shrink-0">
               <CleanScoreDial score={overallScore} />
@@ -157,28 +173,28 @@ export default function InterviewResultsPage() {
 
             <div className="flex-1 text-center sm:text-left space-y-2">
               <div className="inline-flex items-center gap-1.5">
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-md border ${
+                <span className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border ${
                   overallScore >= 8
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                    ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-300'
                     : overallScore >= 6
-                    ? 'bg-blue-50 border-blue-200 text-blue-800'
-                    : 'bg-amber-50 border-amber-200 text-amber-800'
+                    ? 'bg-ghost-blue/15 border-ghost-blue/40 text-ghost-ice'
+                    : 'bg-amber-950/50 border-amber-500/40 text-amber-300'
                 }`}>
-                  {overallScore >= 8 ? 'Strong Hire Indicator' :
-                   overallScore >= 6 ? 'Competent Performance' :
-                   overallScore >= 4 ? 'Needs Development' : 'Foundation Level'}
+                  {overallScore >= 8 ? 'STRONG HIRE TELEMETRY' :
+                   overallScore >= 6 ? 'COMPETENT READINESS' :
+                   overallScore >= 4 ? 'NEEDS REMEDIATION' : 'FOUNDATION DEFICIT'}
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-display font-semibold text-slate-900">
+              <h2 className="text-xl sm:text-2xl font-display font-bold text-white tracking-tight">
                 {overallScore >= 8
                   ? 'Exemplary Technical Mastery & Delivery'
                   : overallScore >= 6
-                  ? 'Solid Domain Knowledge with Minor Gaps'
+                  ? 'Solid Domain Knowledge with Minor Boundaries'
                   : 'Key Concepts Require Further Practice'}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
+              <p className="text-xs sm:text-sm text-ghost-ice/70 font-ui max-w-2xl leading-relaxed">
                 {overallScore >= 8
-                  ? 'Your answers demonstrated structured thinking, accurate technical depth, and clear communication. Review the fine-grained insights below to reach perfection.'
+                  ? 'Your answers demonstrated structured thinking, accurate technical depth, and clear communication. Review the fine-grained insights below to achieve perfection.'
                   : overallScore >= 6
                   ? 'Good performance overall. You articulated core principles well, but could bolster system trade-offs and edge-case handling.'
                   : 'Review the areas for growth and suggested improvements below to refine your technical responses before real-world rounds.'}
@@ -190,18 +206,18 @@ export default function InterviewResultsPage() {
         {/* Summary Metric Tiles */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Total Questions', value: totalQuestions, icon: HiOutlineClipboardList, hint: 'Answered' },
-            { label: 'Average Score', value: `${avgScore}/10`, icon: HiOutlineTrendingUp, hint: 'Per question mean' },
-            { label: 'Time Elapsed', value: formatTime(results?.totalTimeTaken || results?.timeTakenSeconds), icon: HiOutlineClock, hint: 'Total duration' },
-            { label: 'Difficulty Track', value: results?.difficulty || 'Medium', icon: HiOutlineLightningBolt, hint: 'Calibrated level' },
+            { label: 'Total Questions', value: totalQuestions, icon: HiOutlineClipboardList, hint: 'EVALUATED' },
+            { label: 'Mean Score', value: `${avgScore}/10`, icon: HiOutlineTrendingUp, hint: 'PER INQUIRY' },
+            { label: 'Time Elapsed', value: formatTime(results?.totalTimeTaken || results?.timeTakenSeconds), icon: HiOutlineClock, hint: 'DURATION' },
+            { label: 'Track Tier', value: results?.difficulty || 'Medium', icon: HiOutlineLightningBolt, hint: 'CALIBRATION' },
           ].map((stat) => (
-            <div key={stat.label} className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold text-slate-600">{stat.label}</span>
-                <stat.icon className="w-4 h-4 text-slate-400" />
+            <div key={stat.label} className="ghost-panel p-4 sm:p-5">
+              <div className="flex items-center justify-between text-ghost-ice/40 mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">{stat.label}</span>
+                <stat.icon className="w-4 h-4 text-ghost-blue" />
               </div>
-              <p className="text-2xl font-display font-bold text-slate-900 tracking-tight">{stat.value}</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">{stat.hint}</p>
+              <p className="text-2xl font-mono font-bold text-white tracking-tight">{stat.value}</p>
+              <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">{stat.hint}</p>
             </div>
           ))}
         </div>
@@ -209,12 +225,12 @@ export default function InterviewResultsPage() {
         {/* Question-by-Question Accordion */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
-              <HiOutlineAcademicCap className="w-5 h-5 text-blue-600" />
-              Question-by-Question Analysis
+            <h2 className="text-base font-display font-bold text-white flex items-center gap-2">
+              <HiOutlineAcademicCap className="w-5 h-5 text-ghost-blue" />
+              Algorithmic Question Diagnostics
             </h2>
-            <span className="text-xs text-slate-500 font-mono">
-              {questions.length} items evaluated
+            <span className="text-xs text-ghost-ice/50 font-mono">
+              {questions.length} PROMPTS EVALUATED
             </span>
           </div>
 
@@ -227,57 +243,59 @@ export default function InterviewResultsPage() {
               return (
                 <div
                   key={index}
-                  className="bg-white border border-slate-200/90 rounded-xl overflow-hidden shadow-xs transition-colors hover:border-slate-300"
+                  className="ghost-panel overflow-hidden transition-all duration-200"
                 >
-                  {/* Question Header Accordion Trigger */}
+                  {/* Trigger */}
                   <button
-                    onClick={() => setExpandedId(isExpanded ? null : index)}
+                    onClick={() => handleToggleQuestion(index)}
+                    onMouseEnter={playHoverTick}
+                    data-sfx="toggle"
                     className="w-full flex items-start gap-4 p-4 sm:p-5 text-left focus:outline-none"
                   >
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 font-display font-bold text-sm border ${
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm border ${
                       qScore >= 8
-                        ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                        ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300'
                         : qScore >= 6
-                        ? 'bg-blue-50 border-blue-200 text-blue-700'
-                        : 'bg-rose-50 border-rose-200 text-rose-700'
+                        ? 'bg-ghost-blue/15 border-ghost-blue/40 text-ghost-ice'
+                        : 'bg-red-950/60 border-red-500/40 text-red-300'
                     }`}>
                       {qScore}
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-xs font-semibold text-slate-400">
+                        <span className="font-mono text-xs text-ghost-ice/50">
                           Q{index + 1}
                         </span>
                         {(q.category || q.question?.category?.name) && (
-                          <span className="badge-neutral text-[10px] uppercase">
+                          <span className="telemetry-chip text-[9px] uppercase">
                             {q.category || q.question?.category?.name}
                           </span>
                         )}
                       </div>
-                      <p className="text-sm font-semibold text-slate-900 leading-snug">
+                      <p className="text-sm font-display font-bold text-white leading-snug">
                         {q.questionText || q.question?.questionText || `Question ${index + 1}`}
                       </p>
                     </div>
 
                     <HiOutlineChevronDown
-                      className={`w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-200 mt-1 ${
-                        isExpanded ? 'rotate-180 text-blue-600' : ''
+                      className={`w-5 h-5 text-ghost-ice/40 flex-shrink-0 transition-transform duration-200 mt-1 ${
+                        isExpanded ? 'rotate-180 text-ghost-blue' : ''
                       }`}
                     />
                   </button>
 
                   {/* Expanded Content */}
                   {isExpanded && (
-                    <div className="px-4 sm:px-6 pb-5 space-y-4 border-t border-slate-100 pt-4 bg-slate-50/50">
+                    <div className="px-4 sm:px-6 pb-5 space-y-4 border-t border-ghost-ice/10 pt-4 bg-[#000307]/50">
                       
                       {/* Candidate Answer */}
                       {q.answerText && (
-                        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
-                          <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1.5 font-semibold">
-                            Submitted Response
+                        <div className="p-4 rounded-xl bg-[#000307] border border-ghost-ice/15">
+                          <p className="text-[10px] font-mono text-ghost-ice/50 uppercase tracking-widest mb-1.5 font-semibold">
+                            SUBMITTED RESPONSE BUFFER
                           </p>
-                          <p className="text-xs sm:text-sm font-mono text-slate-800 leading-relaxed whitespace-pre-wrap">
+                          <p className="text-xs font-mono text-ghost-ice/90 leading-relaxed whitespace-pre-wrap">
                             {q.answerText}
                           </p>
                         </div>
@@ -291,14 +309,14 @@ export default function InterviewResultsPage() {
                           { label: 'Communication', score: fb.communication },
                           { label: 'Relevance', score: fb.relevance },
                         ].map(({ label, score }) => (
-                          <div key={label} className="p-2.5 rounded-lg bg-white border border-slate-200/70 text-center">
-                            <p className={`text-base font-bold font-display ${
-                              (score || 0) >= 8 ? 'text-emerald-600' :
-                              (score || 0) >= 6 ? 'text-blue-600' : 'text-rose-600'
+                          <div key={label} className="p-2.5 rounded-xl bg-ghost-void border border-ghost-ice/15 text-center">
+                            <p className={`text-base font-bold font-mono ${
+                              (score || 0) >= 8 ? 'text-emerald-400' :
+                              (score || 0) >= 6 ? 'text-ghost-blue' : 'text-red-400'
                             }`}>
-                              {score || 0}<span className="text-[10px] font-normal text-slate-400">/10</span>
+                              {score || 0}<span className="text-[10px] font-normal text-ghost-ice/40">/10</span>
                             </p>
-                            <p className="text-[11px] text-slate-500 font-medium">{label}</p>
+                            <p className="text-[10px] font-mono text-ghost-ice/60 uppercase">{label}</p>
                           </div>
                         ))}
                       </div>
@@ -306,32 +324,32 @@ export default function InterviewResultsPage() {
                       {/* Strengths & Weaknesses */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {fb.strengths && (
-                          <div className="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-slate-800">
-                            <h4 className="text-xs font-semibold text-emerald-800 mb-1 flex items-center gap-1.5">
-                              <HiOutlineCheckCircle className="w-4 h-4 text-emerald-600" />
+                          <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 text-ghost-ice">
+                            <h4 className="text-xs font-mono font-semibold text-emerald-400 mb-1 flex items-center gap-1.5 uppercase">
+                              <HiOutlineCheckCircle className="w-4 h-4 text-emerald-400" />
                               Key Strengths
                             </h4>
-                            <p className="text-xs text-slate-700 leading-relaxed">{fb.strengths}</p>
+                            <p className="text-xs font-ui text-ghost-ice/80 leading-relaxed">{fb.strengths}</p>
                           </div>
                         )}
                         {fb.weaknesses && (
-                          <div className="p-3.5 rounded-xl bg-rose-50/80 border border-rose-200 text-slate-800">
-                            <h4 className="text-xs font-semibold text-rose-800 mb-1 flex items-center gap-1.5">
-                              <HiOutlineSparkles className="w-4 h-4 text-rose-600" />
+                          <div className="p-3.5 rounded-xl bg-red-950/20 border border-red-500/30 text-ghost-ice">
+                            <h4 className="text-xs font-mono font-semibold text-red-400 mb-1 flex items-center gap-1.5 uppercase">
+                              <HiOutlineSparkles className="w-4 h-4 text-red-400" />
                               Areas for Improvement
                             </h4>
-                            <p className="text-xs text-slate-700 leading-relaxed">{fb.weaknesses}</p>
+                            <p className="text-xs font-ui text-ghost-ice/80 leading-relaxed">{fb.weaknesses}</p>
                           </div>
                         )}
                       </div>
 
                       {fb.improvements && (
-                        <div className="p-3.5 rounded-xl bg-blue-50/80 border border-blue-200 text-slate-800">
-                          <h4 className="text-xs font-semibold text-blue-800 mb-1 flex items-center gap-1.5">
-                            <HiOutlineLightningBolt className="w-4 h-4 text-blue-600" />
+                        <div className="p-3.5 rounded-xl bg-ghost-blue/10 border border-ghost-blue/30 text-ghost-ice">
+                          <h4 className="text-xs font-mono font-semibold text-ghost-blue mb-1 flex items-center gap-1.5 uppercase">
+                            <HiOutlineLightningBolt className="w-4 h-4 text-ghost-blue" />
                             Suggested Strategy
                           </h4>
-                          <p className="text-xs text-slate-700 leading-relaxed">{fb.improvements}</p>
+                          <p className="text-xs font-ui text-ghost-ice/80 leading-relaxed">{fb.improvements}</p>
                         </div>
                       )}
                     </div>

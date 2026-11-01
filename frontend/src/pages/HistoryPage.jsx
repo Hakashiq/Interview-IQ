@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppLayout from '../components/layout/AppLayout';
 import api from '../api/axios';
+import { playHoverTick, playMechanicalToggle } from '../utils/soundEffects';
 import {
   HiOutlineClipboardList, HiOutlineFilter,
   HiOutlineAcademicCap, HiOutlineClock, HiOutlineChevronRight
@@ -53,48 +54,51 @@ export default function HistoryPage() {
       <div className="max-w-5xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200/80">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-ghost-ice/15">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
-                Audit Log
+              <span className="telemetry-chip-active text-[10px]">
+                MOD.06 // TELEMETRY REGISTRY
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
-              Interview History & Reports
+            <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
+              Simulation Telemetry Archive
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Browse previous completed simulations, view score progression, and inspect fine-grained AI feedback.
+            <p className="text-xs sm:text-sm text-ghost-ice/60 font-ui mt-1">
+              Historical flight logs of completed interview simulations, AST scoring audits, and fine-grained feedback.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="badge-neutral text-xs font-mono font-medium">
-              {filteredHistory.length} Sessions Logged
+            <span className="telemetry-chip text-[10px]">
+              {filteredHistory.length} RUNS INDEXED
             </span>
           </div>
         </div>
 
         {/* Filter Controls */}
-        <div className="bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-xs">
+        <div className="ghost-panel p-3.5">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <HiOutlineFilter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <HiOutlineFilter className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ghost-ice/40" />
               <select
                 id="role-filter"
                 value={selectedRole}
-                onChange={(e) => setSelectedRole(e.target.value)}
-                className="w-full pl-9 pr-8 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 font-medium focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all cursor-pointer appearance-none"
+                onChange={(e) => {
+                  setSelectedRole(e.target.value);
+                  playMechanicalToggle(true);
+                }}
+                className="ghost-input pl-10 cursor-pointer appearance-none text-xs"
               >
-                <option value="">All Tracks & Disciplines</option>
-                <optgroup label="Core Roles">
+                <option value="" className="bg-[#00050a] text-ghost-ice">All Tracks &amp; Disciplines</option>
+                <optgroup label="Core Roles" className="bg-[#00050a] text-ghost-ice">
                   <option value="Software Engineer">Software Engineer</option>
                   <option value="Full Stack Developer">Full Stack Developer</option>
                   <option value="Backend Developer">Backend Developer</option>
                   <option value="Data Analyst">Data Analyst</option>
                   <option value="DevOps Engineer">DevOps Engineer</option>
                 </optgroup>
-                <optgroup label="Subjects & Topics">
+                <optgroup label="Subjects & Topics" className="bg-[#00050a] text-ghost-ice">
                   <option value="Java">Java</option>
                   <option value="Python">Python</option>
                   <option value="DSA">DSA</option>
@@ -113,13 +117,16 @@ export default function HistoryPage() {
               <select
                 id="difficulty-filter"
                 value={selectedDifficulty}
-                onChange={(e) => setSelectedDifficulty(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 font-medium focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all cursor-pointer appearance-none"
+                onChange={(e) => {
+                  setSelectedDifficulty(e.target.value);
+                  playMechanicalToggle(true);
+                }}
+                className="ghost-input cursor-pointer appearance-none text-xs"
               >
-                <option value="">All Difficulties</option>
-                <option value="EASY">Easy</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HARD">Hard</option>
+                <option value="" className="bg-[#00050a] text-ghost-ice">All Calibrations</option>
+                <option value="EASY" className="bg-[#00050a] text-ghost-ice">Easy</option>
+                <option value="MEDIUM" className="bg-[#00050a] text-ghost-ice">Medium</option>
+                <option value="HARD" className="bg-[#00050a] text-ghost-ice">Hard Tier</option>
               </select>
             </div>
           </div>
@@ -128,21 +135,26 @@ export default function HistoryPage() {
         {/* List of Sessions */}
         <div className="space-y-3">
           {loading ? (
-            <div className="flex items-center justify-center py-20 bg-white rounded-2xl border border-slate-200/90">
-              <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            <div className="flex items-center justify-center py-20 ghost-panel">
+              <div className="w-8 h-8 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
             </div>
           ) : filteredHistory.length === 0 ? (
-            <div className="bg-white border border-slate-200/90 rounded-2xl p-12 text-center shadow-xs">
-              <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
+            <div className="ghost-panel p-12 text-center">
+              <div className="w-12 h-12 rounded-xl bg-ghost-ice/5 border border-ghost-ice/15 text-ghost-ice/40 mx-auto flex items-center justify-center mb-3">
                 <HiOutlineClipboardList className="w-6 h-6" />
               </div>
-              <h3 className="text-base font-semibold text-slate-900">No interview records located</h3>
-              <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                No past sessions matched your selected filters. Start a new simulation to generate your first debrief.
+              <h3 className="text-base font-display font-bold text-white">No Telemetry Records Located</h3>
+              <p className="text-xs text-ghost-ice/50 font-ui mt-1 max-w-sm mx-auto">
+                No archived sessions matched the filter specifications. Mount an assessment chamber to record telemetry.
               </p>
               <button
-                onClick={() => navigate('/interviews')}
-                className="btn-primary text-xs py-2 px-4 mt-4 shadow-xs"
+                onClick={() => {
+                  playMechanicalToggle(true);
+                  navigate('/interviews');
+                }}
+                onMouseEnter={playHoverTick}
+                data-sfx="toggle"
+                className="ghost-button-blue text-xs py-2 px-5 mt-4"
               >
                 Start New Interview
               </button>
@@ -151,30 +163,34 @@ export default function HistoryPage() {
             filteredHistory.map((item) => (
               <div
                 key={item.id}
-                onClick={() => navigate(`/interviews/${item.id}/results`)}
-                className="bg-white border border-slate-200/90 rounded-xl p-4 sm:p-5 hover:border-slate-300 hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-4"
+                onClick={() => {
+                  playMechanicalToggle(true);
+                  navigate(`/interviews/${item.id}/results`);
+                }}
+                onMouseEnter={playHoverTick}
+                className="ghost-panel p-4 sm:p-5 hover:border-ghost-blue/40 transition-all cursor-pointer flex items-center justify-between gap-4 group"
               >
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-ghost-blue/15 border border-ghost-blue/30 text-ghost-blue flex items-center justify-center flex-shrink-0">
                     <HiOutlineAcademicCap className="w-5 h-5" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-sm font-semibold text-slate-900 truncate">
-                      {item.jobRole || 'Mock Interview Simulation'}
+                    <h3 className="text-sm font-display font-bold text-white group-hover:text-ghost-blue transition-colors truncate">
+                      {item.jobRole || 'Simulation Chamber'}
                     </h3>
                     <div className="flex flex-wrap items-center gap-2 mt-1">
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded uppercase border ${
+                      <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full uppercase border ${
                         item.difficulty === 'EASY'
-                          ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                          ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300'
                           : item.difficulty === 'MEDIUM'
-                          ? 'bg-amber-50 border-amber-200 text-amber-800'
-                          : 'bg-rose-50 border-rose-200 text-rose-800'
+                          ? 'bg-ghost-blue/20 border-ghost-blue/40 text-ghost-ice'
+                          : 'bg-ghost-heat/20 border-ghost-heat/40 text-ghost-heat'
                       }`}>
                         {item.difficulty || 'MEDIUM'}
                       </span>
-                      <span className="text-slate-300">•</span>
-                      <span className="text-[11px] text-slate-400 font-mono flex items-center gap-1">
-                        <HiOutlineClock className="w-3 h-3 text-slate-400" />
+                      <span className="text-ghost-ice/20">•</span>
+                      <span className="text-[10px] text-ghost-ice/50 font-mono flex items-center gap-1">
+                        <HiOutlineClock className="w-3 h-3 text-ghost-ice/40" />
                         {formatDate(item.completedAt || item.startedAt)}
                       </span>
                     </div>
@@ -185,20 +201,20 @@ export default function HistoryPage() {
                   <div className="text-right">
                     {item.overallScore != null ? (
                       <div>
-                        <p className={`text-xl font-display font-bold leading-none ${
-                          item.overallScore >= 8 ? 'text-emerald-600' :
-                          item.overallScore >= 6 ? 'text-blue-600' :
-                          item.overallScore >= 4 ? 'text-amber-600' : 'text-rose-600'
+                        <p className={`text-xl font-mono font-bold leading-none ${
+                          item.overallScore >= 8 ? 'text-emerald-400' :
+                          item.overallScore >= 6 ? 'text-ghost-blue' :
+                          item.overallScore >= 4 ? 'text-amber-400' : 'text-red-400'
                         }`}>
-                          {item.overallScore.toFixed(1)}<span className="text-[11px] font-normal text-slate-400">/10</span>
+                          {item.overallScore.toFixed(1)}<span className="text-[10px] font-normal text-ghost-ice/40">/10</span>
                         </p>
-                        <p className="text-[10px] text-slate-400 mt-0.5">Composite Score</p>
+                        <p className="text-[9px] font-mono text-ghost-ice/40 uppercase mt-0.5">COMPOSITE</p>
                       </div>
                     ) : (
-                      <span className="badge-neutral text-xs">Processing</span>
+                      <span className="telemetry-chip text-[9px]">PROCESSING</span>
                     )}
                   </div>
-                  <HiOutlineChevronRight className="w-4 h-4 text-slate-400" />
+                  <HiOutlineChevronRight className="w-4 h-4 text-ghost-ice/40 group-hover:text-ghost-blue transition-colors" />
                 </div>
               </div>
             ))

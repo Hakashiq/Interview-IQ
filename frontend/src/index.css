@@ -1,8 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --font-archivo: 'Archivo', sans-serif;
+  --font-archivo-narrow: 'Archivo Narrow', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Ghost Design System Tokens */
+  --color-ghost-void: #00050a;
+  --color-ghost-ice: #d6eaff;
+  --color-ghost-paper: #f5f5f5;
+  --color-ghost-blue: #007dff;
+  --color-accent-heat: #ff5517;
+  --color-accent-alert: #9f0712;
+}
 
 @layer base {
   * {
@@ -11,123 +23,251 @@
     box-sizing: border-box;
   }
 
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-archivo-narrow), -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: -0.015em;
+  }
+
   body {
-    background-color: #FAFAFC;
-    color: #0F172A;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background-color: var(--color-ghost-void);
+    color: var(--color-ghost-ice);
+    font-family: var(--font-archivo-narrow), -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-ghost-blue);
+    color: var(--color-ghost-ice);
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #F1F5F9;
+    background: #00050a;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #CBD5E1;
+    background: rgba(214, 234, 255, 0.2);
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #94A3B8;
+    background: rgba(214, 234, 255, 0.4);
   }
 }
 
+/* ========================================================
+   GHOST SPECIFICATION: OPTICAL PRINT TEXTURING & INK-BLEED
+   ======================================================== */
+.font-ink-bleed {
+  filter: blur(0.375px);
+}
+
+.font-ink-bleed-lg {
+  filter: blur(0.5px);
+}
+
+.headline-monolithic {
+  font-family: var(--font-archivo), sans-serif;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  filter: blur(0.4px);
+  text-wrap: balance;
+}
+
+/* ========================================================
+   GHOST SPECIFICATION: RESPONSIVE GRID MATHEMATICS
+   ======================================================== */
+.devices-matrix-grid {
+  /* Exact Ghost formula for viewport-proportional cells */
+  --cell: min(12.5vw, calc((100dvh - 64px) * 0.23625));
+  background-size: var(--cell) var(--cell);
+  background-position: calc(50% + var(--cell) / 2) center;
+  background-image: 
+    linear-gradient(to right, rgba(214, 234, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(214, 234, 255, 0.08) 1px, transparent 1px);
+}
+
+.devices-matrix-grid-dense {
+  --cell: min(8vw, calc((100dvh - 64px) * 0.15));
+  background-size: var(--cell) var(--cell);
+  background-position: calc(50% + var(--cell) / 2) center;
+  background-image: 
+    linear-gradient(to right, rgba(214, 234, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(214, 234, 255, 0.05) 1px, transparent 1px);
+}
+
+.devices-matrix-grid-paper {
+  --cell: min(12.5vw, calc((100dvh - 64px) * 0.23625));
+  background-size: var(--cell) var(--cell);
+  background-position: calc(50% + var(--cell) / 2) center;
+  background-image: 
+    linear-gradient(to right, rgba(0, 5, 10, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 5, 10, 0.07) 1px, transparent 1px);
+}
+
+/* ========================================================
+   CYBER-INDUSTRIAL PHYSICALITY COMPONENT TOKENS
+   ======================================================== */
 @layer components {
-  /* Clean Porcelain Card Tokens */
+  /* Ghost Void Canvas Appliance Panels */
+  .ghost-panel {
+    @apply bg-ghost-void/90 border border-ghost-ice/15 rounded-2xl shadow-2xl backdrop-blur-md transition-all;
+  }
+
+  .ghost-panel-interactive {
+    @apply ghost-panel hover:border-ghost-ice/30 hover:shadow-ghost-ice/10;
+  }
+
+  /* Ghost Paper Mode Drafting Panels */
+  .ghost-panel-paper {
+    @apply bg-[#f5f5f5] text-[#00050a] border border-[#00050a]/15 rounded-xl shadow-sm;
+  }
+
+  /* Minimalist Pill Navigation and Buttons */
+  .ghost-pill-nav {
+    @apply pointer-events-auto flex items-center gap-6 px-5 py-2.5 rounded-full bg-ghost-void/80 backdrop-blur-md border border-ghost-ice/15 shadow-2xl;
+  }
+
+  .ghost-button-blue {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-ghost-blue hover:bg-[#005bbb] text-ghost-ice
+           font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all shadow-lg shadow-ghost-blue/20
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .ghost-button-void {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-ghost-void/90 hover:bg-ghost-void
+           border border-ghost-ice/20 hover:border-ghost-ice/40 text-ghost-ice
+           font-ui text-xs font-medium uppercase tracking-wider active:scale-95 transition-all
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .ghost-button-heat {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-ghost-heat hover:bg-opacity-90 text-white
+           font-ui text-xs font-medium uppercase tracking-wider active:scale-95 transition-all shadow-lg shadow-ghost-heat/20;
+  }
+
+  .ghost-button-paper {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-[#00050a] hover:bg-black text-[#f5f5f5]
+           font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all;
+  }
+
+  /* Hardware Telemetry Badge */
+  .telemetry-chip {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[10px] tracking-wider uppercase
+           border border-ghost-ice/20 bg-ghost-ice/5 text-ghost-ice;
+  }
+
+  .telemetry-chip-active {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[10px] tracking-wider uppercase
+           border border-ghost-blue/40 bg-ghost-blue/15 text-ghost-ice;
+  }
+
+  .telemetry-chip-heat {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[10px] tracking-wider uppercase
+           border border-ghost-heat/40 bg-ghost-heat/15 text-ghost-heat;
+  }
+
+  .telemetry-chip-alert {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[10px] tracking-wider uppercase
+           border border-ghost-alert/40 bg-ghost-alert/15 text-red-400;
+  }
+
+  /* Form Inputs - Precision Physical Instrument Style */
+  .ghost-input {
+    @apply w-full bg-[#00050a]/90 border border-ghost-ice/20 rounded-xl px-4 py-2.5 text-xs text-ghost-ice
+           placeholder-ghost-ice/35 font-mono focus:outline-none focus:border-ghost-blue focus:ring-1 focus:ring-ghost-blue
+           transition-all;
+  }
+
+  .ghost-input-paper {
+    @apply w-full bg-white border border-[#00050a]/20 rounded-lg px-4 py-2 text-xs text-[#00050a]
+           placeholder-slate-400 font-mono focus:outline-none focus:border-ghost-blue focus:ring-1 focus:ring-ghost-blue
+           transition-all;
+  }
+
+  /* Backward Compatibility Adaptations */
   .card {
-    @apply bg-white border border-slate-200/90 rounded-xl shadow-xs;
+    @apply bg-ghost-void/90 border border-ghost-ice/15 rounded-2xl shadow-xl backdrop-blur-md;
   }
 
   .card-hover {
-    @apply card transition-all duration-200 hover:border-slate-300 hover:shadow-subtle;
+    @apply card transition-all duration-200 hover:border-ghost-ice/30;
   }
 
-  /* Legacy compatibility bridge for existing code */
   .glass-card {
-    @apply bg-white border border-slate-200 rounded-xl shadow-xs;
+    @apply bg-ghost-void/85 border border-ghost-ice/15 rounded-2xl shadow-xl backdrop-blur-md;
   }
 
   .glass-card-hover {
-    @apply glass-card transition-all duration-200 hover:border-slate-300 hover:shadow-subtle;
+    @apply glass-card transition-all duration-200 hover:border-ghost-ice/30;
   }
 
-  /* Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold text-white
-           bg-blue-600 hover:bg-blue-700 active:bg-blue-800
-           shadow-xs transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply ghost-button-blue;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-slate-700
-           bg-white hover:bg-slate-50 active:bg-slate-100 border border-slate-200
-           shadow-xs transition-all active:scale-[0.99] disabled:opacity-50;
+    @apply ghost-button-void;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600
-           hover:text-slate-900 hover:bg-slate-100 transition-all;
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-ghost-ice/70
+           hover:text-ghost-ice hover:bg-ghost-ice/10 transition-all font-ui uppercase tracking-wider;
   }
 
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-red-600
-           bg-red-50 hover:bg-red-100 border border-red-200 transition-all;
+    @apply inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-red-300
+           bg-ghost-alert/20 hover:bg-ghost-alert/35 border border-ghost-alert/40 transition-all font-ui uppercase tracking-wider;
   }
 
-  /* Inputs */
   .input-clean {
-    @apply w-full bg-slate-50/80 border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-900
-           placeholder-slate-400 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15
-           transition-all;
+    @apply ghost-input;
   }
 
   .input-field {
-    @apply w-full bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-900
-           placeholder-slate-400 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15
-           transition-all;
+    @apply ghost-input;
   }
 
-  /* Badges & Status Indicators */
   .badge-success {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider bg-emerald-950/60 text-emerald-300 border border-emerald-500/30;
   }
 
   .badge-warning {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider bg-amber-950/60 text-amber-300 border border-amber-500/30;
   }
 
   .badge-danger {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider bg-red-950/60 text-red-300 border border-red-500/30;
   }
 
   .badge-info {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider bg-blue-950/60 text-ghost-ice border border-ghost-blue/30;
   }
 
   .badge-neutral {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider bg-ghost-ice/5 text-ghost-ice/70 border border-ghost-ice/15;
   }
 
-  /* Legacy gradient bridges replaced with crisp ink / blue colors */
   .gradient-text {
-    @apply text-slate-900 font-bold;
+    @apply text-white font-display tracking-tightest;
   }
 
   .gradient-bg {
-    @apply bg-blue-600 text-white;
+    @apply bg-ghost-blue text-ghost-ice;
   }
 }
 
 /* Audio Waveform Equalizer Keyframes */
 @keyframes audioWave {
-  0%, 100% { height: 6px; }
-  50% { height: 32px; }
+  0%, 100% { height: 4px; }
+  50% { height: 28px; }
 }
 
 .wave-bar {

@@ -3,6 +3,7 @@ import AppLayout from '../components/layout/AppLayout';
 import api, { getServerBaseUrl } from '../api/axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { playHoverTick, playMechanicalToggle } from '../utils/soundEffects';
 import {
   HiOutlineUserGroup, HiOutlineClipboardList, HiOutlineDocumentText,
   HiOutlineShieldExclamation, HiOutlineUserRemove, HiOutlineUserAdd,
@@ -213,9 +214,9 @@ export default function AdminPage() {
     return (
       <AppLayout>
         <div className="min-h-[60vh] flex items-center justify-center">
-          <div className="flex flex-col items-center gap-3 text-center">
-            <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
-            <p className="text-slate-500 text-xs font-medium">Loading administrative registry...</p>
+          <div className="ghost-panel p-8 flex flex-col items-center gap-3 text-center">
+            <div className="w-8 h-8 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
+            <p className="text-ghost-ice/60 text-xs font-mono">Loading root supervisor registry...</p>
           </div>
         </div>
       </AppLayout>
@@ -227,36 +228,45 @@ export default function AdminPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200/80">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-ghost-ice/15">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
-                Super Admin
+              <span className="telemetry-chip-active text-[10px]">
+                ADM.01 // ROOT SUPERVISOR REGISTRY
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
-              Administration & Security Console
+            <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
+              Administration &amp; Access Controls
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Audit registered candidate accounts, toggle administrative access, inspect verification IDs, and control suspensions.
+            <p className="text-xs sm:text-sm text-ghost-ice/60 font-ui mt-1">
+              Audit registered candidate accounts, promote administrative operators, review verification credentials, and manage telemetry limits.
             </p>
           </div>
 
           <div className="flex items-center gap-2.5 self-start sm:self-auto">
             <button
-              onClick={handleRefresh}
+              onClick={() => {
+                playMechanicalToggle(true);
+                handleRefresh();
+              }}
               disabled={refreshing}
-              className="btn-secondary text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-xs"
+              onMouseEnter={playHoverTick}
+              className="ghost-button-void text-xs py-2 px-3.5 flex items-center gap-1.5"
             >
               <HiOutlineRefresh className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               <span>Refresh</span>
             </button>
             <button
-              onClick={() => setShowAddModal(true)}
-              className="btn-primary text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-xs"
+              onClick={() => {
+                playMechanicalToggle(true);
+                setShowAddModal(true);
+              }}
+              onMouseEnter={playHoverTick}
+              data-sfx="toggle"
+              className="ghost-button-blue text-xs py-2 px-3.5 flex items-center gap-1.5"
             >
               <HiOutlineUserAdd className="w-3.5 h-3.5" />
-              <span>Register User</span>
+              <span>Provision User</span>
             </button>
           </div>
         </div>
@@ -266,16 +276,16 @@ export default function AdminPage() {
           {statsCards.map((card) => (
             <div
               key={card.label}
-              className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-xs flex items-center justify-between"
+              className="ghost-panel p-5 flex items-center justify-between"
             >
               <div>
-                <p className="text-xs font-semibold text-slate-600">{card.label}</p>
-                <h3 className="text-2xl font-display font-bold text-slate-900 mt-1">
+                <p className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">{card.label}</p>
+                <h3 className="text-2xl font-mono font-bold text-white mt-1">
                   {card.value.toLocaleString()}
                 </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">{card.hint}</p>
+                <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">{card.hint}</p>
               </div>
-              <div className="p-3 bg-blue-50 rounded-xl text-blue-600">
+              <div className="p-3 bg-ghost-blue/15 border border-ghost-blue/30 rounded-xl text-ghost-blue">
                 <card.icon className="w-6 h-6" />
               </div>
             </div>
@@ -283,13 +293,13 @@ export default function AdminPage() {
         </div>
 
         {/* Directory Section */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div className="ghost-panel p-6 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-ghost-ice/15 pb-4">
             <div>
-              <h2 className="text-base font-semibold text-slate-900">User Account Registry</h2>
-              <p className="text-xs text-slate-500">Filter and manage user permissions</p>
+              <h2 className="text-base font-display font-bold text-white tracking-tight">Operator Account Registry</h2>
+              <p className="text-xs text-ghost-ice/50 font-ui">Audit and configure system permissions</p>
             </div>
-            <span className="text-xs text-slate-400 font-mono">
+            <span className="text-xs text-ghost-ice/40 font-mono">
               {filteredUsers.length} records matching
             </span>
           </div>
@@ -297,14 +307,14 @@ export default function AdminPage() {
           {/* Filters Row */}
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
             <div className="sm:col-span-6 relative">
-              <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <HiOutlineSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ghost-ice/40" />
               <input
                 id="admin-user-search"
                 type="text"
-                placeholder="Search candidate name, email, or contact number..."
+                placeholder="Search candidate name, email, or contact coordinate..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3.5 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                className="ghost-input pl-10 text-xs"
               />
             </div>
 
@@ -312,12 +322,15 @@ export default function AdminPage() {
               <select
                 id="admin-role-filter"
                 value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 font-medium focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all cursor-pointer appearance-none"
+                onChange={(e) => {
+                  setRoleFilter(e.target.value);
+                  playMechanicalToggle(true);
+                }}
+                className="ghost-input cursor-pointer appearance-none text-xs"
               >
-                <option value="ALL">All Roles</option>
-                <option value="ADMIN">Administrators</option>
-                <option value="MENTOR">Mentors</option>
+                <option value="ALL" className="bg-[#00050a] text-ghost-ice">All Roles</option>
+                <option value="ADMIN" className="bg-[#00050a] text-ghost-ice">Administrators</option>
+                <option value="MENTOR" className="bg-[#00050a] text-ghost-ice">Mentors</option>
                 <option value="STUDENT">Students</option>
               </select>
             </div>

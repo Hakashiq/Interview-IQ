@@ -5,12 +5,13 @@ import toast from 'react-hot-toast';
 import {
   HiOutlineMail, HiOutlineLockClosed, HiOutlineEye, HiOutlineEyeOff,
   HiOutlineUser, HiOutlinePhone, HiOutlineIdentification, HiOutlineAcademicCap,
-  HiOutlineSparkles, HiOutlineCheckCircle, HiOutlineX
+  HiOutlineSparkles, HiOutlineCheckCircle, HiOutlineX, HiOutlineTerminal
 } from 'react-icons/hi';
 import ParticleBackground from '../components/layout/ParticleBackground';
 import api, { getServerBaseUrl } from '../api/axios';
 import { validatePassword, getPasswordStrength } from '../utils/passwordValidator';
 import PasswordRequirementsList from '../components/common/PasswordRequirementsList';
+import { playHoverTick, playMechanicalToggle } from '../utils/soundEffects';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -35,6 +36,7 @@ export default function RegisterPage() {
     fileData.append('file', file);
 
     setUploadingId(true);
+    playMechanicalToggle(true);
     try {
       const res = await api.post('/auth/register/id-card', fileData, {
         headers: {
@@ -42,9 +44,9 @@ export default function RegisterPage() {
         },
       });
       setIdCardPath(res.data.idCardPath);
-      toast.success('Document uploaded successfully ✨');
+      toast.success('Document specification attached');
     } catch (err) {
-      const msg = err.response?.data?.message || 'Failed to upload document. You can still create your account without it.';
+      const msg = err.response?.data?.message || 'Failed to upload document. You can still initialize without it.';
       toast.error(msg);
       console.error(err);
     } finally {
@@ -58,9 +60,10 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    playMechanicalToggle(true);
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error('Access keys do not match');
       return;
     }
 
@@ -81,9 +84,10 @@ export default function RegisterPage() {
         idCardPath || null,
         formData.education
       );
-      toast.success('Account created! Welcome to InterviewIQ 🚀');
+      toast.success('Operator Core Initialized! Welcome aboard.');
     } catch (err) {
-      const message = err.response?.data?.message || 'Registration failed';
+      playMechanicalToggle(false);
+      const message = err.response?.data?.message || 'Core registration failed';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -93,91 +97,106 @@ export default function RegisterPage() {
   const strength = getPasswordStrength(formData.password);
 
   return (
-    <div className="min-h-screen bg-porcelain-50 flex items-center justify-center relative overflow-hidden py-12 px-4 selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-ghost-void text-ghost-ice flex items-center justify-center relative overflow-hidden py-12 px-4 devices-matrix-grid">
       <ParticleBackground />
 
       <div className="relative z-10 w-full max-w-lg animate-fade-in">
         
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex flex-col items-center group">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 group-hover:bg-blue-700 text-white font-bold text-base shadow-xs mb-3 transition-colors">
+          <Link
+            to="/"
+            onMouseEnter={playHoverTick}
+            className="inline-flex flex-col items-center group"
+          >
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-ghost-blue group-hover:bg-[#005bbb] text-white font-mono font-bold text-base shadow-xl shadow-ghost-blue/30 mb-3 transition-all">
               IQ
             </div>
-            <h1 className="text-2xl font-display font-bold text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
-              InterviewIQ
+            <h1 className="text-2xl font-display font-bold text-white tracking-tightest group-hover:text-ghost-ice transition-colors">
+              GHOST // INTERVIEW-IQ
             </h1>
           </Link>
-          <p className="text-xs text-slate-500 mt-1">
-            Join InterviewIQ to practice with AI proctored mock interview sessions
-          </p>
+          <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ghost-ice/15 bg-ghost-ice/5 font-mono text-[10px] text-ghost-ice/60 uppercase tracking-widest">
+            <span className="w-1.5 h-1.5 rounded-full bg-ghost-blue animate-pulse" />
+            OPERATOR CORE PROVISIONING
+          </div>
         </div>
 
-        {/* Card */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-7 sm:p-8 shadow-subtle space-y-5">
+        {/* Chassis Panel */}
+        <div className="ghost-panel p-6 sm:p-8 space-y-5">
           <form onSubmit={handleSubmit} className="space-y-4">
             
             {/* Role Selection */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                Account Role
+              <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-ghost-ice/80 mb-2">
+                Operational Role Assignment
               </label>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setFormData({ ...formData, role: 'STUDENT' })}
-                  className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all flex flex-col items-center gap-0.5 ${
+                  onClick={() => {
+                    setFormData({ ...formData, role: 'STUDENT' });
+                    playMechanicalToggle(true);
+                  }}
+                  onMouseEnter={playHoverTick}
+                  data-sfx="toggle"
+                  className={`py-2.5 px-3 rounded-xl border text-xs font-ui uppercase tracking-wider transition-all flex flex-col items-center gap-0.5 ${
                     formData.role === 'STUDENT'
-                      ? 'border-blue-600 bg-blue-50/60 text-blue-900 ring-1 ring-blue-600/30'
-                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                      ? 'border-ghost-blue bg-ghost-blue/20 text-white shadow-sm shadow-ghost-blue/20'
+                      : 'border-ghost-ice/15 bg-[#000307] text-ghost-ice/70 hover:border-ghost-ice/30'
                   }`}
                 >
                   <span className="font-bold">Student Candidate</span>
-                  <span className="text-[10px] text-slate-400 font-normal">Prepare for placement rounds</span>
+                  <span className="text-[10px] font-mono text-ghost-ice/50 normal-case">Placement simulation</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setFormData({ ...formData, role: 'MENTOR' })}
-                  className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all flex flex-col items-center gap-0.5 ${
+                  onClick={() => {
+                    setFormData({ ...formData, role: 'MENTOR' });
+                    playMechanicalToggle(true);
+                  }}
+                  onMouseEnter={playHoverTick}
+                  data-sfx="toggle"
+                  className={`py-2.5 px-3 rounded-xl border text-xs font-ui uppercase tracking-wider transition-all flex flex-col items-center gap-0.5 ${
                     formData.role === 'MENTOR'
-                      ? 'border-blue-600 bg-blue-50/60 text-blue-900 ring-1 ring-blue-600/30'
-                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                      ? 'border-ghost-blue bg-ghost-blue/20 text-white shadow-sm shadow-ghost-blue/20'
+                      : 'border-ghost-ice/15 bg-[#000307] text-ghost-ice/70 hover:border-ghost-ice/30'
                   }`}
                 >
                   <span className="font-bold">Mentor / Evaluator</span>
-                  <span className="text-[10px] text-slate-400 font-normal">Review cohort integrity</span>
+                  <span className="text-[10px] font-mono text-ghost-ice/50 normal-case">Cohort telemetry audit</span>
                 </button>
               </div>
             </div>
 
             {/* Full Name */}
             <div>
-              <label htmlFor="reg-name" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                Full Name
+              <label htmlFor="reg-name" className="block text-[11px] font-mono uppercase tracking-wider text-ghost-ice/80 mb-1.5">
+                Full Operator Name
               </label>
               <div className="relative">
-                <HiOutlineUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                <HiOutlineUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ghost-ice/40 w-4 h-4" />
                 <input
                   id="reg-name"
                   type="text"
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
-                  placeholder="e.g. Alex Morgan"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all"
+                  placeholder="e.g. Alex Chen"
+                  className="ghost-input pl-10"
                   required
                 />
               </div>
             </div>
 
-            {/* Email & Phone in 2 Columns */}
+            {/* Email & Phone */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label htmlFor="reg-email" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Email Address
+                <label htmlFor="reg-email" className="block text-[11px] font-mono uppercase tracking-wider text-ghost-ice/80 mb-1.5">
+                  Identity Email
                 </label>
                 <div className="relative">
-                  <HiOutlineMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                  <HiOutlineMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ghost-ice/40 w-4 h-4" />
                   <input
                     id="reg-email"
                     type="email"
@@ -185,26 +204,26 @@ export default function RegisterPage() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="alex@domain.com"
-                    className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all"
+                    className="ghost-input pl-10"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="reg-phone" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                <label htmlFor="reg-phone" className="block text-[11px] font-mono uppercase tracking-wider text-ghost-ice/80 mb-1.5">
                   Phone (Optional)
                 </label>
                 <div className="relative">
-                  <HiOutlinePhone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                  <HiOutlinePhone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ghost-ice/40 w-4 h-4" />
                   <input
                     id="reg-phone"
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="+91 9876543210"
-                    className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all"
+                    placeholder="+1 555-0199"
+                    className="ghost-input pl-10"
                   />
                 </div>
               </div>
@@ -212,46 +231,47 @@ export default function RegisterPage() {
 
             {/* Education */}
             <div>
-              <label htmlFor="reg-education" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                Institution & Degree
+              <label htmlFor="reg-education" className="block text-[11px] font-mono uppercase tracking-wider text-ghost-ice/80 mb-1.5">
+                Institution &amp; Degree Program
               </label>
               <div className="relative">
-                <HiOutlineAcademicCap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                <HiOutlineAcademicCap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ghost-ice/40 w-4 h-4" />
                 <input
                   id="reg-education"
                   type="text"
                   name="education"
                   value={formData.education}
                   onChange={handleChange}
-                  placeholder="e.g. National Institute of Tech, B.Tech CS"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all"
+                  placeholder="e.g. Stanford University, B.S. Computer Science"
+                  className="ghost-input pl-10"
                   required
                 />
               </div>
             </div>
 
-            {/* Password & Confirm */}
+            {/* Passwords */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label htmlFor="reg-password" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Password
+                <label htmlFor="reg-password" className="block text-[11px] font-mono uppercase tracking-wider text-ghost-ice/80 mb-1.5">
+                  Access Key
                 </label>
                 <div className="relative">
-                  <HiOutlineLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                  <HiOutlineLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ghost-ice/40 w-4 h-4" />
                   <input
                     id="reg-password"
                     type={showPassword ? 'text' : 'password'}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Min 8 characters"
-                    className="w-full pl-10 pr-9 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all font-mono"
+                    placeholder="Min 8 chars"
+                    className="ghost-input pl-10 pr-9 font-mono"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    onMouseEnter={playHoverTick}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-ghost-ice/40 hover:text-white"
                   >
                     {showPassword ? <HiOutlineEyeOff className="w-3.5 h-3.5" /> : <HiOutlineEye className="w-3.5 h-3.5" />}
                   </button>
@@ -259,11 +279,11 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="reg-confirm" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Confirm Password
+                <label htmlFor="reg-confirm" className="block text-[11px] font-mono uppercase tracking-wider text-ghost-ice/80 mb-1.5">
+                  Confirm Key
                 </label>
                 <div className="relative">
-                  <HiOutlineLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                  <HiOutlineLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ghost-ice/40 w-4 h-4" />
                   <input
                     id="reg-confirm"
                     type="password"
@@ -271,55 +291,61 @@ export default function RegisterPage() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all font-mono"
+                    className="ghost-input pl-10 font-mono"
                     required
                   />
                 </div>
               </div>
             </div>
 
-            {/* Password Strength Indicator & Requirements */}
+            {/* Password Strength Indicator */}
             {formData.password && (
-              <div className="space-y-1.5 pt-0.5">
+              <div className="space-y-1.5 pt-1">
                 <div className="flex items-center gap-2">
                   <div className="flex-1 flex gap-1">
                     {[1, 2, 3, 4].map((i) => (
                       <div
                         key={i}
                         className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                          i <= strength.score ? strength.color : 'bg-slate-200'
+                          i <= strength.score ? 'bg-ghost-blue' : 'bg-ghost-ice/15'
                         }`}
                       />
                     ))}
                   </div>
-                  <span className="text-[11px] font-mono text-slate-500">{strength.text}</span>
+                  <span className="text-[10px] font-mono text-ghost-ice/60">{strength.text}</span>
                 </div>
                 <PasswordRequirementsList password={formData.password} />
               </div>
             )}
 
-            {/* ID Card Verification Upload */}
+            {/* ID Document Specification */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Institutional ID Verification ({formData.role === 'MENTOR' ? 'Mentor Credential' : 'Student ID'})
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-ghost-ice/80">
+                  Institutional Credential ({formData.role === 'MENTOR' ? 'Mentor Spec' : 'Student ID'})
                 </label>
-                <span className="text-[11px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Optional</span>
+                <span className="text-[10px] font-mono text-ghost-ice/40 border border-ghost-ice/15 px-1.5 py-0.5 rounded">
+                  OPTIONAL
+                </span>
               </div>
 
               {!idCardPath ? (
-                <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl cursor-pointer bg-slate-50 hover:bg-blue-50/20 transition-all p-3">
+                <label className="flex flex-col items-center justify-center w-full h-24 border border-dashed border-ghost-ice/25 hover:border-ghost-blue rounded-xl cursor-pointer bg-[#000307]/70 hover:bg-ghost-ice/5 transition-all p-3">
                   <div className="flex flex-col items-center justify-center text-center">
                     {uploadingId ? (
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-xs text-slate-600">Uploading document...</span>
+                        <div className="w-4 h-4 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
+                        <span className="text-xs font-mono text-ghost-ice/70">Uploading specification document...</span>
                       </div>
                     ) : (
                       <>
-                        <HiOutlineIdentification className="w-5 h-5 text-slate-400 mb-1" />
-                        <span className="text-xs font-semibold text-slate-700">Click to upload ID photo or document</span>
-                        <span className="text-[10px] text-slate-400">PDF, JPG, PNG or WEBP (Max 10MB)</span>
+                        <HiOutlineIdentification className="w-5 h-5 text-ghost-ice/40 mb-1" />
+                        <span className="text-xs font-ui font-semibold text-ghost-ice">
+                          Attach verification photo or PDF
+                        </span>
+                        <span className="text-[10px] font-mono text-ghost-ice/40">
+                          PDF, JPG, PNG or WEBP (Max 10MB)
+                        </span>
                       </>
                     )}
                   </div>
@@ -332,11 +358,11 @@ export default function RegisterPage() {
                   />
                 </label>
               ) : (
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3 flex items-center justify-between gap-3">
+                <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-3 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5">
-                    <HiOutlineCheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                    <HiOutlineCheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
                     <div>
-                      <p className="text-xs font-semibold text-emerald-900">
+                      <p className="text-xs font-mono font-semibold text-emerald-300">
                         {idCardPath.toLowerCase().endsWith('.pdf') ? 'ID Document (PDF) Attached' : 'ID Photo Attached'}
                       </p>
                       <button
@@ -345,7 +371,7 @@ export default function RegisterPage() {
                           const fullUrl = getServerBaseUrl() + idCardPath;
                           window.open(fullUrl, '_blank');
                         }}
-                        className="text-[11px] text-blue-600 hover:underline font-medium"
+                        className="text-[10px] font-mono text-ghost-blue hover:underline"
                       >
                         Inspect uploaded preview ↗
                       </button>
@@ -354,7 +380,8 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setIdCardPath('')}
-                    className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50"
+                    onMouseEnter={playHoverTick}
+                    className="p-1 rounded-md text-ghost-ice/40 hover:text-red-400 hover:bg-ghost-alert/10"
                   >
                     <HiOutlineX className="w-4 h-4" />
                   </button>
@@ -362,37 +389,46 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Submit */}
+            {/* Submit CTA */}
             <button
+              id="register-submit-btn"
               type="submit"
               disabled={loading}
-              className="btn-primary w-full py-2.5 flex items-center justify-center gap-2 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-xs mt-3"
+              onMouseEnter={playHoverTick}
+              data-sfx="toggle"
+              className="w-full py-2.5 rounded-full bg-ghost-blue hover:bg-[#005bbb] text-ghost-ice font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all shadow-xl shadow-ghost-blue/25 disabled:opacity-50 flex items-center justify-center gap-2 mt-3"
             >
               {loading ? (
                 <>
                   <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Registering Account...</span>
+                  <span>Provisioning Operator Account...</span>
                 </>
               ) : (
                 <>
-                  <HiOutlineSparkles className="w-4 h-4" />
-                  <span>Create Account</span>
+                  <HiOutlineTerminal className="w-4 h-4" />
+                  <span>Initialize Operator Core</span>
                 </>
               )}
             </button>
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-slate-200" />
-            <span className="text-[11px] text-slate-400 uppercase font-mono">registered already?</span>
-            <div className="flex-1 h-px bg-slate-200" />
+          <div className="flex items-center gap-3 pt-2">
+            <div className="flex-1 h-px bg-ghost-ice/15" />
+            <span className="text-[10px] text-ghost-ice/40 uppercase font-mono tracking-widest">
+              EXISTING OPERATOR?
+            </span>
+            <div className="flex-1 h-px bg-ghost-ice/15" />
           </div>
 
-          <p className="text-center text-xs text-slate-600">
-            Already have an account?{' '}
-            <Link to="/login" className="text-blue-600 hover:underline font-semibold">
-              Sign in
+          <p className="text-center font-ui text-xs text-ghost-ice/60">
+            Already have an active core?{' '}
+            <Link
+              to="/login"
+              onMouseEnter={playHoverTick}
+              className="text-white hover:text-ghost-blue font-semibold underline underline-offset-4 ml-1"
+            >
+              Authenticate here
             </Link>
           </p>
         </div>
