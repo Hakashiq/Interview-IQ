@@ -15,7 +15,7 @@ export default function AnalyticsPage() {
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Ghost Cyber-Industrial Chart Tokens
+  // Cyber-Industrial Chart Tokens
   const chartTextColor = 'rgba(214, 234, 255, 0.7)';
   const chartGridColor = 'rgba(214, 234, 255, 0.08)';
   const tooltipBg = '#00050a';
@@ -181,9 +181,9 @@ export default function AnalyticsPage() {
     return (
       <AppLayout>
         <div className="flex items-center justify-center py-32">
-          <div className="ghost-panel p-8 flex flex-col items-center gap-3 text-center">
-            <div className="w-8 h-8 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
-            <p className="text-ghost-ice/60 text-xs font-mono">Aggregating telemetry analytics...</p>
+          <div className="iq-panel p-8 flex flex-col items-center gap-3 text-center">
+            <div className="w-8 h-8 border-2 border-iq-blue border-t-transparent rounded-full animate-spin" />
+            <p className="text-iq-ice/60 text-xs font-mono">Aggregating telemetry analytics...</p>
           </div>
         </div>
       </AppLayout>
@@ -195,7 +195,7 @@ export default function AnalyticsPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="pb-3 border-b border-ghost-ice/15">
+        <div className="pb-3 border-b border-iq-ice/15">
           <div className="flex items-center gap-2 mb-1.5">
             <span className="telemetry-chip-active text-[10px]">
               MOD.05 // TELEMETRY INSIGHTS
@@ -204,7 +204,7 @@ export default function AnalyticsPage() {
           <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
             Diagnostic Analytics &amp; Metrics
           </h1>
-          <p className="text-xs sm:text-sm text-ghost-ice/60 font-ui mt-1">
+          <p className="text-xs sm:text-sm text-iq-ice/60 font-ui mt-1">
             Historical cadence evaluation, technical competence tracking, and time-series performance graphs.
           </p>
         </div>
@@ -212,13 +212,13 @@ export default function AnalyticsPage() {
         {/* 4 Stat Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat) => (
-            <div key={stat.label} className="ghost-panel p-4 sm:p-5">
-              <div className="flex items-center justify-between text-ghost-ice/50 mb-2">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">{stat.label}</span>
-                <stat.icon className="w-4 h-4 text-ghost-blue" />
+            <div key={stat.label} className="iq-panel p-4 sm:p-5">
+              <div className="flex items-center justify-between text-iq-ice/50 mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-iq-ice/60">{stat.label}</span>
+                <stat.icon className="w-4 h-4 text-iq-blue" />
               </div>
               <p className="text-2xl sm:text-3xl font-mono font-bold text-white tracking-tight">{stat.value}</p>
-              <p className="text-[9px] font-mono text-ghost-ice/40 mt-1">{stat.hint}</p>
+              <p className="text-[9px] font-mono text-iq-ice/40 mt-1">{stat.hint}</p>
             </div>
           ))}
         </div>
@@ -227,13 +227,13 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* Performance Trend Line Chart */}
-          <div className="lg:col-span-8 ghost-panel p-5 sm:p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-ghost-ice/15 pb-3">
+          <div className="lg:col-span-8 iq-panel p-5 sm:p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-iq-ice/15 pb-3">
               <div>
                 <h3 className="text-sm font-display font-bold text-white uppercase tracking-wider">
                   Evaluation Trajectory
                 </h3>
-                <p className="text-[11px] font-mono text-ghost-ice/50">Historical overall score progression (1-10)</p>
+                <p className="text-[11px] font-mono text-iq-ice/50">Historical overall score progression (1-10)</p>
               </div>
               <span className="telemetry-chip text-[9px]">TIME SERIES</span>
             </div>
@@ -242,7 +242,7 @@ export default function AnalyticsPage() {
               {sortedInterviews.length > 0 ? (
                 <Line data={lineData} options={lineOptions} />
               ) : (
-                <div className="h-full flex items-center justify-center text-ghost-ice/40 font-mono text-xs">
+                <div className="h-full flex items-center justify-center text-iq-ice/40 font-mono text-xs">
                   Awaiting interview telemetry records
                 </div>
               )}
@@ -250,13 +250,13 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Difficulty Doughnut Chart */}
-          <div className="lg:col-span-4 ghost-panel p-5 sm:p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-ghost-ice/15 pb-3">
+          <div className="lg:col-span-4 iq-panel p-5 sm:p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-iq-ice/15 pb-3">
               <div>
                 <h3 className="text-sm font-display font-bold text-white uppercase tracking-wider">
                   Tier Calibrations
                 </h3>
-                <p className="text-[11px] font-mono text-ghost-ice/50">Distribution by difficulty level</p>
+                <p className="text-[11px] font-mono text-iq-ice/50">Distribution by difficulty level</p>
               </div>
               <span className="telemetry-chip text-[9px]">SPECTRUM</span>
             </div>
@@ -265,7 +265,7 @@ export default function AnalyticsPage() {
               {totalInterviews > 0 ? (
                 <Doughnut data={doughnutData} options={doughnutOptions} />
               ) : (
-                <div className="text-ghost-ice/40 font-mono text-xs">
+                <div className="text-iq-ice/40 font-mono text-xs">
                   Zero sessions logged
                 </div>
               )}
@@ -275,13 +275,13 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Skill Proficiency Ranks */}
-        <div className="ghost-panel p-5 sm:p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-ghost-ice/15 pb-3">
+        <div className="iq-panel p-5 sm:p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-iq-ice/15 pb-3">
             <div>
               <h3 className="text-sm font-display font-bold text-white uppercase tracking-wider">
                 Module Performance Matrix
               </h3>
-              <p className="text-[11px] font-mono text-ghost-ice/50">
+              <p className="text-[11px] font-mono text-iq-ice/50">
                 Mean performance scores across distinct tracks and subject modules
               </p>
             </div>
@@ -289,20 +289,20 @@ export default function AnalyticsPage() {
           </div>
 
           {skillBars.length === 0 ? (
-            <div className="py-8 text-center text-ghost-ice/40 font-mono text-xs">
+            <div className="py-8 text-center text-iq-ice/40 font-mono text-xs">
               Complete mock interview runs to compile module proficiency ranks.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
               {skillBars.map((skill) => (
-                <div key={skill.name} className="p-3.5 rounded-xl bg-[#000307]/70 border border-ghost-ice/15">
+                <div key={skill.name} className="p-3.5 rounded-xl bg-[#000307]/70 border border-iq-ice/15">
                   <div className="flex items-center justify-between text-xs font-mono mb-1.5">
                     <span className="font-display font-bold text-white">{skill.name}</span>
-                    <span className="font-bold text-ghost-blue">{skill.level}% ACCURACY</span>
+                    <span className="font-bold text-iq-blue">{skill.level}% ACCURACY</span>
                   </div>
-                  <div className="w-full bg-ghost-ice/10 h-1.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-iq-ice/10 h-1.5 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-ghost-blue rounded-full transition-all duration-500"
+                      className="h-full bg-iq-blue rounded-full transition-all duration-500"
                       style={{ width: `${Math.min(skill.level, 100)}%` }}
                     />
                   </div>

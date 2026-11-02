@@ -531,12 +531,12 @@ export default function InterviewSessionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-ghost-void text-ghost-ice devices-matrix-grid">
-        <div className="ghost-panel p-8 flex flex-col items-center gap-4 text-center max-w-sm">
-          <div className="w-10 h-10 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-iq-void text-iq-ice devices-matrix-grid">
+        <div className="iq-panel p-8 flex flex-col items-center gap-4 text-center max-w-sm">
+          <div className="w-10 h-10 border-2 border-iq-blue border-t-transparent rounded-full animate-spin" />
           <div>
             <p className="text-white font-display font-bold text-base uppercase tracking-wider">Mounting Chamber</p>
-            <p className="text-ghost-ice/50 font-mono text-xs mt-1">Calibrating question set &amp; WASM face telemetry...</p>
+            <p className="text-iq-ice/50 font-mono text-xs mt-1">Calibrating question set &amp; WASM face telemetry...</p>
           </div>
         </div>
       </div>
@@ -545,21 +545,21 @@ export default function InterviewSessionPage() {
 
   if (cheated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-ghost-void text-ghost-ice p-4 devices-matrix-grid">
-        <div className="ghost-panel border-ghost-alert/40 bg-ghost-void/95 p-10 max-w-lg w-full text-center shadow-2xl animate-fade-in">
-          <div className="w-16 h-16 rounded-2xl bg-ghost-alert/20 border border-ghost-alert/40 mx-auto flex items-center justify-center mb-5 text-red-400">
+      <div className="min-h-screen flex items-center justify-center bg-iq-void text-iq-ice p-4 devices-matrix-grid">
+        <div className="iq-panel border-iq-alert/40 bg-iq-void/95 p-10 max-w-lg w-full text-center shadow-2xl animate-fade-in">
+          <div className="w-16 h-16 rounded-2xl bg-iq-alert/20 border border-iq-alert/40 mx-auto flex items-center justify-center mb-5 text-red-400">
             <HiOutlineStop className="w-8 h-8" />
           </div>
           <div className="font-mono text-[10px] text-red-400 uppercase tracking-widest mb-1">
             [PROCTOR VIOLATION DETECTED]
           </div>
           <h1 className="text-2xl font-display font-bold text-white mb-2">Chamber Terminated</h1>
-          <p className="text-ghost-ice/70 font-ui text-xs mb-6 leading-relaxed">
+          <p className="text-iq-ice/70 font-ui text-xs mb-6 leading-relaxed">
             Persistent proctoring or focus-loss events exceeded the threshold limit.
             Simulation has been halted to maintain legitimate placement integrity.
           </p>
-          <div className="w-full bg-ghost-ice/10 h-1.5 rounded-full overflow-hidden">
-            <div className="h-full bg-ghost-alert animate-pulse w-full" />
+          <div className="w-full bg-iq-ice/10 h-1.5 rounded-full overflow-hidden">
+            <div className="h-full bg-iq-alert animate-pulse w-full" />
           </div>
         </div>
       </div>
@@ -568,12 +568,12 @@ export default function InterviewSessionPage() {
 
   if (completed) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-ghost-void text-ghost-ice devices-matrix-grid">
-        <div className="ghost-panel p-8 flex flex-col items-center gap-4 text-center animate-fade-in max-w-sm">
-          <div className="w-10 h-10 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-iq-void text-iq-ice devices-matrix-grid">
+        <div className="iq-panel p-8 flex flex-col items-center gap-4 text-center animate-fade-in max-w-sm">
+          <div className="w-10 h-10 border-2 border-iq-blue border-t-transparent rounded-full animate-spin" />
           <div>
             <p className="text-white font-display font-bold text-base uppercase tracking-wider">Generating Telemetry Audit</p>
-            <p className="text-ghost-ice/50 font-mono text-xs mt-1">Compiling 5-Pillar evaluation scorecard...</p>
+            <p className="text-iq-ice/50 font-mono text-xs mt-1">Compiling 5-Pillar evaluation scorecard...</p>
           </div>
         </div>
       </div>
@@ -589,24 +589,24 @@ export default function InterviewSessionPage() {
   const personaMeta = avatarLabels[interviewerAvatar] || avatarLabels.Neha;
 
   return (
-    <div className="min-h-screen bg-ghost-void text-ghost-ice flex flex-col font-ui selection:bg-ghost-blue selection:text-ghost-ice devices-matrix-grid relative">
+    <div className="min-h-screen bg-iq-void text-iq-ice flex flex-col font-ui selection:bg-iq-blue selection:text-iq-ice devices-matrix-grid relative">
       {/* Top Focus Studio Bar */}
-      <header className="h-16 bg-[#00050a]/90 backdrop-blur-xl border-b border-ghost-ice/15 flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-30 shadow-2xl">
+      <header className="h-16 bg-[#00050a]/90 backdrop-blur-xl border-b border-iq-ice/15 flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-30 shadow-2xl">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-ghost-blue text-white flex items-center justify-center font-mono font-bold text-xs shadow-md shadow-ghost-blue/30">
+            <div className="w-8 h-8 rounded-lg bg-iq-blue text-white flex items-center justify-center font-mono font-bold text-xs shadow-md shadow-iq-blue/30">
               IQ
             </div>
             <div>
               <span className="text-sm font-display font-bold text-white hidden sm:inline-block tracking-tightest">
-                GHOST // SIMULATION CHAMBER
+                INTERVIEW-IQ // SIMULATION CHAMBER
               </span>
-              <span className="text-[10px] font-mono text-ghost-ice/50 block sm:hidden uppercase">
+              <span className="text-[10px] font-mono text-iq-ice/50 block sm:hidden uppercase">
                 CHAMBER
               </span>
             </div>
           </div>
-          <div className="h-4 w-px bg-ghost-ice/15 hidden sm:block" />
+          <div className="h-4 w-px bg-iq-ice/15 hidden sm:block" />
           <div className="flex items-center gap-2">
             <span className="telemetry-chip-active text-[10px]">{interview?.jobRole}</span>
             <span className="telemetry-chip text-[10px]">{interview?.difficulty}</span>
@@ -617,29 +617,29 @@ export default function InterviewSessionPage() {
           {/* Warnings Counter */}
           <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono border ${
             warnings === 3
-              ? 'bg-ghost-ice/5 border-ghost-ice/15 text-ghost-ice/70'
+              ? 'bg-iq-ice/5 border-iq-ice/15 text-iq-ice/70'
               : warnings === 2
               ? 'bg-amber-950/40 border-amber-500/40 text-amber-300'
-              : 'bg-ghost-alert/20 border-ghost-alert/50 text-red-400 animate-pulse'
+              : 'bg-iq-alert/20 border-iq-alert/50 text-red-400 animate-pulse'
           }`}>
             <span>STRIKES:</span>
             <span className="font-bold">{warnings}/3</span>
           </div>
 
           {/* Time Elapsed */}
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-ghost-ice/5 border border-ghost-ice/15 text-ghost-ice">
-            <HiOutlineClock className="w-3.5 h-3.5 text-ghost-blue" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-iq-ice/5 border border-iq-ice/15 text-iq-ice">
+            <HiOutlineClock className="w-3.5 h-3.5 text-iq-blue" />
             <span className="text-xs font-mono font-semibold">{formatTime(timeElapsed)}</span>
           </div>
 
           {/* Progress */}
           <div className="hidden md:flex items-center gap-2.5 pl-1">
-            <span className="text-xs font-mono text-ghost-ice/60">
+            <span className="text-xs font-mono text-iq-ice/60">
               <strong className="text-white font-bold">{currentIndex}</strong>/{totalQuestions}
             </span>
-            <div className="w-20 h-1.5 bg-ghost-ice/10 rounded-full overflow-hidden">
+            <div className="w-20 h-1.5 bg-iq-ice/10 rounded-full overflow-hidden">
               <div
-                className="h-full bg-ghost-blue rounded-full transition-all duration-300"
+                className="h-full bg-iq-blue rounded-full transition-all duration-300"
                 style={{ width: `${(currentIndex / totalQuestions) * 100}%` }}
               />
             </div>
@@ -653,7 +653,7 @@ export default function InterviewSessionPage() {
               handleEndInterview();
             }}
             onMouseEnter={playHoverTick}
-            className="px-3 py-1.5 rounded-full border border-ghost-alert/30 bg-ghost-alert/15 hover:bg-ghost-alert/30 text-red-300 font-mono text-[10px] uppercase tracking-wider flex items-center gap-1 transition-all"
+            className="px-3 py-1.5 rounded-full border border-iq-alert/30 bg-iq-alert/15 hover:bg-iq-alert/30 text-red-300 font-mono text-[10px] uppercase tracking-wider flex items-center gap-1 transition-all"
             title="Conclude current interview session"
           >
             <HiOutlineStop className="w-3.5 h-3.5" />
@@ -670,10 +670,10 @@ export default function InterviewSessionPage() {
           <div className="lg:col-span-8 space-y-6">
             
             {/* Question Prompt Card */}
-            <div className="ghost-panel p-6 sm:p-8 relative overflow-hidden animate-fade-in">
+            <div className="iq-panel p-6 sm:p-8 relative overflow-hidden animate-fade-in">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] text-ghost-blue uppercase tracking-widest">
+                  <span className="font-mono text-[10px] text-iq-blue uppercase tracking-widest">
                     PROMPT [{currentIndex} OF {totalQuestions}]
                   </span>
                   {currentQuestion?.category && (
@@ -688,8 +688,8 @@ export default function InterviewSessionPage() {
                   onMouseEnter={playHoverTick}
                   className={`text-[10px] font-mono px-3 py-1 rounded-full border flex items-center gap-1.5 transition-all ${
                     isAvatarSpeaking
-                      ? 'bg-ghost-blue border-ghost-blue text-white shadow-sm shadow-ghost-blue'
-                      : 'bg-ghost-ice/5 border-ghost-ice/15 hover:border-ghost-ice/30 text-ghost-ice/80'
+                      ? 'bg-iq-blue border-iq-blue text-white shadow-sm shadow-iq-blue'
+                      : 'bg-iq-ice/5 border-iq-ice/15 hover:border-iq-ice/30 text-iq-ice/80'
                   }`}
                   title="Play audio pronunciation"
                 >
@@ -705,13 +705,13 @@ export default function InterviewSessionPage() {
 
             {/* Answer Input or Feedback View */}
             {!feedback ? (
-              <div className="ghost-panel p-6 space-y-4 animate-fade-in">
-                <div className="flex items-center justify-between pb-3 border-b border-ghost-ice/15">
+              <div className="iq-panel p-6 space-y-4 animate-fade-in">
+                <div className="flex items-center justify-between pb-3 border-b border-iq-ice/15">
                   <div className="flex items-center gap-2">
                     <label htmlFor="answer-textarea" className="text-xs font-mono uppercase tracking-wider text-white">
                       Response Buffer
                     </label>
-                    <span className="text-[10px] text-ghost-ice/40 font-mono">
+                    <span className="text-[10px] text-iq-ice/40 font-mono">
                       ({answer.length} bytes)
                     </span>
                   </div>
@@ -726,11 +726,11 @@ export default function InterviewSessionPage() {
                     onMouseEnter={playHoverTick}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-mono uppercase tracking-wider transition-all ${
                       isListening
-                        ? 'bg-ghost-heat/20 border-ghost-heat text-ghost-heat animate-pulse'
-                        : 'bg-ghost-ice/5 border-ghost-ice/15 text-ghost-ice/80 hover:border-ghost-ice/30'
+                        ? 'bg-iq-heat/20 border-iq-heat text-iq-heat animate-pulse'
+                        : 'bg-iq-ice/5 border-iq-ice/15 text-iq-ice/80 hover:border-iq-ice/30'
                     }`}
                   >
-                    <HiOutlineMicrophone className={`w-3.5 h-3.5 ${isListening ? 'text-ghost-heat' : 'text-ghost-ice/50'}`} />
+                    <HiOutlineMicrophone className={`w-3.5 h-3.5 ${isListening ? 'text-iq-heat' : 'text-iq-ice/50'}`} />
                     <span>{isListening ? 'STREAMING VOICE...' : 'VOICE DICTATION'}</span>
                   </button>
                 </div>
@@ -743,12 +743,12 @@ export default function InterviewSessionPage() {
                     onChange={(e) => setAnswer(e.target.value)}
                     placeholder="Structure your answer clearly. Detail architectural tradeoffs, algorithmic complexity, boundary conditions, and internal mechanisms..."
                     rows={8}
-                    className="w-full bg-[#000307]/80 border border-ghost-ice/20 rounded-xl p-4 font-mono text-xs text-ghost-ice placeholder-ghost-ice/35 focus:bg-[#00050a] focus:border-ghost-blue focus:ring-1 focus:ring-ghost-blue outline-none transition-all leading-relaxed resize-y"
+                    className="w-full bg-[#000307]/80 border border-iq-ice/20 rounded-xl p-4 font-mono text-xs text-iq-ice placeholder-iq-ice/35 focus:bg-[#00050a] focus:border-iq-blue focus:ring-1 focus:ring-iq-blue outline-none transition-all leading-relaxed resize-y"
                   />
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                  <p className="text-[10px] font-mono text-ghost-ice/40">
+                  <p className="text-[10px] font-mono text-iq-ice/40">
                     &gt; Precision AST evaluation: address complexity, data structures &amp; thread safety.
                   </p>
                   <button
@@ -760,7 +760,7 @@ export default function InterviewSessionPage() {
                     disabled={submitting || !answer.trim()}
                     onMouseEnter={playHoverTick}
                     data-sfx="toggle"
-                    className="ghost-button-blue w-full sm:w-auto px-6 py-2.5 flex items-center justify-center gap-2 disabled:opacity-40"
+                    className="iq-button-blue w-full sm:w-auto px-6 py-2.5 flex items-center justify-center gap-2 disabled:opacity-40"
                   >
                     {submitting ? (
                       <>
@@ -778,22 +778,22 @@ export default function InterviewSessionPage() {
               </div>
             ) : (
               /* Post-Answer Evaluation Card */
-              <div className="ghost-panel p-6 sm:p-7 space-y-6 animate-fade-in">
-                <div className="flex items-center justify-between border-b border-ghost-ice/15 pb-4">
+              <div className="iq-panel p-6 sm:p-7 space-y-6 animate-fade-in">
+                <div className="flex items-center justify-between border-b border-iq-ice/15 pb-4">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-8 h-8 rounded-lg bg-ghost-blue/20 border border-ghost-blue/40 text-ghost-ice flex items-center justify-center">
-                      <HiOutlineSparkles className="w-4 h-4 text-ghost-blue" />
+                    <span className="w-8 h-8 rounded-lg bg-iq-blue/20 border border-iq-blue/40 text-iq-ice flex items-center justify-center">
+                      <HiOutlineSparkles className="w-4 h-4 text-iq-blue" />
                     </span>
                     <div>
                       <h3 className="text-base font-display font-bold text-white tracking-tight">
                         5-Pillar Neural Evaluation
                       </h3>
-                      <p className="text-[11px] font-mono text-ghost-ice/50">Semantic benchmark alignment metrics</p>
+                      <p className="text-[11px] font-mono text-iq-ice/50">Semantic benchmark alignment metrics</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] font-mono text-ghost-ice/50 block uppercase">Overall Grade</span>
-                    <span className="text-2xl font-mono font-bold text-ghost-blue">
+                    <span className="text-[10px] font-mono text-iq-ice/50 block uppercase">Overall Grade</span>
+                    <span className="text-2xl font-mono font-bold text-iq-blue">
                       {feedback.overallScore}/10
                     </span>
                   </div>
@@ -807,14 +807,14 @@ export default function InterviewSessionPage() {
                     { label: 'Communication', score: feedback.communication },
                     { label: 'Relevance', score: feedback.relevance },
                   ].map(({ label, score }) => (
-                    <div key={label} className="p-3 rounded-xl bg-[#000307]/80 border border-ghost-ice/15 text-center">
+                    <div key={label} className="p-3 rounded-xl bg-[#000307]/80 border border-iq-ice/15 text-center">
                       <p className={`text-xl font-bold font-mono ${
                         (score || 0) >= 8 ? 'text-emerald-400' :
                         (score || 0) >= 6 ? 'text-amber-400' : 'text-red-400'
                       }`}>
-                        {score || 0}<span className="text-xs font-normal text-ghost-ice/40">/10</span>
+                        {score || 0}<span className="text-xs font-normal text-iq-ice/40">/10</span>
                       </p>
-                      <p className="text-[10px] font-mono uppercase text-ghost-ice/60 mt-1">{label}</p>
+                      <p className="text-[10px] font-mono uppercase text-iq-ice/60 mt-1">{label}</p>
                     </div>
                   ))}
                 </div>
@@ -822,32 +822,32 @@ export default function InterviewSessionPage() {
                 {/* Strengths & Weaknesses */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {feedback.strengths && (
-                    <div className="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-ghost-ice">
+                    <div className="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-iq-ice">
                       <h4 className="text-xs font-mono font-semibold text-emerald-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                         <HiOutlineCheckCircle className="w-4 h-4 text-emerald-400" />
                         Identified Strengths
                       </h4>
-                      <p className="text-xs font-ui text-ghost-ice/80 leading-relaxed">{feedback.strengths}</p>
+                      <p className="text-xs font-ui text-iq-ice/80 leading-relaxed">{feedback.strengths}</p>
                     </div>
                   )}
                   {feedback.weaknesses && (
-                    <div className="p-4 rounded-xl bg-red-950/30 border border-red-500/30 text-ghost-ice">
+                    <div className="p-4 rounded-xl bg-red-950/30 border border-red-500/30 text-iq-ice">
                       <h4 className="text-xs font-mono font-semibold text-red-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                         <HiOutlineExclamation className="w-4 h-4 text-red-400" />
                         Remediation Focus
                       </h4>
-                      <p className="text-xs font-ui text-ghost-ice/80 leading-relaxed">{feedback.weaknesses}</p>
+                      <p className="text-xs font-ui text-iq-ice/80 leading-relaxed">{feedback.weaknesses}</p>
                     </div>
                   )}
                 </div>
 
                 {feedback.improvements && (
-                  <div className="p-4 rounded-xl bg-ghost-blue/10 border border-ghost-blue/30 text-ghost-ice">
-                    <h4 className="text-xs font-mono font-semibold text-ghost-blue uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                      <HiOutlineLightningBolt className="w-4 h-4 text-ghost-blue" />
+                  <div className="p-4 rounded-xl bg-iq-blue/10 border border-iq-blue/30 text-iq-ice">
+                    <h4 className="text-xs font-mono font-semibold text-iq-blue uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                      <HiOutlineLightningBolt className="w-4 h-4 text-iq-blue" />
                       Algorithmic Recommendations
                     </h4>
-                    <p className="text-xs font-ui text-ghost-ice/80 leading-relaxed">{feedback.improvements}</p>
+                    <p className="text-xs font-ui text-iq-ice/80 leading-relaxed">{feedback.improvements}</p>
                   </div>
                 )}
 
@@ -860,7 +860,7 @@ export default function InterviewSessionPage() {
                   }}
                   onMouseEnter={playHoverTick}
                   data-sfx="toggle"
-                  className="ghost-button-blue w-full py-3 flex items-center justify-center gap-2 font-mono text-xs uppercase"
+                  className="iq-button-blue w-full py-3 flex items-center justify-center gap-2 font-mono text-xs uppercase"
                 >
                   {currentIndex >= totalQuestions ? (
                     <>
@@ -882,44 +882,44 @@ export default function InterviewSessionPage() {
           <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
             
             {/* AI Waveform HUD */}
-            <div className="ghost-panel p-5 space-y-4">
+            <div className="iq-panel p-5 space-y-4">
               <div className="flex items-center justify-between text-xs pb-1">
                 <span className="font-mono text-xs font-bold text-white uppercase tracking-wider">
                   Audio Synthesizer
                 </span>
                 <span className={`font-mono text-[10px] font-semibold flex items-center gap-1.5 ${
-                  isAvatarSpeaking ? 'text-ghost-blue' : 'text-ghost-ice/40'
+                  isAvatarSpeaking ? 'text-iq-blue' : 'text-iq-ice/40'
                 }`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${
-                    isAvatarSpeaking ? 'bg-ghost-blue animate-pulse' : 'bg-ghost-ice/20'
+                    isAvatarSpeaking ? 'bg-iq-blue animate-pulse' : 'bg-iq-ice/20'
                   }`} />
                   {isAvatarSpeaking ? 'ACTIVE PCM' : 'STANDBY'}
                 </span>
               </div>
 
               {/* Waveform Cassette Screen */}
-              <div className="bg-[#000307] rounded-xl h-28 flex items-center justify-center gap-1.5 px-6 relative overflow-hidden border border-ghost-ice/15 shadow-inner">
+              <div className="bg-[#000307] rounded-xl h-28 flex items-center justify-center gap-1.5 px-6 relative overflow-hidden border border-iq-ice/15 shadow-inner">
                 {isAvatarSpeaking ? (
                   <>
-                    <div className="wave-bar w-1.5 rounded-full bg-ghost-blue" style={{ animationDelay: '0.0s' }} />
-                    <div className="wave-bar w-1.5 rounded-full bg-ghost-ice" style={{ animationDelay: '0.15s' }} />
-                    <div className="wave-bar w-1.5 rounded-full bg-ghost-blue" style={{ animationDelay: '0.3s' }} />
-                    <div className="wave-bar w-1.5 rounded-full bg-ghost-ice" style={{ animationDelay: '0.45s' }} />
-                    <div className="wave-bar w-1.5 rounded-full bg-ghost-blue" style={{ animationDelay: '0.2s' }} />
-                    <div className="wave-bar w-1.5 rounded-full bg-ghost-ice" style={{ animationDelay: '0.35s' }} />
-                    <div className="wave-bar w-1.5 rounded-full bg-ghost-blue" style={{ animationDelay: '0.1s' }} />
-                    <div className="wave-bar w-1.5 rounded-full bg-ghost-ice" style={{ animationDelay: '0.25s' }} />
-                    <div className="wave-bar w-1.5 rounded-full bg-ghost-blue" style={{ animationDelay: '0.4s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-iq-blue" style={{ animationDelay: '0.0s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-iq-ice" style={{ animationDelay: '0.15s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-iq-blue" style={{ animationDelay: '0.3s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-iq-ice" style={{ animationDelay: '0.45s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-iq-blue" style={{ animationDelay: '0.2s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-iq-ice" style={{ animationDelay: '0.35s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-iq-blue" style={{ animationDelay: '0.1s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-iq-ice" style={{ animationDelay: '0.25s' }} />
+                    <div className="wave-bar w-1.5 rounded-full bg-iq-blue" style={{ animationDelay: '0.4s' }} />
                   </>
                 ) : (
                   <div className="flex items-center gap-2">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-                      <div key={i} className="w-1.5 h-1.5 rounded-full bg-ghost-ice/20" />
+                      <div key={i} className="w-1.5 h-1.5 rounded-full bg-iq-ice/20" />
                     ))}
                   </div>
                 )}
                 
-                <span className="absolute bottom-2 right-3 font-mono text-[9px] uppercase tracking-wider text-ghost-ice/40">
+                <span className="absolute bottom-2 right-3 font-mono text-[9px] uppercase tracking-wider text-iq-ice/40">
                   {isAvatarSpeaking ? '7000Hz LP STREAM' : 'SYNTH IDLE'}
                 </span>
               </div>
@@ -927,7 +927,7 @@ export default function InterviewSessionPage() {
               {/* Persona Metadata */}
               <div className="text-center pt-1">
                 <p className="text-sm font-display font-bold text-white">{personaMeta.title}</p>
-                <p className="text-[10px] font-mono text-ghost-ice/50 mt-0.5">{personaMeta.subtitle}</p>
+                <p className="text-[10px] font-mono text-iq-ice/50 mt-0.5">{personaMeta.subtitle}</p>
               </div>
 
               <button
@@ -937,18 +937,18 @@ export default function InterviewSessionPage() {
                   speakQuestion(currentQuestion?.questionText);
                 }}
                 onMouseEnter={playHoverTick}
-                className="ghost-button-void w-full text-[10px] font-mono py-2 flex items-center justify-center gap-1.5"
+                className="iq-button-void w-full text-[10px] font-mono py-2 flex items-center justify-center gap-1.5"
               >
-                <HiOutlineVolumeUp className="w-3.5 h-3.5 text-ghost-blue" />
+                <HiOutlineVolumeUp className="w-3.5 h-3.5 text-iq-blue" />
                 <span>REPLAY PROMPT AUDIO</span>
               </button>
             </div>
 
             {/* Candidate Optical Chassis Feed */}
-            <div className="ghost-panel p-4 space-y-3">
+            <div className="iq-panel p-4 space-y-3">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-mono text-xs font-bold text-white uppercase flex items-center gap-1.5">
-                  <HiOutlineVideoCamera className="w-3.5 h-3.5 text-ghost-blue" />
+                  <HiOutlineVideoCamera className="w-3.5 h-3.5 text-iq-blue" />
                   Optical Perceiver
                 </span>
                 {webcamStream && (
@@ -959,7 +959,7 @@ export default function InterviewSessionPage() {
                 )}
               </div>
 
-              <div className="relative aspect-video rounded-xl bg-[#000307] overflow-hidden border border-ghost-ice/20 shadow-inner">
+              <div className="relative aspect-video rounded-xl bg-[#000307] overflow-hidden border border-iq-ice/20 shadow-inner">
                 {webcamStream ? (
                   <>
                     <video
@@ -971,13 +971,13 @@ export default function InterviewSessionPage() {
                     />
 
                     {/* Corner Precision Reticles */}
-                    <div className="absolute top-2 left-2 font-mono text-[8px] text-ghost-ice/40 pointer-events-none">
+                    <div className="absolute top-2 left-2 font-mono text-[8px] text-iq-ice/40 pointer-events-none">
                       ┌ 478 LANDMARKS
                     </div>
-                    <div className="absolute top-2 right-2 font-mono text-[8px] text-ghost-ice/40 pointer-events-none">
+                    <div className="absolute top-2 right-2 font-mono text-[8px] text-iq-ice/40 pointer-events-none">
                       0-EGRESS ┐
                     </div>
-                    <div className="absolute bottom-2 left-2 font-mono text-[8px] text-ghost-ice/40 pointer-events-none">
+                    <div className="absolute bottom-2 left-2 font-mono text-[8px] text-iq-ice/40 pointer-events-none">
                       └ GAZE: ACTIVE
                     </div>
 
@@ -989,7 +989,7 @@ export default function InterviewSessionPage() {
                           <p className="text-xs font-mono font-bold text-red-300">
                             {proctorWarning}
                           </p>
-                          <p className="text-[10px] font-mono text-ghost-ice/60">
+                          <p className="text-[10px] font-mono text-iq-ice/60">
                             Re-align gaze to active monitor area.
                           </p>
                         </div>
@@ -997,10 +997,10 @@ export default function InterviewSessionPage() {
                     )}
                   </>
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-center p-4 bg-[#000307] border border-dashed border-ghost-ice/20 rounded-xl">
+                  <div className="w-full h-full flex flex-col items-center justify-center text-center p-4 bg-[#000307] border border-dashed border-iq-ice/20 rounded-xl">
                     <HiOutlineExclamation className="w-5 h-5 text-amber-400 mb-1" />
                     <p className="text-xs font-mono font-bold text-white">Camera Sensor Inactive</p>
-                    <p className="text-[10px] font-mono text-ghost-ice/50 mt-0.5">
+                    <p className="text-[10px] font-mono text-iq-ice/50 mt-0.5">
                       Grant webcam permissions to engage WASM edge proctoring.
                     </p>
                   </div>

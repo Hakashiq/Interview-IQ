@@ -7,25 +7,25 @@ export default function NotFoundPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-ghost-void text-ghost-ice flex items-center justify-center relative overflow-hidden px-4 devices-matrix-grid selection:bg-ghost-blue selection:text-ghost-ice">
+    <div className="min-h-screen bg-iq-void text-iq-ice flex items-center justify-center relative overflow-hidden px-4 devices-matrix-grid selection:bg-iq-blue selection:text-iq-ice">
       <ParticleBackground />
 
       <div className="relative z-10 text-center max-w-md w-full animate-fade-in">
-        <div className="ghost-panel p-8 shadow-2xl space-y-4">
-          <div className="w-14 h-14 rounded-2xl bg-ghost-blue/15 border border-ghost-blue/30 text-ghost-blue font-mono font-bold text-lg mx-auto flex items-center justify-center">
+        <div className="iq-panel p-8 shadow-2xl space-y-4">
+          <div className="w-14 h-14 rounded-2xl bg-iq-blue/15 border border-iq-blue/30 text-iq-blue font-mono font-bold text-lg mx-auto flex items-center justify-center">
             404
           </div>
 
-          <div className="font-mono text-[10px] text-ghost-blue uppercase tracking-widest">
+          <div className="font-mono text-[10px] text-iq-blue uppercase tracking-widest">
             [ENDPOINT NON-EXISTENT]
           </div>
 
           <h1 className="text-xl font-display font-bold text-white tracking-tight">
-            Routing Coordinate Void
+            Page Not Found
           </h1>
 
-          <p className="text-xs text-ghost-ice/60 font-ui leading-relaxed">
-            The requested chamber, API schema, or diagnostic view does not resolve on this core instance.
+          <p className="text-xs text-iq-ice/60 font-ui leading-relaxed">
+            The requested interview chamber, resource, or view could not be located on this instance.
           </p>
 
           <div className="pt-2 flex flex-col sm:flex-row gap-2.5 justify-center">
@@ -36,7 +36,7 @@ export default function NotFoundPage() {
               }}
               onMouseEnter={playHoverTick}
               data-sfx="toggle"
-              className="ghost-button-blue text-xs py-2 px-4 inline-flex items-center justify-center gap-1.5"
+              className="iq-button-blue text-xs py-2 px-4 inline-flex items-center justify-center gap-1.5"
             >
               <HiOutlineHome className="w-4 h-4" />
               <span>Control Panel</span>
@@ -47,16 +47,16 @@ export default function NotFoundPage() {
                 navigate(-1);
               }}
               onMouseEnter={playHoverTick}
-              className="ghost-button-void text-xs py-2 px-4 inline-flex items-center justify-center gap-1.5"
+              className="iq-button-void text-xs py-2 px-4 inline-flex items-center justify-center gap-1.5"
             >
               <HiOutlineArrowLeft className="w-4 h-4" />
-              <span>Previous Vector</span>
+              <span>Go Back</span>
             </button>
           </div>
         </div>
 
-        <div className="mt-4 font-mono text-[9px] text-ghost-ice/30 uppercase tracking-widest">
-          GHOST // INTERVIEW-IQ CORE v2.4
+        <div className="mt-4 font-mono text-[9px] text-iq-ice/30 uppercase tracking-widest">
+          INTERVIEW-IQ // AI PLATFORM v2.4
         </div>
       </div>
     </div>

@@ -19,10 +19,10 @@ import PasswordRequirementsList from '../components/common/PasswordRequirementsL
 
 function ToggleSwitch({ enabled, onChange, label, description }) {
   return (
-    <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#000307]/70 hover:border-ghost-blue/40 transition-colors border border-ghost-ice/15">
+    <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#000307]/70 hover:border-iq-blue/40 transition-colors border border-iq-ice/15">
       <div>
         <p className="text-xs font-mono font-semibold text-white">{label}</p>
-        {description && <p className="text-[11px] font-ui text-ghost-ice/50 mt-0.5">{description}</p>}
+        {description && <p className="text-[11px] font-ui text-iq-ice/50 mt-0.5">{description}</p>}
       </div>
       <button
         type="button"
@@ -32,12 +32,12 @@ function ToggleSwitch({ enabled, onChange, label, description }) {
         }}
         onMouseEnter={playHoverTick}
         data-sfx="toggle"
-        className={`relative w-10 h-5 rounded-full transition-colors duration-200 focus:outline-none border border-ghost-ice/20 ${
-          enabled ? 'bg-ghost-blue' : 'bg-ghost-void'
+        className={`relative w-10 h-5 rounded-full transition-colors duration-200 focus:outline-none border border-iq-ice/20 ${
+          enabled ? 'bg-iq-blue' : 'bg-iq-void'
         }`}
       >
         <span
-          className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-ghost-ice shadow-sm transform transition-transform duration-200 ${
+          className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-iq-ice shadow-sm transform transition-transform duration-200 ${
             enabled ? 'translate-x-5' : 'translate-x-0'
           }`}
         />

@@ -92,7 +92,7 @@ export default function QuestionBankPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="pb-3 border-b border-ghost-ice/15">
+        <div className="pb-3 border-b border-iq-ice/15">
           <div className="flex items-center gap-2 mb-1.5">
             <span className="telemetry-chip-active text-[10px]">
               MOD.04 // CURRICULUM BLUEPRINTS
@@ -101,13 +101,13 @@ export default function QuestionBankPage() {
           <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
             Engineering Competency Roadmaps
           </h1>
-          <p className="text-xs sm:text-sm text-ghost-ice/60 font-ui mt-1">
+          <p className="text-xs sm:text-sm text-iq-ice/60 font-ui mt-1">
             Standardized technical curriculums modeled after industry engineer competencies. Dynamically generated AST test cases.
           </p>
         </div>
 
         {/* Track Switcher */}
-        <div className="bg-[#000307] p-1 rounded-full flex items-center border border-ghost-ice/15 max-w-xl">
+        <div className="bg-[#000307] p-1 rounded-full flex items-center border border-iq-ice/15 max-w-xl">
           {roadmapTracks.map((track) => {
             const Icon = track.icon;
             const isActive = activeTrack === track.id;
@@ -122,11 +122,11 @@ export default function QuestionBankPage() {
                 data-sfx="toggle"
                 className={`flex items-center justify-center gap-2 flex-1 py-2 px-3 rounded-full text-xs font-ui uppercase tracking-wider font-semibold transition-all ${
                   isActive
-                    ? 'bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
-                    : 'text-ghost-ice/60 hover:text-white'
+                    ? 'bg-iq-blue text-white shadow-sm shadow-iq-blue/30'
+                    : 'text-iq-ice/60 hover:text-white'
                 }`}
               >
-                <Icon className="w-4 h-4 text-ghost-ice" />
+                <Icon className="w-4 h-4 text-iq-ice" />
                 <span>{track.title}</span>
               </button>
             );
@@ -134,16 +134,16 @@ export default function QuestionBankPage() {
         </div>
 
         {/* Current Track Banner */}
-        <div className="ghost-panel p-5 sm:p-6 flex items-start gap-4">
-          <div className="p-3 rounded-xl bg-ghost-blue/15 border border-ghost-blue/30 text-ghost-blue flex-shrink-0">
+        <div className="iq-panel p-5 sm:p-6 flex items-start gap-4">
+          <div className="p-3 rounded-xl bg-iq-blue/15 border border-iq-blue/30 text-iq-blue flex-shrink-0">
             <currentTrack.icon className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-mono text-[9px] text-ghost-blue uppercase tracking-widest">{currentTrack.code}</span>
+              <span className="font-mono text-[9px] text-iq-blue uppercase tracking-widest">{currentTrack.code}</span>
             </div>
             <h2 className="text-base font-display font-bold text-white">{currentTrack.title} Track</h2>
-            <p className="text-xs sm:text-sm text-ghost-ice/70 font-ui mt-1 leading-relaxed">{currentTrack.description}</p>
+            <p className="text-xs sm:text-sm text-iq-ice/70 font-ui mt-1 leading-relaxed">{currentTrack.description}</p>
           </div>
         </div>
 
@@ -152,7 +152,7 @@ export default function QuestionBankPage() {
           {currentTrack.modules.map((module) => (
             <div
               key={module.name}
-              className="ghost-panel p-5 hover:border-ghost-ice/30 transition-all flex flex-col justify-between"
+              className="iq-panel p-5 hover:border-iq-ice/30 transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
@@ -163,13 +163,13 @@ export default function QuestionBankPage() {
                     module.difficulty === 'EASY'
                       ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300'
                       : module.difficulty === 'MEDIUM'
-                      ? 'bg-ghost-blue/20 border-ghost-blue/40 text-ghost-ice'
-                      : 'bg-ghost-heat/20 border-ghost-heat/40 text-ghost-heat'
+                      ? 'bg-iq-blue/20 border-iq-blue/40 text-iq-ice'
+                      : 'bg-iq-heat/20 border-iq-heat/40 text-iq-heat'
                   }`}>
                     {module.difficulty}
                   </span>
                 </div>
-                <p className="text-xs font-ui text-ghost-ice/60 leading-relaxed mb-6">
+                <p className="text-xs font-ui text-iq-ice/60 leading-relaxed mb-6">
                   {module.desc}
                 </p>
               </div>
@@ -182,10 +182,10 @@ export default function QuestionBankPage() {
                 }}
                 onMouseEnter={playHoverTick}
                 data-sfx="toggle"
-                className="ghost-button-void w-full text-xs py-2 flex items-center justify-center gap-1.5"
+                className="iq-button-void w-full text-xs py-2 flex items-center justify-center gap-1.5"
               >
                 <span>Launch Practice Module</span>
-                <HiOutlineChevronRight className="w-3.5 h-3.5 text-ghost-ice/40" />
+                <HiOutlineChevronRight className="w-3.5 h-3.5 text-iq-ice/40" />
               </button>
             </div>
           ))}
@@ -194,33 +194,33 @@ export default function QuestionBankPage() {
         {/* Launch Configuration Modal */}
         {selectedModule && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#00050a]/80 backdrop-blur-md animate-fade-in">
-            <div className="ghost-panel max-w-md w-full p-6 shadow-2xl relative animate-scale-up space-y-5">
+            <div className="iq-panel max-w-md w-full p-6 shadow-2xl relative animate-scale-up space-y-5">
               <button
                 onClick={() => {
                   playMechanicalToggle(false);
                   setSelectedModule(null);
                 }}
                 onMouseEnter={playHoverTick}
-                className="absolute top-4 right-4 p-1.5 rounded-lg text-ghost-ice/40 hover:text-white hover:bg-ghost-ice/10 transition-colors"
+                className="absolute top-4 right-4 p-1.5 rounded-lg text-iq-ice/40 hover:text-white hover:bg-iq-ice/10 transition-colors"
               >
                 <HiOutlineX className="w-5 h-5" />
               </button>
 
               <div>
-                <span className="font-mono text-[9px] text-ghost-blue uppercase tracking-widest">
+                <span className="font-mono text-[9px] text-iq-blue uppercase tracking-widest">
                   [QUICK MOUNT // MODULAR CHAMBER]
                 </span>
                 <h3 className="text-lg font-display font-bold text-white mt-1">
                   Practice {selectedModule.name}
                 </h3>
-                <p className="text-xs text-ghost-ice/60 font-ui mt-1 leading-relaxed">
+                <p className="text-xs text-iq-ice/60 font-ui mt-1 leading-relaxed">
                   Calibrate parameters for your adaptive mock interview before mounting chamber.
                 </p>
               </div>
 
               <div className="space-y-4 font-ui">
                 <div>
-                  <label className="block text-[10px] font-mono uppercase tracking-widest text-ghost-ice/70 mb-2">
+                  <label className="block text-[10px] font-mono uppercase tracking-widest text-iq-ice/70 mb-2">
                     Difficulty Calibration
                   </label>
                   <div className="grid grid-cols-3 gap-2">
@@ -237,9 +237,9 @@ export default function QuestionBankPage() {
                         className={`py-2 rounded-xl border text-xs font-mono font-bold transition-all ${
                           difficulty === level
                             ? level === 'HARD'
-                              ? 'border-ghost-heat bg-ghost-heat/20 text-ghost-heat'
-                              : 'border-ghost-blue bg-ghost-blue/20 text-white'
-                            : 'border-ghost-ice/15 bg-[#000307] text-ghost-ice/60'
+                              ? 'border-iq-heat bg-iq-heat/20 text-iq-heat'
+                              : 'border-iq-blue bg-iq-blue/20 text-white'
+                            : 'border-iq-ice/15 bg-[#000307] text-iq-ice/60'
                         }`}
                       >
                         {level}
@@ -249,7 +249,7 @@ export default function QuestionBankPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-mono uppercase tracking-widest text-ghost-ice/70 mb-2">
+                  <label className="block text-[10px] font-mono uppercase tracking-widest text-iq-ice/70 mb-2">
                     Inquiry Count
                   </label>
                   <div className="flex gap-2">
@@ -265,8 +265,8 @@ export default function QuestionBankPage() {
                         data-sfx="toggle"
                         className={`flex-1 py-2 rounded-xl border font-mono text-xs font-bold transition-all ${
                           questionCount === count
-                            ? 'border-ghost-blue bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
-                            : 'border-ghost-ice/15 bg-[#000307] text-ghost-ice/60'
+                            ? 'border-iq-blue bg-iq-blue text-white shadow-sm shadow-iq-blue/30'
+                            : 'border-iq-ice/15 bg-[#000307] text-iq-ice/60'
                         }`}
                       >
                         {count} Qs
@@ -280,7 +280,7 @@ export default function QuestionBankPage() {
                   disabled={launching}
                   onMouseEnter={playHoverTick}
                   data-sfx="toggle"
-                  className="ghost-button-blue w-full py-2.5 mt-2 flex items-center justify-center gap-2"
+                  className="iq-button-blue w-full py-2.5 mt-2 flex items-center justify-center gap-2"
                 >
                   {launching ? (
                     <>

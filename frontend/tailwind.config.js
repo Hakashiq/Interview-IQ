@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        ghost: {
+        iq: {
           void: "#00050a",
           ice: "#d6eaff",
           paper: "#f5f5f5",
@@ -66,8 +66,8 @@ export default {
         'xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
         'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04)',
         'card': '0 2px 6px -1px rgba(0, 0, 0, 0.04), 0 1px 4px -2px rgba(0, 0, 0, 0.04)',
-        'ghost-glow': '0 0 35px -5px rgba(0, 125, 255, 0.25)',
-        'ghost-ice': '0 0 25px -5px rgba(214, 234, 255, 0.15)',
+        'iq-glow': '0 0 35px -5px rgba(0, 125, 255, 0.25)',
+        'iq-ice': '0 0 25px -5px rgba(214, 234, 255, 0.15)',
       },
       animation: {
         'fade-in': 'fadeIn 0.25s ease-out',

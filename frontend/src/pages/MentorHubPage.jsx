@@ -72,7 +72,7 @@ export default function MentorHubPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="pb-3 border-b border-ghost-ice/15">
+        <div className="pb-3 border-b border-iq-ice/15">
           <div className="flex items-center gap-2 mb-1.5">
             <span className="telemetry-chip-active text-[10px]">
               MNT.01 // MENTOR CORRIDOR &amp; INTEGRITY AUDITS
@@ -81,60 +81,60 @@ export default function MentorHubPage() {
           <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
             Mentor Workspace &amp; Cohort Telemetry
           </h1>
-          <p className="text-xs sm:text-sm text-ghost-ice/60 font-ui mt-1">
+          <p className="text-xs sm:text-sm text-iq-ice/60 font-ui mt-1">
             Oversee candidate cohorts, audit proctoring compliance infractions, and triage applicant feedback.
           </p>
         </div>
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="ghost-panel p-4 sm:p-5">
-            <div className="flex items-center justify-between text-ghost-ice/50 mb-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">Assigned Cohort</span>
-              <HiOutlineUserGroup className="w-4 h-4 text-ghost-blue" />
+          <div className="iq-panel p-4 sm:p-5">
+            <div className="flex items-center justify-between text-iq-ice/50 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-iq-ice/60">Assigned Cohort</span>
+              <HiOutlineUserGroup className="w-4 h-4 text-iq-blue" />
             </div>
             <p className="text-2xl font-mono font-bold text-white tracking-tight">
               {users.filter(u => u.roles?.includes('ROLE_STUDENT')).length}
             </p>
-            <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">ACTIVE CANDIDATES</p>
+            <p className="text-[9px] font-mono text-iq-ice/40 mt-0.5">ACTIVE CANDIDATES</p>
           </div>
 
-          <div className="ghost-panel p-4 sm:p-5">
-            <div className="flex items-center justify-between text-ghost-ice/50 mb-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">Cohort Mean Score</span>
+          <div className="iq-panel p-4 sm:p-5">
+            <div className="flex items-center justify-between text-iq-ice/50 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-iq-ice/60">Cohort Mean Score</span>
               <HiOutlineTrendingUp className="w-4 h-4 text-emerald-400" />
             </div>
             <p className="text-2xl font-mono font-bold text-white tracking-tight">
-              {stats.averageInterviewScore ? stats.averageInterviewScore.toFixed(1) : '0.0'}<span className="text-xs font-normal text-ghost-ice/40">/10</span>
+              {stats.averageInterviewScore ? stats.averageInterviewScore.toFixed(1) : '0.0'}<span className="text-xs font-normal text-iq-ice/40">/10</span>
             </p>
-            <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">BENCHMARK MEAN</p>
+            <p className="text-[9px] font-mono text-iq-ice/40 mt-0.5">BENCHMARK MEAN</p>
           </div>
 
-          <div className="ghost-panel p-4 sm:p-5">
-            <div className="flex items-center justify-between text-ghost-ice/50 mb-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">Pending Triage</span>
+          <div className="iq-panel p-4 sm:p-5">
+            <div className="flex items-center justify-between text-iq-ice/50 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-iq-ice/60">Pending Triage</span>
               <HiOutlineChatAlt2 className="w-4 h-4 text-amber-400" />
             </div>
             <p className="text-2xl font-mono font-bold text-white tracking-tight">
               {feedback.filter(f => f.status === 'PENDING').length}
             </p>
-            <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">AWAITING REVIEW</p>
+            <p className="text-[9px] font-mono text-iq-ice/40 mt-0.5">AWAITING REVIEW</p>
           </div>
 
-          <div className="ghost-panel p-4 sm:p-5">
-            <div className="flex items-center justify-between text-ghost-ice/50 mb-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">Integrity Flags</span>
+          <div className="iq-panel p-4 sm:p-5">
+            <div className="flex items-center justify-between text-iq-ice/50 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-iq-ice/60">Integrity Flags</span>
               <HiOutlineExclamationCircle className="w-4 h-4 text-red-400" />
             </div>
             <p className="text-2xl font-mono font-bold text-white tracking-tight">
               {violations.length}
             </p>
-            <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">RECORDED STRIKES</p>
+            <p className="text-[9px] font-mono text-iq-ice/40 mt-0.5">RECORDED STRIKES</p>
           </div>
         </div>
 
         {/* Tab Controls */}
-        <div className="bg-[#000307] p-1 rounded-full flex items-center border border-ghost-ice/15 max-w-lg">
+        <div className="bg-[#000307] p-1 rounded-full flex items-center border border-iq-ice/15 max-w-lg">
           <button
             onClick={() => {
               setActiveTab('students');
@@ -144,8 +144,8 @@ export default function MentorHubPage() {
             data-sfx="toggle"
             className={`flex-1 py-2 px-3 rounded-full text-xs font-ui uppercase tracking-wider font-semibold transition-all ${
               activeTab === 'students'
-                ? 'bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
-                : 'text-ghost-ice/60 hover:text-white'
+                ? 'bg-iq-blue text-white shadow-sm shadow-iq-blue/30'
+                : 'text-iq-ice/60 hover:text-white'
             }`}
           >
             Candidate Directory
@@ -159,8 +159,8 @@ export default function MentorHubPage() {
             data-sfx="toggle"
             className={`flex-1 py-2 px-3 rounded-full text-xs font-ui uppercase tracking-wider font-semibold transition-all ${
               activeTab === 'feedback'
-                ? 'bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
-                : 'text-ghost-ice/60 hover:text-white'
+                ? 'bg-iq-blue text-white shadow-sm shadow-iq-blue/30'
+                : 'text-iq-ice/60 hover:text-white'
             }`}
           >
             Feedback ({feedback.filter(f => f.status === 'PENDING').length})
@@ -174,8 +174,8 @@ export default function MentorHubPage() {
             data-sfx="toggle"
             className={`flex-1 py-2 px-3 rounded-full text-xs font-ui uppercase tracking-wider font-semibold transition-all ${
               activeTab === 'violations'
-                ? 'bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
-                : 'text-ghost-ice/60 hover:text-white'
+                ? 'bg-iq-blue text-white shadow-sm shadow-iq-blue/30'
+                : 'text-iq-ice/60 hover:text-white'
             }`}
           >
             Integrity Logs
@@ -184,8 +184,8 @@ export default function MentorHubPage() {
 
         {/* Content Body */}
         {loading ? (
-          <div className="flex items-center justify-center py-20 ghost-panel">
-            <div className="w-8 h-8 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
+          <div className="flex items-center justify-center py-20 iq-panel">
+            <div className="w-8 h-8 border-2 border-iq-blue border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <div className="space-y-4">

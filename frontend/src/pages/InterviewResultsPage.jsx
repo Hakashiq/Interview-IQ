@@ -57,7 +57,7 @@ function CleanScoreDial({ score, size = 140, strokeWidth = 8 }) {
         <span className="text-3xl font-mono font-bold tracking-tight text-white">
           {score?.toFixed(1) || '0.0'}
         </span>
-        <span className="text-[10px] font-mono text-ghost-ice/40 uppercase mt-0.5">/ 10 PTS</span>
+        <span className="text-[10px] font-mono text-iq-ice/40 uppercase mt-0.5">/ 10 PTS</span>
       </div>
     </div>
   );
@@ -87,10 +87,10 @@ export default function InterviewResultsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-ghost-void text-ghost-ice devices-matrix-grid">
-        <div className="ghost-panel p-8 flex flex-col items-center gap-3 text-center">
-          <div className="w-8 h-8 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
-          <p className="text-ghost-ice/70 text-xs font-mono">Aggregating telemetry feedback &amp; scores...</p>
+      <div className="min-h-screen flex items-center justify-center bg-iq-void text-iq-ice devices-matrix-grid">
+        <div className="iq-panel p-8 flex flex-col items-center gap-3 text-center">
+          <div className="w-8 h-8 border-2 border-iq-blue border-t-transparent rounded-full animate-spin" />
+          <p className="text-iq-ice/70 text-xs font-mono">Aggregating telemetry feedback &amp; scores...</p>
         </div>
       </div>
     );
@@ -121,7 +121,7 @@ export default function InterviewResultsPage() {
       <div className="max-w-5xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-ghost-ice/15">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-iq-ice/15">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="telemetry-chip-active text-[10px]">
@@ -145,7 +145,7 @@ export default function InterviewResultsPage() {
               }}
               onMouseEnter={playHoverTick}
               data-sfx="toggle"
-              className="ghost-button-blue text-xs py-2 px-4 flex items-center gap-1.5"
+              className="iq-button-blue text-xs py-2 px-4 flex items-center gap-1.5"
             >
               <HiOutlineRefresh className="w-3.5 h-3.5" />
               <span>New Chamber</span>
@@ -156,16 +156,16 @@ export default function InterviewResultsPage() {
                 navigate('/dashboard');
               }}
               onMouseEnter={playHoverTick}
-              className="ghost-button-void text-xs py-2 px-4 flex items-center gap-1.5"
+              className="iq-button-void text-xs py-2 px-4 flex items-center gap-1.5"
             >
               <span>Dashboard</span>
-              <HiOutlineArrowRight className="w-3.5 h-3.5 text-ghost-ice/50" />
+              <HiOutlineArrowRight className="w-3.5 h-3.5 text-iq-ice/50" />
             </button>
           </div>
         </div>
 
         {/* Hero Score Card */}
-        <div className="ghost-panel p-6 sm:p-8">
+        <div className="iq-panel p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
             <div className="flex-shrink-0">
               <CleanScoreDial score={overallScore} />
@@ -177,7 +177,7 @@ export default function InterviewResultsPage() {
                   overallScore >= 8
                     ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-300'
                     : overallScore >= 6
-                    ? 'bg-ghost-blue/15 border-ghost-blue/40 text-ghost-ice'
+                    ? 'bg-iq-blue/15 border-iq-blue/40 text-iq-ice'
                     : 'bg-amber-950/50 border-amber-500/40 text-amber-300'
                 }`}>
                   {overallScore >= 8 ? 'STRONG HIRE TELEMETRY' :
@@ -192,7 +192,7 @@ export default function InterviewResultsPage() {
                   ? 'Solid Domain Knowledge with Minor Boundaries'
                   : 'Key Concepts Require Further Practice'}
               </h2>
-              <p className="text-xs sm:text-sm text-ghost-ice/70 font-ui max-w-2xl leading-relaxed">
+              <p className="text-xs sm:text-sm text-iq-ice/70 font-ui max-w-2xl leading-relaxed">
                 {overallScore >= 8
                   ? 'Your answers demonstrated structured thinking, accurate technical depth, and clear communication. Review the fine-grained insights below to achieve perfection.'
                   : overallScore >= 6
@@ -211,13 +211,13 @@ export default function InterviewResultsPage() {
             { label: 'Time Elapsed', value: formatTime(results?.totalTimeTaken || results?.timeTakenSeconds), icon: HiOutlineClock, hint: 'DURATION' },
             { label: 'Track Tier', value: results?.difficulty || 'Medium', icon: HiOutlineLightningBolt, hint: 'CALIBRATION' },
           ].map((stat) => (
-            <div key={stat.label} className="ghost-panel p-4 sm:p-5">
-              <div className="flex items-center justify-between text-ghost-ice/40 mb-2">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">{stat.label}</span>
-                <stat.icon className="w-4 h-4 text-ghost-blue" />
+            <div key={stat.label} className="iq-panel p-4 sm:p-5">
+              <div className="flex items-center justify-between text-iq-ice/40 mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-iq-ice/60">{stat.label}</span>
+                <stat.icon className="w-4 h-4 text-iq-blue" />
               </div>
               <p className="text-2xl font-mono font-bold text-white tracking-tight">{stat.value}</p>
-              <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">{stat.hint}</p>
+              <p className="text-[9px] font-mono text-iq-ice/40 mt-0.5">{stat.hint}</p>
             </div>
           ))}
         </div>
@@ -226,10 +226,10 @@ export default function InterviewResultsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-display font-bold text-white flex items-center gap-2">
-              <HiOutlineAcademicCap className="w-5 h-5 text-ghost-blue" />
+              <HiOutlineAcademicCap className="w-5 h-5 text-iq-blue" />
               Algorithmic Question Diagnostics
             </h2>
-            <span className="text-xs text-ghost-ice/50 font-mono">
+            <span className="text-xs text-iq-ice/50 font-mono">
               {questions.length} PROMPTS EVALUATED
             </span>
           </div>
@@ -243,7 +243,7 @@ export default function InterviewResultsPage() {
               return (
                 <div
                   key={index}
-                  className="ghost-panel overflow-hidden transition-all duration-200"
+                  className="iq-panel overflow-hidden transition-all duration-200"
                 >
                   {/* Trigger */}
                   <button
@@ -256,7 +256,7 @@ export default function InterviewResultsPage() {
                       qScore >= 8
                         ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300'
                         : qScore >= 6
-                        ? 'bg-ghost-blue/15 border-ghost-blue/40 text-ghost-ice'
+                        ? 'bg-iq-blue/15 border-iq-blue/40 text-iq-ice'
                         : 'bg-red-950/60 border-red-500/40 text-red-300'
                     }`}>
                       {qScore}
@@ -264,7 +264,7 @@ export default function InterviewResultsPage() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-xs text-ghost-ice/50">
+                        <span className="font-mono text-xs text-iq-ice/50">
                           Q{index + 1}
                         </span>
                         {(q.category || q.question?.category?.name) && (
@@ -279,23 +279,23 @@ export default function InterviewResultsPage() {
                     </div>
 
                     <HiOutlineChevronDown
-                      className={`w-5 h-5 text-ghost-ice/40 flex-shrink-0 transition-transform duration-200 mt-1 ${
-                        isExpanded ? 'rotate-180 text-ghost-blue' : ''
+                      className={`w-5 h-5 text-iq-ice/40 flex-shrink-0 transition-transform duration-200 mt-1 ${
+                        isExpanded ? 'rotate-180 text-iq-blue' : ''
                       }`}
                     />
                   </button>
 
                   {/* Expanded Content */}
                   {isExpanded && (
-                    <div className="px-4 sm:px-6 pb-5 space-y-4 border-t border-ghost-ice/10 pt-4 bg-[#000307]/50">
+                    <div className="px-4 sm:px-6 pb-5 space-y-4 border-t border-iq-ice/10 pt-4 bg-[#000307]/50">
                       
                       {/* Candidate Answer */}
                       {q.answerText && (
-                        <div className="p-4 rounded-xl bg-[#000307] border border-ghost-ice/15">
-                          <p className="text-[10px] font-mono text-ghost-ice/50 uppercase tracking-widest mb-1.5 font-semibold">
+                        <div className="p-4 rounded-xl bg-[#000307] border border-iq-ice/15">
+                          <p className="text-[10px] font-mono text-iq-ice/50 uppercase tracking-widest mb-1.5 font-semibold">
                             SUBMITTED RESPONSE BUFFER
                           </p>
-                          <p className="text-xs font-mono text-ghost-ice/90 leading-relaxed whitespace-pre-wrap">
+                          <p className="text-xs font-mono text-iq-ice/90 leading-relaxed whitespace-pre-wrap">
                             {q.answerText}
                           </p>
                         </div>
@@ -309,14 +309,14 @@ export default function InterviewResultsPage() {
                           { label: 'Communication', score: fb.communication },
                           { label: 'Relevance', score: fb.relevance },
                         ].map(({ label, score }) => (
-                          <div key={label} className="p-2.5 rounded-xl bg-ghost-void border border-ghost-ice/15 text-center">
+                          <div key={label} className="p-2.5 rounded-xl bg-iq-void border border-iq-ice/15 text-center">
                             <p className={`text-base font-bold font-mono ${
                               (score || 0) >= 8 ? 'text-emerald-400' :
-                              (score || 0) >= 6 ? 'text-ghost-blue' : 'text-red-400'
+                              (score || 0) >= 6 ? 'text-iq-blue' : 'text-red-400'
                             }`}>
-                              {score || 0}<span className="text-[10px] font-normal text-ghost-ice/40">/10</span>
+                              {score || 0}<span className="text-[10px] font-normal text-iq-ice/40">/10</span>
                             </p>
-                            <p className="text-[10px] font-mono text-ghost-ice/60 uppercase">{label}</p>
+                            <p className="text-[10px] font-mono text-iq-ice/60 uppercase">{label}</p>
                           </div>
                         ))}
                       </div>
@@ -324,32 +324,32 @@ export default function InterviewResultsPage() {
                       {/* Strengths & Weaknesses */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {fb.strengths && (
-                          <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 text-ghost-ice">
+                          <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 text-iq-ice">
                             <h4 className="text-xs font-mono font-semibold text-emerald-400 mb-1 flex items-center gap-1.5 uppercase">
                               <HiOutlineCheckCircle className="w-4 h-4 text-emerald-400" />
                               Key Strengths
                             </h4>
-                            <p className="text-xs font-ui text-ghost-ice/80 leading-relaxed">{fb.strengths}</p>
+                            <p className="text-xs font-ui text-iq-ice/80 leading-relaxed">{fb.strengths}</p>
                           </div>
                         )}
                         {fb.weaknesses && (
-                          <div className="p-3.5 rounded-xl bg-red-950/20 border border-red-500/30 text-ghost-ice">
+                          <div className="p-3.5 rounded-xl bg-red-950/20 border border-red-500/30 text-iq-ice">
                             <h4 className="text-xs font-mono font-semibold text-red-400 mb-1 flex items-center gap-1.5 uppercase">
                               <HiOutlineSparkles className="w-4 h-4 text-red-400" />
                               Areas for Improvement
                             </h4>
-                            <p className="text-xs font-ui text-ghost-ice/80 leading-relaxed">{fb.weaknesses}</p>
+                            <p className="text-xs font-ui text-iq-ice/80 leading-relaxed">{fb.weaknesses}</p>
                           </div>
                         )}
                       </div>
 
                       {fb.improvements && (
-                        <div className="p-3.5 rounded-xl bg-ghost-blue/10 border border-ghost-blue/30 text-ghost-ice">
-                          <h4 className="text-xs font-mono font-semibold text-ghost-blue mb-1 flex items-center gap-1.5 uppercase">
-                            <HiOutlineLightningBolt className="w-4 h-4 text-ghost-blue" />
+                        <div className="p-3.5 rounded-xl bg-iq-blue/10 border border-iq-blue/30 text-iq-ice">
+                          <h4 className="text-xs font-mono font-semibold text-iq-blue mb-1 flex items-center gap-1.5 uppercase">
+                            <HiOutlineLightningBolt className="w-4 h-4 text-iq-blue" />
                             Suggested Strategy
                           </h4>
-                          <p className="text-xs font-ui text-ghost-ice/80 leading-relaxed">{fb.improvements}</p>
+                          <p className="text-xs font-ui text-iq-ice/80 leading-relaxed">{fb.improvements}</p>
                         </div>
                       )}
                     </div>

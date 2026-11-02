@@ -214,9 +214,9 @@ export default function AdminPage() {
     return (
       <AppLayout>
         <div className="min-h-[60vh] flex items-center justify-center">
-          <div className="ghost-panel p-8 flex flex-col items-center gap-3 text-center">
-            <div className="w-8 h-8 border-2 border-ghost-blue border-t-transparent rounded-full animate-spin" />
-            <p className="text-ghost-ice/60 text-xs font-mono">Loading root supervisor registry...</p>
+          <div className="iq-panel p-8 flex flex-col items-center gap-3 text-center">
+            <div className="w-8 h-8 border-2 border-iq-blue border-t-transparent rounded-full animate-spin" />
+            <p className="text-iq-ice/60 text-xs font-mono">Loading root supervisor registry...</p>
           </div>
         </div>
       </AppLayout>
@@ -228,7 +228,7 @@ export default function AdminPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-ghost-ice/15">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-iq-ice/15">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="telemetry-chip-active text-[10px]">
@@ -238,7 +238,7 @@ export default function AdminPage() {
             <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
               Administration &amp; Access Controls
             </h1>
-            <p className="text-xs sm:text-sm text-ghost-ice/60 font-ui mt-1">
+            <p className="text-xs sm:text-sm text-iq-ice/60 font-ui mt-1">
               Audit registered candidate accounts, promote administrative operators, review verification credentials, and manage telemetry limits.
             </p>
           </div>
@@ -251,7 +251,7 @@ export default function AdminPage() {
               }}
               disabled={refreshing}
               onMouseEnter={playHoverTick}
-              className="ghost-button-void text-xs py-2 px-3.5 flex items-center gap-1.5"
+              className="iq-button-void text-xs py-2 px-3.5 flex items-center gap-1.5"
             >
               <HiOutlineRefresh className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               <span>Refresh</span>
@@ -263,7 +263,7 @@ export default function AdminPage() {
               }}
               onMouseEnter={playHoverTick}
               data-sfx="toggle"
-              className="ghost-button-blue text-xs py-2 px-3.5 flex items-center gap-1.5"
+              className="iq-button-blue text-xs py-2 px-3.5 flex items-center gap-1.5"
             >
               <HiOutlineUserAdd className="w-3.5 h-3.5" />
               <span>Provision User</span>
@@ -276,16 +276,16 @@ export default function AdminPage() {
           {statsCards.map((card) => (
             <div
               key={card.label}
-              className="ghost-panel p-5 flex items-center justify-between"
+              className="iq-panel p-5 flex items-center justify-between"
             >
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-wider text-ghost-ice/60">{card.label}</p>
+                <p className="text-[10px] font-mono uppercase tracking-wider text-iq-ice/60">{card.label}</p>
                 <h3 className="text-2xl font-mono font-bold text-white mt-1">
                   {card.value.toLocaleString()}
                 </h3>
-                <p className="text-[9px] font-mono text-ghost-ice/40 mt-0.5">{card.hint}</p>
+                <p className="text-[9px] font-mono text-iq-ice/40 mt-0.5">{card.hint}</p>
               </div>
-              <div className="p-3 bg-ghost-blue/15 border border-ghost-blue/30 rounded-xl text-ghost-blue">
+              <div className="p-3 bg-iq-blue/15 border border-iq-blue/30 rounded-xl text-iq-blue">
                 <card.icon className="w-6 h-6" />
               </div>
             </div>
@@ -293,13 +293,13 @@ export default function AdminPage() {
         </div>
 
         {/* Directory Section */}
-        <div className="ghost-panel p-6 space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-ghost-ice/15 pb-4">
+        <div className="iq-panel p-6 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-iq-ice/15 pb-4">
             <div>
               <h2 className="text-base font-display font-bold text-white tracking-tight">Operator Account Registry</h2>
-              <p className="text-xs text-ghost-ice/50 font-ui">Audit and configure system permissions</p>
+              <p className="text-xs text-iq-ice/50 font-ui">Audit and configure system permissions</p>
             </div>
-            <span className="text-xs text-ghost-ice/40 font-mono">
+            <span className="text-xs text-iq-ice/40 font-mono">
               {filteredUsers.length} records matching
             </span>
           </div>
@@ -307,14 +307,14 @@ export default function AdminPage() {
           {/* Filters Row */}
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
             <div className="sm:col-span-6 relative">
-              <HiOutlineSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ghost-ice/40" />
+              <HiOutlineSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-iq-ice/40" />
               <input
                 id="admin-user-search"
                 type="text"
                 placeholder="Search candidate name, email, or contact coordinate..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="ghost-input pl-10 text-xs"
+                className="iq-input pl-10 text-xs"
               />
             </div>
 
@@ -326,11 +326,11 @@ export default function AdminPage() {
                   setRoleFilter(e.target.value);
                   playMechanicalToggle(true);
                 }}
-                className="ghost-input cursor-pointer appearance-none text-xs"
+                className="iq-input cursor-pointer appearance-none text-xs"
               >
-                <option value="ALL" className="bg-[#00050a] text-ghost-ice">All Roles</option>
-                <option value="ADMIN" className="bg-[#00050a] text-ghost-ice">Administrators</option>
-                <option value="MENTOR" className="bg-[#00050a] text-ghost-ice">Mentors</option>
+                <option value="ALL" className="bg-[#00050a] text-iq-ice">All Roles</option>
+                <option value="ADMIN" className="bg-[#00050a] text-iq-ice">Administrators</option>
+                <option value="MENTOR" className="bg-[#00050a] text-iq-ice">Mentors</option>
                 <option value="STUDENT">Students</option>
               </select>
             </div>

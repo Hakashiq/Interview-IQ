@@ -1,5 +1,5 @@
-// sound-effects.js — Zero-dependency Web Audio Procedural Engine
-// Implemented directly from the Ghost Design System Specification
+// soundEffects.js — Zero-dependency Web Audio Procedural Engine
+// Synthesizes analog lowpass audio haptics and mechanical relay clicks
 
 let audioCtx = null;
 let masterGain = null;
@@ -39,7 +39,7 @@ function getSynth() {
 
 /**
  * Subtle hover tick on interactive links & buttons
- * Strict compliance with Ghost engineering rules:
+ * Rules:
  * 1. 70ms debounce
  * 2. Fine pointer only ((hover: hover) and (pointer: fine))
  * 3. Warm analog filtering at 7,000 Hz
@@ -133,7 +133,7 @@ export function playMechanicalToggle(opening = true) {
 /**
  * Initializes automatic delegating listeners for hover ticks and mechanical toggle clicks
  */
-export function initGhostHaptics() {
+export function initAudioHaptics() {
   if (typeof window === 'undefined') return;
 
   // Hover delegate
@@ -153,3 +153,5 @@ export function initGhostHaptics() {
     }
   }, { passive: true });
 }
+
+

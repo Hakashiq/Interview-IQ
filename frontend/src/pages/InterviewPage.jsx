@@ -104,7 +104,7 @@ export default function InterviewPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Page Header */}
-        <div className="pb-3 border-b border-ghost-ice/15">
+        <div className="pb-3 border-b border-iq-ice/15">
           <div className="flex items-center gap-2 mb-1.5">
             <span className="telemetry-chip-active text-[10px]">
               MOD.02 // SIMULATION PARAMETERS
@@ -113,7 +113,7 @@ export default function InterviewPage() {
           <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
             Configure Interview Chamber
           </h1>
-          <p className="text-xs sm:text-sm text-ghost-ice/60 font-ui mt-1">
+          <p className="text-xs sm:text-sm text-iq-ice/60 font-ui mt-1">
             Specify technical discipline, complexity tolerance, and session length for real-time perception testing.
           </p>
         </div>
@@ -124,19 +124,19 @@ export default function InterviewPage() {
           <div className="lg:col-span-8 space-y-6">
             
             {/* Topic / Role Selection Card */}
-            <div className="ghost-panel p-6 space-y-5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-ghost-ice/15 pb-4">
+            <div className="iq-panel p-6 space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-iq-ice/15 pb-4">
                 <div>
                   <h2 className="text-base font-display font-bold text-white tracking-tight">
                     Select Modular Discipline
                   </h2>
-                  <p className="text-xs text-ghost-ice/50 font-ui">
+                  <p className="text-xs text-iq-ice/50 font-ui">
                     Target an end-to-end engineering track or granular foundational subsystem
                   </p>
                 </div>
                 
                 {/* Segmented Pill Tab Switcher */}
-                <div className="bg-[#000307] p-1 rounded-full flex items-center border border-ghost-ice/15 self-start sm:self-center">
+                <div className="bg-[#000307] p-1 rounded-full flex items-center border border-iq-ice/15 self-start sm:self-center">
                   <button
                     type="button"
                     onClick={() => handleTabChange('roles')}
@@ -144,8 +144,8 @@ export default function InterviewPage() {
                     data-sfx="toggle"
                     className={`px-4 py-1.5 rounded-full text-xs font-ui uppercase tracking-wider font-semibold transition-all ${
                       activeTab === 'roles'
-                        ? 'bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
-                        : 'text-ghost-ice/60 hover:text-white'
+                        ? 'bg-iq-blue text-white shadow-sm shadow-iq-blue/30'
+                        : 'text-iq-ice/60 hover:text-white'
                     }`}
                   >
                     Role Tracks
@@ -157,8 +157,8 @@ export default function InterviewPage() {
                     data-sfx="toggle"
                     className={`px-4 py-1.5 rounded-full text-xs font-ui uppercase tracking-wider font-semibold transition-all ${
                       activeTab === 'subjects'
-                        ? 'bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
-                        : 'text-ghost-ice/60 hover:text-white'
+                        ? 'bg-iq-blue text-white shadow-sm shadow-iq-blue/30'
+                        : 'text-iq-ice/60 hover:text-white'
                     }`}
                   >
                     Core Subsystems
@@ -182,12 +182,12 @@ export default function InterviewPage() {
                         data-sfx="toggle"
                         className={`flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
                           isSelected
-                            ? 'border-ghost-blue bg-ghost-blue/15 shadow-sm shadow-ghost-blue/20 ring-1 ring-ghost-blue'
-                            : 'border-ghost-ice/15 bg-[#000307]/70 hover:border-ghost-ice/30 hover:bg-ghost-ice/5'
+                            ? 'border-iq-blue bg-iq-blue/15 shadow-sm shadow-iq-blue/20 ring-1 ring-iq-blue'
+                            : 'border-iq-ice/15 bg-[#000307]/70 hover:border-iq-ice/30 hover:bg-iq-ice/5'
                         }`}
                       >
                         <div className={`p-2.5 rounded-lg flex-shrink-0 ${
-                          isSelected ? 'bg-ghost-blue text-white' : 'bg-ghost-ice/5 text-ghost-ice/70'
+                          isSelected ? 'bg-iq-blue text-white' : 'bg-iq-ice/5 text-iq-ice/70'
                         }`}>
                           <Icon className="w-5 h-5" />
                         </div>
@@ -196,14 +196,14 @@ export default function InterviewPage() {
                             <p className="text-xs font-display font-bold text-white">
                               {label}
                             </p>
-                            <span className="font-mono text-[9px] text-ghost-ice/40">{code}</span>
+                            <span className="font-mono text-[9px] text-iq-ice/40">{code}</span>
                           </div>
-                          <p className="text-[11px] font-ui text-ghost-ice/60 mt-1 line-clamp-2 leading-relaxed">
+                          <p className="text-[11px] font-ui text-iq-ice/60 mt-1 line-clamp-2 leading-relaxed">
                             {desc}
                           </p>
                         </div>
                         {isSelected && (
-                          <div className="w-4 h-4 rounded-full bg-ghost-blue text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <div className="w-4 h-4 rounded-full bg-iq-blue text-white flex items-center justify-center flex-shrink-0 mt-0.5">
                             <HiOutlineCheck className="w-3 h-3" />
                           </div>
                         )}
@@ -227,12 +227,12 @@ export default function InterviewPage() {
                         data-sfx="toggle"
                         className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all ${
                           isSelected
-                            ? 'border-ghost-blue bg-ghost-blue/15 shadow-sm shadow-ghost-blue/20 ring-1 ring-ghost-blue'
-                            : 'border-ghost-ice/15 bg-[#000307]/70 hover:border-ghost-ice/30 hover:bg-ghost-ice/5'
+                            ? 'border-iq-blue bg-iq-blue/15 shadow-sm shadow-iq-blue/20 ring-1 ring-iq-blue'
+                            : 'border-iq-ice/15 bg-[#000307]/70 hover:border-iq-ice/30 hover:bg-iq-ice/5'
                         }`}
                       >
                         <div className={`p-2 rounded-lg flex-shrink-0 ${
-                          isSelected ? 'bg-ghost-blue text-white' : 'bg-ghost-ice/5 text-ghost-ice/70'
+                          isSelected ? 'bg-iq-blue text-white' : 'bg-iq-ice/5 text-iq-ice/70'
                         }`}>
                           <Icon className="w-4 h-4" />
                         </div>
@@ -240,10 +240,10 @@ export default function InterviewPage() {
                           <p className="text-xs font-display font-bold text-white truncate">
                             {label}
                           </p>
-                          <span className="font-mono text-[9px] text-ghost-ice/40">{code}</span>
+                          <span className="font-mono text-[9px] text-iq-ice/40">{code}</span>
                         </div>
                         {isSelected && (
-                          <div className="w-4 h-4 rounded-full bg-ghost-blue text-white flex items-center justify-center flex-shrink-0">
+                          <div className="w-4 h-4 rounded-full bg-iq-blue text-white flex items-center justify-center flex-shrink-0">
                             <HiOutlineCheck className="w-3 h-3" />
                           </div>
                         )}
@@ -255,12 +255,12 @@ export default function InterviewPage() {
             </div>
 
             {/* Difficulty Level Card */}
-            <div className="ghost-panel p-6 space-y-3">
-              <div className="border-b border-ghost-ice/15 pb-3">
+            <div className="iq-panel p-6 space-y-3">
+              <div className="border-b border-iq-ice/15 pb-3">
                 <h2 className="text-base font-display font-bold text-white tracking-tight">
                   Complexity &amp; Tolerance Calibration
                 </h2>
-                <p className="text-xs text-ghost-ice/50 font-ui">
+                <p className="text-xs text-iq-ice/50 font-ui">
                   Tune the AST semantic matching and boundary depth
                 </p>
               </div>
@@ -281,15 +281,15 @@ export default function InterviewPage() {
                       className={`p-3.5 sm:p-4 rounded-xl border text-center transition-all ${
                         isSelected
                           ? id === 'HARD'
-                            ? 'border-ghost-heat bg-ghost-heat/20 text-white ring-1 ring-ghost-heat'
-                            : 'border-ghost-blue bg-ghost-blue/20 text-white ring-1 ring-ghost-blue'
-                          : 'border-ghost-ice/15 bg-[#000307]/70 hover:border-ghost-ice/30'
+                            ? 'border-iq-heat bg-iq-heat/20 text-white ring-1 ring-iq-heat'
+                            : 'border-iq-blue bg-iq-blue/20 text-white ring-1 ring-iq-blue'
+                          : 'border-iq-ice/15 bg-[#000307]/70 hover:border-iq-ice/30'
                       }`}
                     >
                       <p className="text-xs sm:text-sm font-display font-bold text-white">
                         {label}
                       </p>
-                      <p className="text-[10px] font-mono text-ghost-ice/50 mt-1 hidden sm:block">
+                      <p className="text-[10px] font-mono text-iq-ice/50 mt-1 hidden sm:block">
                         {desc}
                       </p>
                     </button>
@@ -302,10 +302,10 @@ export default function InterviewPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               
               {/* Question Count */}
-              <div className="ghost-panel p-5 space-y-3">
+              <div className="iq-panel p-5 space-y-3">
                 <div>
                   <h3 className="text-sm font-display font-bold text-white">Inquiry Quantity</h3>
-                  <p className="text-xs text-ghost-ice/50 font-ui">Total algorithmic inquiries in chamber</p>
+                  <p className="text-xs text-iq-ice/50 font-ui">Total algorithmic inquiries in chamber</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {[3, 5, 10, 15].map((count) => (
@@ -320,8 +320,8 @@ export default function InterviewPage() {
                       data-sfx="toggle"
                       className={`flex-1 py-2 rounded-xl border font-mono text-xs font-bold transition-all ${
                         questionCount === count
-                          ? 'border-ghost-blue bg-ghost-blue text-white shadow-sm shadow-ghost-blue/30'
-                          : 'border-ghost-ice/15 bg-[#000307] text-ghost-ice/70 hover:border-ghost-ice/30'
+                          ? 'border-iq-blue bg-iq-blue text-white shadow-sm shadow-iq-blue/30'
+                          : 'border-iq-ice/15 bg-[#000307] text-iq-ice/70 hover:border-iq-ice/30'
                       }`}
                     >
                       {count}
@@ -331,11 +331,11 @@ export default function InterviewPage() {
               </div>
 
               {/* Schedule Later Option */}
-              <div className="ghost-panel p-5 space-y-3">
+              <div className="iq-panel p-5 space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-sm font-display font-bold text-white">Queue for Later</h3>
-                    <p className="text-xs text-ghost-ice/50 font-ui">Write to schedule registry</p>
+                    <p className="text-xs text-iq-ice/50 font-ui">Write to schedule registry</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -347,7 +347,7 @@ export default function InterviewPage() {
                       }}
                       className="sr-only peer"
                     />
-                    <div className="w-10 h-5 bg-[#000307] border border-ghost-ice/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ghost-ice after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-ghost-blue peer-checked:border-ghost-blue" />
+                    <div className="w-10 h-5 bg-[#000307] border border-iq-ice/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-iq-ice after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-iq-blue peer-checked:border-iq-blue" />
                   </label>
                 </div>
 
@@ -359,7 +359,7 @@ export default function InterviewPage() {
                       value={scheduledDateTime}
                       min={new Date().toISOString().slice(0, 16)}
                       onChange={(e) => setScheduledDateTime(e.target.value)}
-                      className="ghost-input text-xs"
+                      className="iq-input text-xs"
                     />
                   </div>
                 )}
@@ -371,20 +371,20 @@ export default function InterviewPage() {
 
           {/* Right Column: Session Specification Card */}
           <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
-            <div className="ghost-panel p-6 space-y-5">
-              <div className="border-b border-ghost-ice/15 pb-3">
-                <span className="font-mono text-[10px] text-ghost-blue uppercase tracking-widest">
+            <div className="iq-panel p-6 space-y-5">
+              <div className="border-b border-iq-ice/15 pb-3">
+                <span className="font-mono text-[10px] text-iq-blue uppercase tracking-widest">
                   [SPECIFICATION SUMMARY]
                 </span>
                 <h3 className="text-base font-display font-bold text-white mt-0.5">
                   Simulation Parameters
                 </h3>
-                <p className="text-xs text-ghost-ice/50 font-ui">Audit parameters prior to initializing chamber</p>
+                <p className="text-xs text-iq-ice/50 font-ui">Audit parameters prior to initializing chamber</p>
               </div>
 
               <div className="space-y-3 text-xs font-mono">
-                <div className="flex justify-between items-center py-1.5 border-b border-ghost-ice/10">
-                  <span className="text-ghost-ice/50">SELECTED TRACK</span>
+                <div className="flex justify-between items-center py-1.5 border-b border-iq-ice/10">
+                  <span className="text-iq-ice/50">SELECTED TRACK</span>
                   <span className="font-bold text-white text-right">
                     {jobRoles.find(r => r.id === selectedRole)?.label ||
                      subjects.find(s => s.id === selectedRole)?.label ||
@@ -392,36 +392,36 @@ export default function InterviewPage() {
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center py-1.5 border-b border-ghost-ice/10">
-                  <span className="text-ghost-ice/50">CALIBRATION</span>
-                  <span className="font-bold text-ghost-blue uppercase">
+                <div className="flex justify-between items-center py-1.5 border-b border-iq-ice/10">
+                  <span className="text-iq-ice/50">CALIBRATION</span>
+                  <span className="font-bold text-iq-blue uppercase">
                     {selectedDifficulty}
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center py-1.5 border-b border-ghost-ice/10">
-                  <span className="text-ghost-ice/50">INTERACTION MODE</span>
+                <div className="flex justify-between items-center py-1.5 border-b border-iq-ice/10">
+                  <span className="text-iq-ice/50">INTERACTION MODE</span>
                   <span className="text-white">VOICE PCM + CODE</span>
                 </div>
 
-                <div className="flex justify-between items-center py-1.5 border-b border-ghost-ice/10">
-                  <span className="text-ghost-ice/50">INQUIRIES</span>
+                <div className="flex justify-between items-center py-1.5 border-b border-iq-ice/10">
+                  <span className="text-iq-ice/50">INQUIRIES</span>
                   <span className="text-white">{questionCount} PROMPTS</span>
                 </div>
 
-                <div className="flex justify-between items-center py-1.5 border-b border-ghost-ice/10">
-                  <span className="text-ghost-ice/50">EST. DURATION</span>
+                <div className="flex justify-between items-center py-1.5 border-b border-iq-ice/10">
+                  <span className="text-iq-ice/50">EST. DURATION</span>
                   <div className="flex items-center gap-1 text-white">
-                    <HiOutlineClock className="w-3.5 h-3.5 text-ghost-blue" />
+                    <HiOutlineClock className="w-3.5 h-3.5 text-iq-blue" />
                     <span>~{questionCount * 3} MIN</span>
                   </div>
                 </div>
 
                 {scheduleLater && scheduledDateTime && (
-                  <div className="flex flex-col gap-1 py-1.5 border-b border-ghost-ice/10">
-                    <span className="text-ghost-ice/50">SCHEDULED STAMP</span>
-                    <div className="flex items-center gap-1 text-ghost-blue">
-                      <HiOutlineCalendar className="w-3.5 h-3.5 text-ghost-blue" />
+                  <div className="flex flex-col gap-1 py-1.5 border-b border-iq-ice/10">
+                    <span className="text-iq-ice/50">SCHEDULED STAMP</span>
+                    <div className="flex items-center gap-1 text-iq-blue">
+                      <HiOutlineCalendar className="w-3.5 h-3.5 text-iq-blue" />
                       <span>{new Date(scheduledDateTime).toLocaleString()}</span>
                     </div>
                   </div>
@@ -434,7 +434,7 @@ export default function InterviewPage() {
                 disabled={!selectedRole || loading}
                 onMouseEnter={playHoverTick}
                 data-sfx="toggle"
-                className="ghost-button-blue w-full py-3 flex items-center justify-center gap-2 font-mono text-xs uppercase disabled:opacity-40"
+                className="iq-button-blue w-full py-3 flex items-center justify-center gap-2 font-mono text-xs uppercase disabled:opacity-40"
               >
                 {loading ? (
                   <>
@@ -450,7 +450,7 @@ export default function InterviewPage() {
                 )}
               </button>
 
-              <p className="text-[10px] font-mono text-center text-ghost-ice/40">
+              <p className="text-[10px] font-mono text-center text-iq-ice/40">
                 WASM face proctoring &amp; 7kHz audio synthesized locally.
               </p>
             </div>

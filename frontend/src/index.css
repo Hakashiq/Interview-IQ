@@ -7,11 +7,11 @@
   --font-archivo-narrow: 'Archivo Narrow', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Ghost Design System Tokens */
-  --color-ghost-void: #00050a;
-  --color-ghost-ice: #d6eaff;
-  --color-ghost-paper: #f5f5f5;
-  --color-ghost-blue: #007dff;
+  /* InterviewIQ Cyber-Industrial Tokens */
+  --color-iq-void: #00050a;
+  --color-iq-ice: #d6eaff;
+  --color-iq-paper: #f5f5f5;
+  --color-iq-blue: #007dff;
   --color-accent-heat: #ff5517;
   --color-accent-alert: #9f0712;
 }
@@ -30,8 +30,8 @@
   }
 
   body {
-    background-color: var(--color-ghost-void);
-    color: var(--color-ghost-ice);
+    background-color: var(--color-iq-void);
+    color: var(--color-iq-ice);
     font-family: var(--font-archivo-narrow), -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -39,8 +39,8 @@
   }
 
   ::selection {
-    background-color: var(--color-ghost-blue);
-    color: var(--color-ghost-ice);
+    background-color: var(--color-iq-blue);
+    color: var(--color-iq-ice);
   }
 
   ::-webkit-scrollbar {
@@ -63,7 +63,7 @@
 }
 
 /* ========================================================
-   GHOST SPECIFICATION: OPTICAL PRINT TEXTURING & INK-BLEED
+   CYBER-INDUSTRIAL SPECIFICATION: OPTICAL PRINT TEXTURING & INK-BLEED
    ======================================================== */
 .font-ink-bleed {
   filter: blur(0.375px);
@@ -82,10 +82,10 @@
 }
 
 /* ========================================================
-   GHOST SPECIFICATION: RESPONSIVE GRID MATHEMATICS
+   CYBER-INDUSTRIAL SPECIFICATION: RESPONSIVE GRID MATHEMATICS
    ======================================================== */
 .devices-matrix-grid {
-  /* Exact Ghost formula for viewport-proportional cells */
+  /* Viewport-proportional cells formula */
   --cell: min(12.5vw, calc((100dvh - 64px) * 0.23625));
   background-size: var(--cell) var(--cell);
   background-position: calc(50% + var(--cell) / 2) center;
@@ -116,44 +116,44 @@
    CYBER-INDUSTRIAL PHYSICALITY COMPONENT TOKENS
    ======================================================== */
 @layer components {
-  /* Ghost Void Canvas Appliance Panels */
-  .ghost-panel {
-    @apply bg-ghost-void/90 border border-ghost-ice/15 rounded-2xl shadow-2xl backdrop-blur-md transition-all;
+  /* Void Canvas Appliance Panels */
+  .iq-panel {
+    @apply bg-iq-void/90 border border-iq-ice/15 rounded-2xl shadow-2xl backdrop-blur-md transition-all;
   }
 
-  .ghost-panel-interactive {
-    @apply ghost-panel hover:border-ghost-ice/30 hover:shadow-ghost-ice/10;
+  .iq-panel-interactive {
+    @apply iq-panel hover:border-iq-ice/30 hover:shadow-iq-ice/10;
   }
 
-  /* Ghost Paper Mode Drafting Panels */
-  .ghost-panel-paper {
+  /* Paper Mode Drafting Panels */
+  .iq-panel-paper {
     @apply bg-[#f5f5f5] text-[#00050a] border border-[#00050a]/15 rounded-xl shadow-sm;
   }
 
   /* Minimalist Pill Navigation and Buttons */
-  .ghost-pill-nav {
-    @apply pointer-events-auto flex items-center gap-6 px-5 py-2.5 rounded-full bg-ghost-void/80 backdrop-blur-md border border-ghost-ice/15 shadow-2xl;
+  .iq-pill-nav {
+    @apply pointer-events-auto flex items-center gap-6 px-5 py-2.5 rounded-full bg-iq-void/80 backdrop-blur-md border border-iq-ice/15 shadow-2xl;
   }
 
-  .ghost-button-blue {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-ghost-blue hover:bg-[#005bbb] text-ghost-ice
-           font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all shadow-lg shadow-ghost-blue/20
+  .iq-button-blue {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-iq-blue hover:bg-[#005bbb] text-iq-ice
+           font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all shadow-lg shadow-iq-blue/20
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
-  .ghost-button-void {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-ghost-void/90 hover:bg-ghost-void
-           border border-ghost-ice/20 hover:border-ghost-ice/40 text-ghost-ice
+  .iq-button-void {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-iq-void/90 hover:bg-iq-void
+           border border-iq-ice/20 hover:border-iq-ice/40 text-iq-ice
            font-ui text-xs font-medium uppercase tracking-wider active:scale-95 transition-all
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
-  .ghost-button-heat {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-ghost-heat hover:bg-opacity-90 text-white
-           font-ui text-xs font-medium uppercase tracking-wider active:scale-95 transition-all shadow-lg shadow-ghost-heat/20;
+  .iq-button-heat {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-iq-heat hover:bg-opacity-90 text-white
+           font-ui text-xs font-medium uppercase tracking-wider active:scale-95 transition-all shadow-lg shadow-iq-heat/20;
   }
 
-  .ghost-button-paper {
+  .iq-button-paper {
     @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-[#00050a] hover:bg-black text-[#f5f5f5]
            font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all;
   }
@@ -161,78 +161,78 @@
   /* Hardware Telemetry Badge */
   .telemetry-chip {
     @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[10px] tracking-wider uppercase
-           border border-ghost-ice/20 bg-ghost-ice/5 text-ghost-ice;
+           border border-iq-ice/20 bg-iq-ice/5 text-iq-ice;
   }
 
   .telemetry-chip-active {
     @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[10px] tracking-wider uppercase
-           border border-ghost-blue/40 bg-ghost-blue/15 text-ghost-ice;
+           border border-iq-blue/40 bg-iq-blue/15 text-iq-ice;
   }
 
   .telemetry-chip-heat {
     @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[10px] tracking-wider uppercase
-           border border-ghost-heat/40 bg-ghost-heat/15 text-ghost-heat;
+           border border-iq-heat/40 bg-iq-heat/15 text-iq-heat;
   }
 
   .telemetry-chip-alert {
     @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[10px] tracking-wider uppercase
-           border border-ghost-alert/40 bg-ghost-alert/15 text-red-400;
+           border border-iq-alert/40 bg-iq-alert/15 text-red-400;
   }
 
   /* Form Inputs - Precision Physical Instrument Style */
-  .ghost-input {
-    @apply w-full bg-[#00050a]/90 border border-ghost-ice/20 rounded-xl px-4 py-2.5 text-xs text-ghost-ice
-           placeholder-ghost-ice/35 font-mono focus:outline-none focus:border-ghost-blue focus:ring-1 focus:ring-ghost-blue
+  .iq-input {
+    @apply w-full bg-[#00050a]/90 border border-iq-ice/20 rounded-xl px-4 py-2.5 text-xs text-iq-ice
+           placeholder-iq-ice/35 font-mono focus:outline-none focus:border-iq-blue focus:ring-1 focus:ring-iq-blue
            transition-all;
   }
 
-  .ghost-input-paper {
+  .iq-input-paper {
     @apply w-full bg-white border border-[#00050a]/20 rounded-lg px-4 py-2 text-xs text-[#00050a]
-           placeholder-slate-400 font-mono focus:outline-none focus:border-ghost-blue focus:ring-1 focus:ring-ghost-blue
+           placeholder-slate-400 font-mono focus:outline-none focus:border-iq-blue focus:ring-1 focus:ring-iq-blue
            transition-all;
   }
 
   /* Backward Compatibility Adaptations */
   .card {
-    @apply bg-ghost-void/90 border border-ghost-ice/15 rounded-2xl shadow-xl backdrop-blur-md;
+    @apply bg-iq-void/90 border border-iq-ice/15 rounded-2xl shadow-xl backdrop-blur-md;
   }
 
   .card-hover {
-    @apply card transition-all duration-200 hover:border-ghost-ice/30;
+    @apply card transition-all duration-200 hover:border-iq-ice/30;
   }
 
   .glass-card {
-    @apply bg-ghost-void/85 border border-ghost-ice/15 rounded-2xl shadow-xl backdrop-blur-md;
+    @apply bg-iq-void/85 border border-iq-ice/15 rounded-2xl shadow-xl backdrop-blur-md;
   }
 
   .glass-card-hover {
-    @apply glass-card transition-all duration-200 hover:border-ghost-ice/30;
+    @apply glass-card transition-all duration-200 hover:border-iq-ice/30;
   }
 
   .btn-primary {
-    @apply ghost-button-blue;
+    @apply iq-button-blue;
   }
 
   .btn-secondary {
-    @apply ghost-button-void;
+    @apply iq-button-void;
   }
 
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-ghost-ice/70
-           hover:text-ghost-ice hover:bg-ghost-ice/10 transition-all font-ui uppercase tracking-wider;
+  .btn-subtle {
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-iq-ice/70
+           hover:text-iq-ice hover:bg-iq-ice/10 transition-all font-ui uppercase tracking-wider;
   }
 
   .btn-danger {
     @apply inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-red-300
-           bg-ghost-alert/20 hover:bg-ghost-alert/35 border border-ghost-alert/40 transition-all font-ui uppercase tracking-wider;
+           bg-iq-alert/20 hover:bg-iq-alert/35 border border-iq-alert/40 transition-all font-ui uppercase tracking-wider;
   }
 
   .input-clean {
-    @apply ghost-input;
+    @apply iq-input;
   }
 
   .input-field {
-    @apply ghost-input;
+    @apply iq-input;
   }
 
   .badge-success {
@@ -248,11 +248,11 @@
   }
 
   .badge-info {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider bg-blue-950/60 text-ghost-ice border border-ghost-blue/30;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider bg-blue-950/60 text-iq-ice border border-iq-blue/30;
   }
 
   .badge-neutral {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider bg-ghost-ice/5 text-ghost-ice/70 border border-ghost-ice/15;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider bg-iq-ice/5 text-iq-ice/70 border border-iq-ice/15;
   }
 
   .gradient-text {
@@ -260,7 +260,7 @@
   }
 
   .gradient-bg {
-    @apply bg-ghost-blue text-ghost-ice;
+    @apply bg-iq-blue text-iq-ice;
   }
 }
 
