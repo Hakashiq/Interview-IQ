@@ -1,238 +1,183 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import api, { getServerBaseUrl } from '../api/axios';
 import toast from 'react-hot-toast';
 import {
-  HiOutlineUser, HiOutlineMail, HiOutlinePhone, HiOutlineLockClosed,
-  HiOutlineAcademicCap, HiOutlineIdentification, HiOutlineCheckCircle,
-  HiOutlineX, HiOutlineEye, HiOutlineEyeOff, HiOutlineTerminal
+  HiOutlineMail, HiOutlineLockClosed, HiOutlineEye, HiOutlineEyeOff,
+  HiOutlineUser, HiOutlinePhone, HiOutlineIdentification, HiOutlineAcademicCap,
+  HiOutlineSparkles, HiOutlineCheckCircle, HiOutlineX
 } from 'react-icons/hi';
 import ParticleBackground from '../components/layout/ParticleBackground';
-import { playHoverTick, playMechanicalToggle } from '../utils/soundEffects';
-
-function PasswordRequirementsList({ password }) {
-  const requirements = [
-    { label: 'At least 8 characters', met: password.length >= 8 },
-    { label: 'One uppercase letter', met: /[A-Z]/.test(password) },
-    { label: 'One lowercase letter', met: /[a-z]/.test(password) },
-    { label: 'One number', met: /\d/.test(password) },
-    { label: 'One special character (!@#$%^&*)', met: /[!@#$%^&*(),.?":{}|<>]/.test(password) },
-  ];
-
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 mt-2 text-[10px] font-mono">
-      {requirements.map((req, idx) => (
-        <div key={idx} className="flex items-center gap-1.5">
-          <span className={req.met ? 'text-emerald-400' : 'text-iq-ice/30'}>
-            {req.met ? '✓' : '○'}
-          </span>
-          <span className={req.met ? 'text-iq-ice/90' : 'text-iq-ice/40'}>
-            {req.label}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
+import api, { getServerBaseUrl } from '../api/axios';
+import { validatePassword, getPasswordStrength } from '../utils/passwordValidator';
+import PasswordRequirementsList from '../components/common/PasswordRequirementsList';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: 'STUDENT',
-    phone: '',
-    education: '',
+    fullName: '', email: '', password: '', confirmPassword: '', phone: '', role: 'STUDENT', education: ''
   });
-
   const [idCardPath, setIdCardPath] = useState('');
   const [uploadingId, setUploadingId] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const { register } = useAuth();
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleIdCardUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
-      toast.error('Document file size must be less than 10MB');
+      toast.error('File size exceeds 10MB limit');
       return;
     }
 
-    const data = new FormData();
-    data.append('file', file);
-    setUploadingId(true);
+    const fileData = new FormData();
+    fileData.append('file', file);
 
+    setUploadingId(true);
     try {
-      const res = await api.post('/upload/id-card', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const res = await api.post('/auth/register/id-card', fileData, {
+        headers: {
+          'Content-Type': undefined,
+        },
       });
-      setIdCardPath(res.data.filePath);
-      toast.success('Document uploaded successfully');
+      setIdCardPath(res.data.idCardPath);
+      toast.success('Document uploaded successfully ✨');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to upload verification document');
+      const msg = err.response?.data?.message || 'Failed to upload document. You can still create your account without it.';
+      toast.error(msg);
+      console.error(err);
     } finally {
       setUploadingId(false);
     }
   };
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    playMechanicalToggle(true);
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Access keys do not match');
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    const validation = validatePassword(formData.password);
+    if (!validation.isValid) {
+      toast.error(validation.message);
       return;
     }
 
     setLoading(true);
     try {
-      await register({
-        fullName: formData.fullName,
-        email: formData.email,
-        password: formData.password,
-        role: formData.role,
-        phone: formData.phone,
-        education: formData.education,
-        idCardPath: idCardPath || null,
-      });
-
-      toast.success('Account provisioned successfully');
-      navigate('/dashboard');
+      await register(
+        formData.fullName,
+        formData.email,
+        formData.password,
+        formData.phone,
+        formData.role,
+        idCardPath || null,
+        formData.education
+      );
+      toast.success('Account created! Welcome to InterviewIQ 🚀');
     } catch (err) {
-      playMechanicalToggle(false);
-      const msg = err.response?.data?.message || 'Registration failed';
-      toast.error(msg);
+      const message = err.response?.data?.message || 'Registration failed';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   };
 
-  const getPasswordStrength = (pwd) => {
-    let score = 0;
-    if (pwd.length >= 8) score++;
-    if (/[A-Z]/.test(pwd)) score++;
-    if (/[0-9]/.test(pwd)) score++;
-    if (/[^A-Za-z0-9]/.test(pwd)) score++;
-
-    if (score <= 1) return { text: 'WEAK', score: 1 };
-    if (score === 2) return { text: 'MODERATE', score: 2 };
-    if (score === 3) return { text: 'STRONG', score: 3 };
-    return { text: 'OPTIMAL', score: 4 };
-  };
-
   const strength = getPasswordStrength(formData.password);
 
   return (
-    <div className="min-h-screen bg-iq-void text-iq-ice flex items-center justify-center relative overflow-hidden py-12 px-4 devices-matrix-grid">
+    <div className="min-h-screen bg-porcelain-50 flex items-center justify-center relative overflow-hidden py-12 px-4 selection:bg-blue-100 selection:text-blue-900">
       <ParticleBackground />
 
       <div className="relative z-10 w-full max-w-lg animate-fade-in">
         
         {/* Header */}
         <div className="text-center mb-8">
-          <Link
-            to="/"
-            onMouseEnter={playHoverTick}
-            className="inline-flex flex-col items-center group"
-          >
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-iq-blue group-hover:bg-[#005bbb] text-white font-mono font-bold text-base shadow-xl shadow-iq-blue/30 mb-3 transition-all">
+          <Link to="/" className="inline-flex flex-col items-center group">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 group-hover:bg-blue-700 text-white font-bold text-base shadow-xs mb-3 transition-colors">
               IQ
             </div>
-            <h1 className="text-2xl font-display font-bold text-white tracking-tightest group-hover:text-iq-ice transition-colors">
-              INTERVIEW-IQ
+            <h1 className="text-2xl font-display font-bold text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
+              InterviewIQ
             </h1>
           </Link>
-          <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full border border-iq-ice/15 bg-iq-ice/5 font-mono text-[10px] text-iq-ice/60 uppercase tracking-widest">
-            <span className="w-1.5 h-1.5 rounded-full bg-iq-blue animate-pulse" />
-            CREATE ACCOUNT
-          </div>
+          <p className="text-xs text-slate-500 mt-1">
+            Join InterviewIQ to practice with AI proctored mock interview sessions
+          </p>
         </div>
 
-        {/* Chassis Panel */}
-        <div className="iq-panel p-6 sm:p-8 space-y-5">
+        {/* Card */}
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-7 sm:p-8 shadow-subtle space-y-5">
           <form onSubmit={handleSubmit} className="space-y-4">
             
             {/* Role Selection */}
             <div>
-              <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-iq-ice/80 mb-2">
-                Operational Role Assignment
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                Account Role
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 <button
                   type="button"
-                  onClick={() => {
-                    setFormData({ ...formData, role: 'STUDENT' });
-                    playMechanicalToggle(true);
-                  }}
-                  onMouseEnter={playHoverTick}
-                  data-sfx="toggle"
-                  className={`py-2.5 px-3 rounded-xl border text-xs font-ui uppercase tracking-wider transition-all flex flex-col items-center gap-0.5 ${
+                  onClick={() => setFormData({ ...formData, role: 'STUDENT' })}
+                  className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all flex flex-col items-center gap-0.5 ${
                     formData.role === 'STUDENT'
-                      ? 'border-iq-blue bg-iq-blue/20 text-white shadow-sm shadow-iq-blue/20'
-                      : 'border-iq-ice/15 bg-[#000307] text-iq-ice/70 hover:border-iq-ice/30'
+                      ? 'border-blue-600 bg-blue-50/60 text-blue-900 ring-1 ring-blue-600/30'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                   }`}
                 >
                   <span className="font-bold">Student Candidate</span>
-                  <span className="text-[10px] font-mono text-iq-ice/50 normal-case">Placement simulation</span>
+                  <span className="text-[10px] text-slate-400 font-normal">Prepare for placement rounds</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setFormData({ ...formData, role: 'MENTOR' });
-                    playMechanicalToggle(true);
-                  }}
-                  onMouseEnter={playHoverTick}
-                  data-sfx="toggle"
-                  className={`py-2.5 px-3 rounded-xl border text-xs font-ui uppercase tracking-wider transition-all flex flex-col items-center gap-0.5 ${
+                  onClick={() => setFormData({ ...formData, role: 'MENTOR' })}
+                  className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all flex flex-col items-center gap-0.5 ${
                     formData.role === 'MENTOR'
-                      ? 'border-iq-blue bg-iq-blue/20 text-white shadow-sm shadow-iq-blue/20'
-                      : 'border-iq-ice/15 bg-[#000307] text-iq-ice/70 hover:border-iq-ice/30'
+                      ? 'border-blue-600 bg-blue-50/60 text-blue-900 ring-1 ring-blue-600/30'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                   }`}
                 >
                   <span className="font-bold">Mentor / Evaluator</span>
-                  <span className="text-[10px] font-mono text-iq-ice/50 normal-case">Cohort telemetry audit</span>
+                  <span className="text-[10px] text-slate-400 font-normal">Review cohort integrity</span>
                 </button>
               </div>
             </div>
 
             {/* Full Name */}
             <div>
-              <label htmlFor="reg-name" className="block text-[11px] font-mono uppercase tracking-wider text-iq-ice/80 mb-1.5">
+              <label htmlFor="reg-name" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                 Full Name
               </label>
               <div className="relative">
-                <HiOutlineUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-iq-ice/40 w-4 h-4" />
+                <HiOutlineUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
                 <input
                   id="reg-name"
                   type="text"
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
-                  placeholder="e.g. Alex Chen"
-                  className="iq-input pl-10"
+                  placeholder="e.g. Alex Morgan"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all"
                   required
                 />
               </div>
             </div>
 
-            {/* Email & Phone */}
+            {/* Email & Phone in 2 Columns */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label htmlFor="reg-email" className="block text-[11px] font-mono uppercase tracking-wider text-iq-ice/80 mb-1.5">
+                <label htmlFor="reg-email" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Email Address
                 </label>
                 <div className="relative">
-                  <HiOutlineMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-iq-ice/40 w-4 h-4" />
+                  <HiOutlineMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
                   <input
                     id="reg-email"
                     type="email"
@@ -240,26 +185,26 @@ export default function RegisterPage() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="alex@domain.com"
-                    className="iq-input pl-10"
+                    className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="reg-phone" className="block text-[11px] font-mono uppercase tracking-wider text-iq-ice/80 mb-1.5">
+                <label htmlFor="reg-phone" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Phone (Optional)
                 </label>
                 <div className="relative">
-                  <HiOutlinePhone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-iq-ice/40 w-4 h-4" />
+                  <HiOutlinePhone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
                   <input
                     id="reg-phone"
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="+1 555-0199"
-                    className="iq-input pl-10"
+                    placeholder="+91 9876543210"
+                    className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all"
                   />
                 </div>
               </div>
@@ -267,47 +212,46 @@ export default function RegisterPage() {
 
             {/* Education */}
             <div>
-              <label htmlFor="reg-education" className="block text-[11px] font-mono uppercase tracking-wider text-iq-ice/80 mb-1.5">
-                Institution &amp; Degree Program
+              <label htmlFor="reg-education" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                Institution & Degree
               </label>
               <div className="relative">
-                <HiOutlineAcademicCap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-iq-ice/40 w-4 h-4" />
+                <HiOutlineAcademicCap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
                 <input
                   id="reg-education"
                   type="text"
                   name="education"
                   value={formData.education}
                   onChange={handleChange}
-                  placeholder="e.g. Stanford University, B.S. Computer Science"
-                  className="iq-input pl-10"
+                  placeholder="e.g. National Institute of Tech, B.Tech CS"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all"
                   required
                 />
               </div>
             </div>
 
-            {/* Passwords */}
+            {/* Password & Confirm */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label htmlFor="reg-password" className="block text-[11px] font-mono uppercase tracking-wider text-iq-ice/80 mb-1.5">
+                <label htmlFor="reg-password" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Password
                 </label>
                 <div className="relative">
-                  <HiOutlineLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 text-iq-ice/40 w-4 h-4" />
+                  <HiOutlineLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
                   <input
                     id="reg-password"
                     type={showPassword ? 'text' : 'password'}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Min 8 chars"
-                    className="iq-input pl-10 pr-9 font-mono"
+                    placeholder="Min 8 characters"
+                    className="w-full pl-10 pr-9 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all font-mono"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    onMouseEnter={playHoverTick}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-iq-ice/40 hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
                     {showPassword ? <HiOutlineEyeOff className="w-3.5 h-3.5" /> : <HiOutlineEye className="w-3.5 h-3.5" />}
                   </button>
@@ -315,11 +259,11 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="reg-confirm" className="block text-[11px] font-mono uppercase tracking-wider text-iq-ice/80 mb-1.5">
+                <label htmlFor="reg-confirm" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Confirm Password
                 </label>
                 <div className="relative">
-                  <HiOutlineLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 text-iq-ice/40 w-4 h-4" />
+                  <HiOutlineLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
                   <input
                     id="reg-confirm"
                     type="password"
@@ -327,61 +271,55 @@ export default function RegisterPage() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className="iq-input pl-10 font-mono"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/60 outline-none transition-all font-mono"
                     required
                   />
                 </div>
               </div>
             </div>
 
-            {/* Password Strength Indicator */}
+            {/* Password Strength Indicator & Requirements */}
             {formData.password && (
-              <div className="space-y-1.5 pt-1">
+              <div className="space-y-1.5 pt-0.5">
                 <div className="flex items-center gap-2">
                   <div className="flex-1 flex gap-1">
                     {[1, 2, 3, 4].map((i) => (
                       <div
                         key={i}
                         className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                          i <= strength.score ? 'bg-iq-blue' : 'bg-iq-ice/15'
+                          i <= strength.score ? strength.color : 'bg-slate-200'
                         }`}
                       />
                     ))}
                   </div>
-                  <span className="text-[10px] font-mono text-iq-ice/60">{strength.text}</span>
+                  <span className="text-[11px] font-mono text-slate-500">{strength.text}</span>
                 </div>
                 <PasswordRequirementsList password={formData.password} />
               </div>
             )}
 
-            {/* ID Document Specification */}
+            {/* ID Card Verification Upload */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-iq-ice/80">
-                  Verification Document ({formData.role === 'MENTOR' ? 'Mentor Credential' : 'Student ID'})
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Institutional ID Verification ({formData.role === 'MENTOR' ? 'Mentor Credential' : 'Student ID'})
                 </label>
-                <span className="text-[10px] font-mono text-iq-ice/40 border border-iq-ice/15 px-1.5 py-0.5 rounded">
-                  OPTIONAL
-                </span>
+                <span className="text-[11px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Optional</span>
               </div>
 
               {!idCardPath ? (
-                <label className="flex flex-col items-center justify-center w-full h-24 border border-dashed border-iq-ice/25 hover:border-iq-blue rounded-xl cursor-pointer bg-[#000307]/70 hover:bg-iq-ice/5 transition-all p-3">
+                <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl cursor-pointer bg-slate-50 hover:bg-blue-50/20 transition-all p-3">
                   <div className="flex flex-col items-center justify-center text-center">
                     {uploadingId ? (
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-iq-blue border-t-transparent rounded-full animate-spin" />
-                        <span className="text-xs font-mono text-iq-ice/70">Uploading document...</span>
+                        <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-xs text-slate-600">Uploading document...</span>
                       </div>
                     ) : (
                       <>
-                        <HiOutlineIdentification className="w-5 h-5 text-iq-ice/40 mb-1" />
-                        <span className="text-xs font-ui font-semibold text-iq-ice">
-                          Attach verification photo or PDF
-                        </span>
-                        <span className="text-[10px] font-mono text-iq-ice/40">
-                          PDF, JPG, PNG or WEBP (Max 10MB)
-                        </span>
+                        <HiOutlineIdentification className="w-5 h-5 text-slate-400 mb-1" />
+                        <span className="text-xs font-semibold text-slate-700">Click to upload ID photo or document</span>
+                        <span className="text-[10px] text-slate-400">PDF, JPG, PNG or WEBP (Max 10MB)</span>
                       </>
                     )}
                   </div>
@@ -394,11 +332,11 @@ export default function RegisterPage() {
                   />
                 </label>
               ) : (
-                <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-3 flex items-center justify-between gap-3">
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5">
-                    <HiOutlineCheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                    <HiOutlineCheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                     <div>
-                      <p className="text-xs font-mono font-semibold text-emerald-300">
+                      <p className="text-xs font-semibold text-emerald-900">
                         {idCardPath.toLowerCase().endsWith('.pdf') ? 'ID Document (PDF) Attached' : 'ID Photo Attached'}
                       </p>
                       <button
@@ -407,7 +345,7 @@ export default function RegisterPage() {
                           const fullUrl = getServerBaseUrl() + idCardPath;
                           window.open(fullUrl, '_blank');
                         }}
-                        className="text-[10px] font-mono text-iq-blue hover:underline"
+                        className="text-[11px] text-blue-600 hover:underline font-medium"
                       >
                         Inspect uploaded preview ↗
                       </button>
@@ -416,8 +354,7 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setIdCardPath('')}
-                    onMouseEnter={playHoverTick}
-                    className="p-1 rounded-md text-iq-ice/40 hover:text-red-400 hover:bg-iq-alert/10"
+                    className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50"
                   >
                     <HiOutlineX className="w-4 h-4" />
                   </button>
@@ -425,23 +362,20 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Submit CTA */}
+            {/* Submit */}
             <button
-              id="register-submit-btn"
               type="submit"
               disabled={loading}
-              onMouseEnter={playHoverTick}
-              data-sfx="toggle"
-              className="w-full py-2.5 rounded-full bg-iq-blue hover:bg-[#005bbb] text-iq-ice font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all shadow-xl shadow-iq-blue/25 disabled:opacity-50 flex items-center justify-center gap-2 mt-3"
+              className="btn-primary w-full py-2.5 flex items-center justify-center gap-2 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-xs mt-3"
             >
               {loading ? (
                 <>
                   <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Creating Account...</span>
+                  <span>Registering Account...</span>
                 </>
               ) : (
                 <>
-                  <HiOutlineTerminal className="w-4 h-4" />
+                  <HiOutlineSparkles className="w-4 h-4" />
                   <span>Create Account</span>
                 </>
               )}
@@ -449,22 +383,16 @@ export default function RegisterPage() {
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 pt-2">
-            <div className="flex-1 h-px bg-iq-ice/15" />
-            <span className="text-[10px] text-iq-ice/40 uppercase font-mono tracking-widest">
-              ALREADY REGISTERED?
-            </span>
-            <div className="flex-1 h-px bg-iq-ice/15" />
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-slate-200" />
+            <span className="text-[11px] text-slate-400 uppercase font-mono">registered already?</span>
+            <div className="flex-1 h-px bg-slate-200" />
           </div>
 
-          <p className="text-center font-ui text-xs text-iq-ice/60">
-            Already have an active account?{' '}
-            <Link
-              to="/login"
-              onMouseEnter={playHoverTick}
-              className="text-white hover:text-iq-blue font-semibold underline underline-offset-4 ml-1"
-            >
-              Sign In Here
+          <p className="text-center text-xs text-slate-600">
+            Already have an account?{' '}
+            <Link to="/login" className="text-blue-600 hover:underline font-semibold">
+              Sign in
             </Link>
           </p>
         </div>

@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 import AppLayout from '../components/layout/AppLayout';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
-import { playHoverTick, playMechanicalToggle } from '../utils/soundEffects';
 import {
   HiOutlineCog, HiOutlineBell, HiOutlineAcademicCap,
   HiOutlineUser, HiOutlineMail, HiOutlineShieldCheck,
@@ -19,25 +18,20 @@ import PasswordRequirementsList from '../components/common/PasswordRequirementsL
 
 function ToggleSwitch({ enabled, onChange, label, description }) {
   return (
-    <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#000307]/70 hover:border-iq-blue/40 transition-colors border border-iq-ice/15">
+    <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 hover:bg-slate-100/70 transition-colors border border-slate-200">
       <div>
-        <p className="text-xs font-mono font-semibold text-white">{label}</p>
-        {description && <p className="text-[11px] font-ui text-iq-ice/50 mt-0.5">{description}</p>}
+        <p className="text-xs font-semibold text-slate-800">{label}</p>
+        {description && <p className="text-[11px] text-slate-500 mt-0.5">{description}</p>}
       </div>
       <button
         type="button"
-        onClick={() => {
-          playMechanicalToggle(!enabled);
-          onChange(!enabled);
-        }}
-        onMouseEnter={playHoverTick}
-        data-sfx="toggle"
-        className={`relative w-10 h-5 rounded-full transition-colors duration-200 focus:outline-none border border-iq-ice/20 ${
-          enabled ? 'bg-iq-blue' : 'bg-iq-void'
+        onClick={() => onChange(!enabled)}
+        className={`relative w-10 h-5 rounded-full transition-colors duration-200 focus:outline-none ${
+          enabled ? 'bg-blue-600' : 'bg-slate-300'
         }`}
       >
         <span
-          className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-iq-ice shadow-sm transform transition-transform duration-200 ${
+          className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-200 ${
             enabled ? 'translate-x-5' : 'translate-x-0'
           }`}
         />

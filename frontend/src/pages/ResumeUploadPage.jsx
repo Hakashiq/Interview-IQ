@@ -2,7 +2,6 @@ import { useState, useRef, useCallback } from 'react';
 import AppLayout from '../components/layout/AppLayout';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
-import { playHoverTick, playMechanicalToggle } from '../utils/soundEffects';
 import {
   HiOutlineDocumentText, HiOutlineUpload, HiOutlineX,
   HiOutlineCheckCircle, HiOutlineLightningBolt, HiOutlineSparkles,
@@ -172,17 +171,17 @@ export default function ResumeUploadPage() {
   };
 
   const getScoreColor = (score) => {
-    if (score >= 80) return 'text-emerald-400';
-    if (score >= 60) return 'text-iq-blue';
-    if (score >= 40) return 'text-amber-400';
-    return 'text-red-400';
+    if (score >= 80) return 'text-emerald-600';
+    if (score >= 60) return 'text-blue-600';
+    if (score >= 40) return 'text-amber-600';
+    return 'text-rose-600';
   };
 
   const getScoreBorder = (score) => {
-    if (score >= 80) return 'border-emerald-500/40 bg-emerald-950/30';
-    if (score >= 60) return 'border-iq-blue/40 bg-iq-blue/20';
-    if (score >= 40) return 'border-amber-500/40 bg-amber-950/30';
-    return 'border-red-500/40 bg-red-950/30';
+    if (score >= 80) return 'border-emerald-500';
+    if (score >= 60) return 'border-blue-500';
+    if (score >= 40) return 'border-amber-500';
+    return 'border-rose-500';
   };
 
   return (
@@ -190,17 +189,17 @@ export default function ResumeUploadPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Page Header */}
-        <div className="pb-3 border-b border-iq-ice/15">
+        <div className="pb-2 border-b border-slate-200/80">
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="telemetry-chip-active text-[10px]">
-              MOD.03 // RESUME SPECIFICATION PARSER
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
+              Document Intelligence
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tightest">
-            Resume Intelligence &amp; ATS Audit
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
+            AI Resume Analyzer & ATS Audit
           </h1>
-          <p className="text-xs sm:text-sm text-iq-ice/60 font-ui mt-1">
-            Extract skill graph vertices, audit ATS parsing tolerances, and synthesize personalized interview inquiries.
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Evaluate keyword coverage, ATS parseability, technical depth, and generate an interview-calibrated summary.
           </p>
         </div>
 
@@ -211,12 +210,12 @@ export default function ResumeUploadPage() {
             
             {/* Upload Drop Zone Card */}
             <div
-              className={`iq-panel p-6 sm:p-8 transition-all relative overflow-hidden ${
+              className={`bg-white border rounded-2xl p-6 sm:p-8 transition-all shadow-xs ${
                 dragActive
-                  ? 'border-iq-blue bg-iq-blue/15 shadow-iq-glow'
+                  ? 'border-blue-500 bg-blue-50/30'
                   : file
-                  ? 'border-iq-ice/30'
-                  : 'hover:border-iq-ice/30'
+                  ? 'border-slate-300'
+                  : 'border-slate-200/90 hover:border-slate-300'
               }`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -225,29 +224,24 @@ export default function ResumeUploadPage() {
             >
               {!file ? (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center mb-4 transition-all ${
-                    dragActive ? 'border-iq-blue bg-iq-blue/20 text-iq-ice scale-105 shadow-lg shadow-iq-blue/30' : 'border-iq-ice/20 bg-iq-ice/5 text-iq-ice/60'
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all ${
+                    dragActive ? 'bg-blue-100 text-blue-700 scale-105' : 'bg-slate-100 text-slate-500'
                   }`}>
-                    <HiOutlineUpload className="w-8 h-8 text-iq-blue" />
+                    <HiOutlineUpload className="w-8 h-8" />
                   </div>
-                  <h3 className="text-base font-display font-bold text-white mb-1">
-                    {dragActive ? 'Release document into parser chamber' : 'Mount Resume Specification File'}
+                  <h3 className="text-base font-semibold text-slate-900 mb-1">
+                    {dragActive ? 'Drop your resume file now' : 'Upload your resume for evaluation'}
                   </h3>
-                  <p className="text-xs text-iq-ice/50 font-ui mb-5 max-w-sm">
-                    Drag and drop PDF or DOCX engineering CV document, or browse local disk. Max file size: 10MB.
+                  <p className="text-xs text-slate-500 mb-5 max-w-sm">
+                    Drag and drop your PDF or DOCX document, or browse your local system. Max file size: 10MB.
                   </p>
                   <button
                     id="resume-browse-btn"
-                    onClick={() => {
-                      playMechanicalToggle(true);
-                      fileInputRef.current?.click();
-                    }}
-                    onMouseEnter={playHoverTick}
-                    data-sfx="toggle"
-                    className="iq-button-void text-xs py-2 px-5 inline-flex items-center gap-2"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="btn-secondary text-xs py-2 px-4 inline-flex items-center gap-1.5 shadow-xs"
                   >
-                    <HiOutlineDocumentText className="w-4 h-4 text-iq-blue" />
-                    <span>Select Specification File</span>
+                    <HiOutlineDocumentText className="w-4 h-4 text-slate-500" />
+                    <span>Select Document</span>
                   </button>
                   <input
                     ref={fileInputRef}
@@ -261,34 +255,30 @@ export default function ResumeUploadPage() {
               ) : (
                 <div className="space-y-4">
                   {/* File Preview Pill */}
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-[#000307]/80 border border-iq-ice/20">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-200">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-lg bg-iq-blue/15 border border-iq-blue/30 text-iq-blue flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
                         <HiOutlineDocumentText className="w-5 h-5" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs font-mono font-bold text-white truncate">{file.name}</p>
-                        <p className="text-[10px] text-iq-ice/50 font-mono">{(file.size / 1024 / 1024).toFixed(2)} MB // LOADED</p>
+                        <p className="text-sm font-semibold text-slate-900 truncate">{file.name}</p>
+                        <p className="text-xs text-slate-500 font-mono">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                       </div>
                     </div>
                     
                     {!uploading && !analysis && (
                       <button
-                        onClick={() => {
-                          playMechanicalToggle(false);
-                          removeFile();
-                        }}
-                        onMouseEnter={playHoverTick}
-                        className="p-1.5 rounded-lg text-iq-ice/40 hover:text-red-400 hover:bg-iq-alert/15 transition-colors"
+                        onClick={removeFile}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                         title="Remove file"
                       >
                         <HiOutlineX className="w-5 h-5" />
                       </button>
                     )}
                     {analysis && (
-                      <span className="telemetry-chip-active text-[10px] flex items-center gap-1">
-                        <HiOutlineCheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                        PARSED
+                      <span className="badge-success text-xs flex items-center gap-1">
+                        <HiOutlineCheckCircle className="w-4 h-4" />
+                        Analyzed
                       </span>
                     )}
                   </div>
@@ -296,13 +286,13 @@ export default function ResumeUploadPage() {
                   {/* Upload Progress Bar */}
                   {uploading && (
                     <div className="space-y-2 pt-1">
-                      <div className="flex items-center justify-between text-[11px] font-mono">
-                        <span className="text-iq-ice/70">Extracting AST skill tokens &amp; structural layout...</span>
-                        <span className="text-iq-blue font-bold">{uploadProgress}%</span>
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-600">Extracting content & parsing sections...</span>
+                        <span className="text-blue-600 font-bold">{uploadProgress}%</span>
                       </div>
-                      <div className="h-1.5 bg-iq-ice/10 rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-iq-blue rounded-full transition-all duration-300"
+                          className="h-full bg-blue-600 rounded-full transition-all duration-300"
                           style={{ width: `${uploadProgress}%` }}
                         />
                       </div>
@@ -313,31 +303,21 @@ export default function ResumeUploadPage() {
                   {!uploading && !analysis && (
                     <button
                       id="resume-upload-btn"
-                      onClick={() => {
-                        playMechanicalToggle(true);
-                        handleUpload();
-                      }}
-                      onMouseEnter={playHoverTick}
-                      data-sfx="toggle"
-                      className="iq-button-blue w-full py-2.5 flex items-center justify-center gap-2 text-xs"
+                      onClick={handleUpload}
+                      className="btn-primary w-full py-2.5 flex items-center justify-center gap-2 text-sm shadow-xs"
                     >
                       <HiOutlineSparkles className="w-4 h-4" />
-                      <span>INITIALIZE AST RESUME AUDIT</span>
+                      <span>Start AI Resume Analysis</span>
                     </button>
                   )}
 
                   {analysis && (
                     <button
-                      onClick={() => {
-                        playMechanicalToggle(true);
-                        removeFile();
-                      }}
-                      onMouseEnter={playHoverTick}
-                      data-sfx="toggle"
-                      className="iq-button-void w-full py-2 flex items-center justify-center gap-2 text-xs"
+                      onClick={removeFile}
+                      className="btn-secondary w-full py-2 flex items-center justify-center gap-2 text-xs"
                     >
                       <HiOutlineUpload className="w-3.5 h-3.5" />
-                      <span>MOUNT REVISED SPECIFICATION FILE</span>
+                      <span>Upload a Different Resume</span>
                     </button>
                   )}
                 </div>
@@ -355,72 +335,65 @@ export default function ResumeUploadPage() {
                       type: 'overall',
                       title: 'Overall Score',
                       score: analysis.resumeScore,
-                      desc: 'Composite index evaluating technical pedigree, ATS compliance, and clarity.'
+                      desc: 'Composite score evaluating holistic applicant readiness and depth.'
                     },
                     {
                       type: 'ats',
-                      title: 'ATS Compliance',
+                      title: 'ATS Parse',
                       score: analysis.atsScore,
-                      desc: 'Compatibility with enterprise Applicant Tracking Systems and keyword indexing.'
+                      desc: 'Compatibility with enterprise Applicant Tracking Systems and keyword filters.'
                     },
                     {
                       type: 'recruiter',
                       title: 'Recruiter Impact',
                       score: analysis.recruiterScore,
-                      desc: 'Scannability, dense impact statements, action verbs, and hierarchy.'
+                      desc: 'Scanability, concise bullets, strong action verbs, and hierarchy.'
                     },
                     {
                       type: 'technical',
                       title: 'Tech Depth',
                       score: analysis.technicalDepthScore,
-                      desc: 'Presence of modern distributed systems, production tooling, and frameworks.'
+                      desc: 'Demonstration of modern engineering frameworks, systems, and tooling.'
                     },
                     {
                       type: 'readiness',
-                      title: 'Interview Anchor',
+                      title: 'Interview Fit',
                       score: analysis.interviewReadinessScore,
-                      desc: 'Quantified metrics and engineering rationales suitable for technical grill questions.'
+                      desc: 'Quantified metrics and measurable impact that anchor deep interview questions.'
                     },
                   ].map((item) => (
                     <button
                       key={item.type}
                       type="button"
-                      onClick={() => {
-                        playMechanicalToggle(true);
-                        handleScoreClick(item.type, item.title, item.score, item.desc);
-                      }}
-                      onMouseEnter={playHoverTick}
-                      data-sfx="toggle"
-                      className="iq-panel p-4 text-center hover:border-iq-blue/50 hover:shadow-lg transition-all flex flex-col items-center justify-between group"
+                      onClick={() => handleScoreClick(item.type, item.title, item.score, item.desc)}
+                      className="bg-white border border-slate-200/90 rounded-xl p-4 text-center hover:border-blue-400 hover:shadow-xs transition-all flex flex-col items-center justify-between"
                     >
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-iq-ice/70 block mb-2">{item.title}</span>
-                      <div className={`w-14 h-14 rounded-full border-2 ${getScoreBorder(item.score)} flex items-center justify-center my-1`}>
-                        <span className={`text-lg font-mono font-bold ${getScoreColor(item.score)}`}>
+                      <span className="text-[11px] font-semibold text-slate-600 block mb-2">{item.title}</span>
+                      <div className={`w-14 h-14 rounded-full border-3 ${getScoreBorder(item.score)} flex items-center justify-center my-1`}>
+                        <span className={`text-lg font-bold font-display ${getScoreColor(item.score)}`}>
                           {item.score || 0}
                         </span>
                       </div>
-                      <span className="text-[9px] font-mono text-iq-ice/40 group-hover:text-iq-blue mt-1 block">INSPECT ↗</span>
+                      <span className="text-[10px] text-slate-400 font-mono mt-1 block">Inspect ↗</span>
                     </button>
                   ))}
                 </div>
 
                 {/* Detected Skills */}
                 {analysis.skills && analysis.skills.length > 0 && (
-                  <div className="iq-panel p-6 space-y-3">
-                    <div className="flex items-center justify-between pb-3 border-b border-iq-ice/15">
+                  <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                       <div className="flex items-center gap-2">
-                        <HiOutlineLightningBolt className="w-4 h-4 text-iq-blue" />
-                        <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider">
-                          Extracted Skill Vertices
-                        </h3>
+                        <HiOutlineLightningBolt className="w-4 h-4 text-amber-500" />
+                        <h3 className="text-sm font-semibold text-slate-900">Extracted Technical Skills</h3>
                       </div>
-                      <span className="telemetry-chip text-[9px]">{analysis.skills.length} DETECTED</span>
+                      <span className="badge-neutral text-xs">{analysis.skills.length} detected</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {analysis.skills.map((skill, i) => (
                         <span
                           key={i}
-                          className="px-2.5 py-1 rounded-md bg-[#000307] border border-iq-ice/20 text-[11px] font-mono text-iq-ice hover:border-iq-blue/50 transition-colors"
+                          className="px-2.5 py-1 rounded-md bg-slate-50 border border-slate-200/80 text-xs font-mono text-slate-700"
                         >
                           {skill}
                         </span>
@@ -431,40 +404,38 @@ export default function ResumeUploadPage() {
 
                 {/* Suggestions List */}
                 {analysis.suggestions && analysis.suggestions.length > 0 && (
-                  <div className="iq-panel p-6 space-y-3">
-                    <div className="flex items-center gap-2 pb-3 border-b border-iq-ice/15">
-                      <HiOutlineClipboardCheck className="w-4 h-4 text-iq-blue" />
-                      <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider">
-                        Remediation Action Items
-                      </h3>
+                  <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-3">
+                    <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                      <HiOutlineClipboardCheck className="w-4 h-4 text-blue-600" />
+                      <h3 className="text-sm font-semibold text-slate-900">Recommended Enhancements</h3>
                     </div>
                     <div className="space-y-2.5">
                       {analysis.suggestions.map((s, i) => (
                         <div
                           key={i}
-                          className="p-3.5 rounded-xl bg-[#000307]/70 border border-iq-ice/15 flex items-start gap-3"
+                          className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-3"
                         >
                           <div className="mt-0.5 flex-shrink-0">
                             {s.priority === 'high' ? (
-                              <span className="w-5 h-5 rounded-md bg-iq-alert/20 border border-iq-alert/40 text-red-400 flex items-center justify-center text-xs font-mono font-bold">
+                              <span className="w-5 h-5 rounded-md bg-rose-100 text-rose-700 flex items-center justify-center text-xs font-bold">
                                 !
                               </span>
                             ) : s.priority === 'medium' ? (
-                              <span className="w-5 h-5 rounded-md bg-amber-950/40 border border-amber-500/40 text-amber-300 flex items-center justify-center text-xs font-mono font-bold">
+                              <span className="w-5 h-5 rounded-md bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold">
                                 ▲
                               </span>
                             ) : (
-                              <span className="w-5 h-5 rounded-md bg-iq-blue/20 border border-iq-blue/40 text-iq-ice flex items-center justify-center text-xs font-mono font-bold">
+                              <span className="w-5 h-5 rounded-md bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
                                 •
                               </span>
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-2">
-                              <p className="text-xs font-display font-bold text-white">{s.title}</p>
-                              <span className="text-[9px] font-mono text-iq-ice/40 uppercase">{s.priority} PRIORITY</span>
+                              <p className="text-xs font-semibold text-slate-900">{s.title}</p>
+                              <span className="text-[10px] font-mono text-slate-400 uppercase">{s.priority} priority</span>
                             </div>
-                            <p className="text-xs font-ui text-iq-ice/70 mt-1 leading-relaxed">{s.description}</p>
+                            <p className="text-xs text-slate-600 mt-1 leading-relaxed">{s.description}</p>
                           </div>
                         </div>
                       ))}
@@ -472,29 +443,25 @@ export default function ResumeUploadPage() {
                   </div>
                 )}
 
-                {/* Final Resume-Ready Content Block: PAPER MODE CANVAS */}
+                {/* Final Resume-Ready Content Block */}
                 {analysis.finalResumeContent && (
-                  <div className="iq-panel-paper p-6 sm:p-8 space-y-4 shadow-xl">
-                    <div className="flex items-center justify-between pb-3 border-b border-[#00050a]/20">
+                  <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-[10px] text-slate-600 uppercase tracking-widest">
-                          [SPEC-SHEET: OPTIMIZED DRAFTING COPY // PAPER MODE]
-                        </span>
+                        <HiOutlineSparkles className="w-4 h-4 text-blue-600" />
+                        <h3 className="text-sm font-semibold text-slate-900">Polished Resume Content</h3>
                       </div>
                       <button
                         onClick={() => {
-                          playMechanicalToggle(true);
                           navigator.clipboard.writeText(analysis.finalResumeContent);
-                          toast.success('Clean specification copied to clipboard');
+                          toast.success('Clean text copied to clipboard 📋');
                         }}
-                        onMouseEnter={playHoverTick}
-                        data-sfx="toggle"
-                        className="iq-button-paper text-xs py-1.5 px-3"
+                        className="btn-secondary text-xs py-1.5 px-3"
                       >
-                        Copy Clean Spec
+                        Copy Clean Text
                       </button>
                     </div>
-                    <pre className="p-4 rounded-xl bg-white border border-[#00050a]/15 font-mono text-xs text-[#00050a] whitespace-pre-wrap leading-relaxed max-h-96 overflow-y-auto">
+                    <pre className="p-4 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs text-slate-800 whitespace-pre-wrap leading-relaxed max-h-96 overflow-y-auto">
                       {analysis.finalResumeContent}
                     </pre>
                   </div>
@@ -507,37 +474,37 @@ export default function ResumeUploadPage() {
 
           {/* Right Column: Tips & Standards */}
           <div className="lg:col-span-4 space-y-4">
-            <div className="iq-panel p-6 space-y-4">
-              <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider border-b border-iq-ice/15 pb-2">
-                Engineering Spec Standards
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4">
+              <h3 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2">
+                Resume Benchmarks
               </h3>
               <div className="space-y-3">
                 {[
-                  { icon: HiOutlineBadgeCheck, title: 'Dense Action Verbs', desc: 'Commence impact statements with Architected, Specced, Benchmarked, Hardened.' },
-                  { icon: HiOutlineChartBar, title: 'Quantifiable Telemetry', desc: 'Cite latency drops, throughput increases, TPS benchmarks, memory bounds.' },
-                  { icon: HiOutlineLightningBolt, title: 'Calibrated Ontologies', desc: 'Deploy standard production keywords rather than proprietary jargon.' },
-                  { icon: HiOutlineDocumentText, title: 'Linear Single-Column Layout', desc: 'Single-stream layout prevents OCR distortion in legacy parser pipelines.' },
+                  { icon: HiOutlineBadgeCheck, title: 'Strong Action Verbs', desc: 'Begin impact statements with words like Architected, Specced, Delivered.' },
+                  { icon: HiOutlineChartBar, title: 'Quantifiable Metrics', desc: 'Include latency drops, cost reductions, throughput increases or user scale.' },
+                  { icon: HiOutlineLightningBolt, title: 'Match Standard Ontologies', desc: 'Use standard industry tech keywords rather than esoteric abbreviations.' },
+                  { icon: HiOutlineDocumentText, title: 'Clean Single/Two-Page Layout', desc: 'Clear headings without nested columns that confuse legacy ATS parsers.' },
                 ].map(({ icon: Icon, title, desc }, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-iq-ice/5 border border-iq-ice/15 text-iq-blue flex-shrink-0 mt-0.5">
+                    <div className="p-2 rounded-lg bg-slate-100 text-slate-600 flex-shrink-0 mt-0.5">
                       <Icon className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-xs font-display font-bold text-white">{title}</p>
-                      <p className="text-[11px] font-ui text-iq-ice/60 mt-0.5 leading-relaxed">{desc}</p>
+                      <p className="text-xs font-semibold text-slate-800">{title}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="iq-panel p-5 text-xs text-iq-ice/70 space-y-2 border-iq-blue/30 bg-iq-blue/5">
-              <div className="flex items-center gap-1.5 font-bold text-white font-mono text-xs uppercase">
-                <HiOutlineCheckCircle className="w-4 h-4 text-iq-blue" />
-                <span>Next Operational Step</span>
+            <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-5 text-xs text-slate-600 space-y-2">
+              <div className="flex items-center gap-1.5 font-semibold text-slate-800">
+                <HiOutlineCheckCircle className="w-4 h-4 text-emerald-600" />
+                <span>Next Step Recommendation</span>
               </div>
-              <p className="text-[11px] font-ui text-iq-ice/70 leading-relaxed">
-                Once satisfied with your parsed skill graph, select a <strong>Resume-Based Interview</strong> in the simulation tab to face customized questions addressing your documented projects.
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Once satisfied with your resume metrics, initialize a <strong>Resume-Based Interview</strong> in the simulation tab to practice questions tailored directly to your recorded accomplishments.
               </p>
             </div>
           </div>
@@ -546,65 +513,54 @@ export default function ResumeUploadPage() {
 
         {/* Detailed Modal Breakdown */}
         {selectedScore && (
-          <div className="fixed inset-0 bg-[#00050a]/80 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
-            <div className="iq-panel max-w-xl w-full p-6 sm:p-7 shadow-2xl space-y-5 animate-scale-up relative">
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
+            <div className="bg-white border border-slate-200 rounded-2xl max-w-xl w-full p-6 sm:p-7 shadow-subtle space-y-5 animate-scale-up relative">
               <button
-                onClick={() => {
-                  playMechanicalToggle(false);
-                  setSelectedScore(null);
-                }}
-                onMouseEnter={playHoverTick}
-                className="absolute top-4 right-4 p-1.5 rounded-lg text-iq-ice/40 hover:text-white hover:bg-iq-ice/10 transition-colors"
+                onClick={() => setSelectedScore(null)}
+                className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
               >
                 <HiOutlineX className="w-5 h-5" />
               </button>
 
               <div className="flex items-start gap-4 pr-8">
-                <div className={`w-14 h-14 rounded-full border-2 ${getScoreBorder(selectedScore.value)} flex items-center justify-center flex-shrink-0`}>
-                  <span className={`text-xl font-bold font-mono ${getScoreColor(selectedScore.value)}`}>
+                <div className={`w-14 h-14 rounded-full border-3 ${getScoreBorder(selectedScore.value)} flex items-center justify-center flex-shrink-0`}>
+                  <span className={`text-xl font-bold font-display ${getScoreColor(selectedScore.value)}`}>
                     {selectedScore.value || 0}
                   </span>
                 </div>
                 <div>
-                  <span className="font-mono text-[9px] text-iq-blue uppercase tracking-widest">
-                    [DIMENSIONAL AUDIT]
-                  </span>
-                  <h2 className="text-base font-display font-bold text-white">{selectedScore.title} Breakdown</h2>
-                  <p className="text-xs font-ui text-iq-ice/70 mt-1 leading-relaxed">{selectedScore.description}</p>
+                  <h2 className="text-base font-semibold text-slate-900">{selectedScore.title} Breakdown</h2>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">{selectedScore.description}</p>
                 </div>
               </div>
 
               {/* Suggestions for Selected Dimension */}
-              <div className="space-y-3 pt-2 border-t border-iq-ice/15">
-                <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider">
-                  Targeted Feedback &amp; Remediation
+              <div className="space-y-3 pt-2 border-t border-slate-100">
+                <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Targeted Feedback & Opportunities
                 </h3>
                 {getSuggestionsForScore(selectedScore.type, analysis?.suggestions).length > 0 ? (
                   <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                     {getSuggestionsForScore(selectedScore.type, analysis?.suggestions).map((s, idx) => (
-                      <div key={idx} className="p-3 rounded-lg bg-[#000307]/80 border border-iq-ice/15 text-xs">
-                        <p className="font-display font-bold text-white">{s.title}</p>
-                        <p className="text-iq-ice/70 font-ui mt-0.5 leading-relaxed">{s.description}</p>
+                      <div key={idx} className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+                        <p className="font-semibold text-slate-900">{s.title}</p>
+                        <p className="text-slate-600 mt-0.5 leading-relaxed">{s.description}</p>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-center space-y-1">
-                    <HiOutlineCheckCircle className="w-6 h-6 text-emerald-400 mx-auto" />
-                    <p className="text-xs font-mono font-bold text-emerald-300">CALIBRATION OPTIMAL</p>
-                    <p className="text-[11px] font-ui text-iq-ice/60">No structural anomalies detected in this specific dimension.</p>
+                  <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-center space-y-1">
+                    <HiOutlineCheckCircle className="w-6 h-6 text-emerald-600 mx-auto" />
+                    <p className="text-xs font-semibold text-emerald-900">Optimal Performance</p>
+                    <p className="text-[11px] text-emerald-700">No major defects found in this specific dimension.</p>
                   </div>
                 )}
               </div>
 
               <div className="flex justify-end pt-2">
                 <button
-                  onClick={() => {
-                    playMechanicalToggle(false);
-                    setSelectedScore(null);
-                  }}
-                  onMouseEnter={playHoverTick}
-                  className="iq-button-void text-xs py-2 px-4"
+                  onClick={() => setSelectedScore(null)}
+                  className="btn-secondary text-xs py-2 px-4"
                 >
                   Close Inspection
                 </button>

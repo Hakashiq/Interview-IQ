@@ -17,7 +17,7 @@ export default function AppLayout({ children }) {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-iq-void text-iq-ice relative overflow-x-hidden">
+    <div className="flex min-h-screen bg-[#FAFAFC] text-slate-900 relative">
       <ParticleBackground />
       <Sidebar />
       <div

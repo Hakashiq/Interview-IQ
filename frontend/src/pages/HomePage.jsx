@@ -1,663 +1,307 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import FloatingPillNav from '../components/layout/FloatingPillNav';
-import { playHoverTick, playMechanicalToggle } from '../utils/soundEffects';
 import {
-  HiOutlineChip, HiOutlineVideoCamera, HiOutlineDocumentReport,
-  HiOutlineTerminal, HiOutlineShieldCheck, HiOutlineSparkles,
-  HiOutlineArrowRight, HiOutlineCubeTransparent, HiOutlineChevronDown,
-  HiOutlineAdjustments, HiOutlineLightningBolt, HiOutlineCheck
+  HiOutlineSparkles, HiOutlineLightningBolt, HiOutlineVideoCamera,
+  HiOutlineDocumentText, HiOutlineChartBar, HiOutlineCheckCircle,
+  HiOutlineArrowRight, HiOutlineAcademicCap, HiOutlineShieldCheck,
+  HiOutlineMicrophone, HiOutlineChevronDown, HiOutlineClock,
+  HiOutlineBadgeCheck, HiOutlineUserGroup, HiOutlineLockClosed,
+  HiOutlineMenu, HiOutlineX
 } from 'react-icons/hi';
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
-  const [selectedTrack, setSelectedTrack] = useState('sde');
-  const [telemetryFps, setTelemetryFps] = useState(59.8);
+  const [selectedRoleTab, setSelectedRoleTab] = useState('sde');
 
-  // Subtle telemetry jitter simulating real-time browser WASM performance monitor
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTelemetryFps(prev => +(59.4 + Math.random() * 0.8).toFixed(1));
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleToggleFaq = (index) => {
-    const next = activeFaq === index ? null : index;
-    setActiveFaq(next);
-    playMechanicalToggle(next !== null);
+  const toggleFaq = (index) => {
+    setActiveFaq(activeFaq === index ? null : index);
   };
 
-  const engineeringTracks = {
+  const roleTracks = {
     sde: {
-      code: 'SYS-TRACK-SDE-01',
-      title: 'Software Development Engineer [SDE]',
-      coreStack: ['Java 21', 'Distributed Algorithms', 'System Architecture', 'Memory Allocation'],
-      specs: [
-        { label: 'Evaluation Model', value: 'AST Parsing + Semantic Graph Matching' },
-        { label: 'Complexity Tolerance', value: 'O(N) Optimal / O(N log N) Acceptable' },
-        { label: 'Memory Boundary', value: 'Zero-Leak Heap Allocation Check' },
-        { label: 'Concurrency Scope', value: 'Virtual Threads + Lock-Free Rings' }
-      ],
-      samplePrompt: 'Demonstrate thread-safe concurrent LRU Cache eviction using Java ConcurrentHashMap and a bidirectional linked chain. Address lock striping trade-offs.'
+      title: 'Software Development Engineer (SDE)',
+      skills: ['Java', 'Data Structures & Algorithms', 'System Design', 'OOP', 'SQL'],
+      sampleQuestion: 'Explain the internal working of HashMap in Java. How does it resolve hash collisions under heavy load?',
+      metrics: 'Evaluates time complexity, memory allocation, edge cases, and thread-safety considerations.'
     },
     backend: {
-      code: 'SYS-TRACK-BE-02',
-      title: 'Distributed Backend Systems Engineer',
-      coreStack: ['Spring Boot 3.3', 'PostgreSQL / MySQL', 'Redis Mesh', 'gRPC / Kafka'],
-      specs: [
-        { label: 'Evaluation Model', value: 'ACID Transaction Boundary Verification' },
-        { label: 'Index Optimization', value: 'B-Tree & Composite Key Query Execution' },
-        { label: 'Throughput Benchmark', value: '10,000+ RPS Virtual Thread Isolation' },
-        { label: 'Resilience Circuit', value: 'Exponential Backoff + Fallback Cache' }
-      ],
-      samplePrompt: 'Architect an idempotent distributed payment consumer that prevents dual-charge anomalies across Kafka partitions during rolling database restarts.'
+      title: 'Backend Engineer',
+      skills: ['Java 21', 'Spring Boot', 'REST APIs', 'MySQL / PostgreSQL', 'Redis Caching'],
+      sampleQuestion: 'How does Spring Boot auto-configuration work behind the scenes, and how do you customize bean creation?',
+      metrics: 'Evaluates architectural layering, transaction boundaries, connection pooling, and REST conventions.'
     },
     fullstack: {
-      code: 'SYS-TRACK-FS-03',
-      title: 'Full Stack Product Engineer',
-      coreStack: ['React 19', 'Next.js / Vite', 'Tailwind CSS', 'Web Audio / WASM'],
-      specs: [
-        { label: 'Evaluation Model', value: 'Atomic State Hydration & Zero Layout Shift' },
-        { label: 'Latency Budget', value: '< 16.6ms Render Frame Target (60fps)' },
-        { label: 'Security Boundary', value: 'HTTP-Only SameSite CSRF / JWT Protocol' },
-        { label: 'Audio Engine', value: 'Procedural Web Audio low-pass synthesis' }
-      ],
-      samplePrompt: 'Implement an optimistic UI mutation queue in React with offline rollback persistence and real-time WebSocket state conflict resolution.'
+      title: 'Full Stack Developer',
+      skills: ['React 19', 'JavaScript / TypeScript', 'Tailwind CSS', 'Node / Spring Boot', 'API Security'],
+      sampleQuestion: 'Describe how you manage state and authentication tokens in a React SPA communicating with secured backend endpoints.',
+      metrics: 'Evaluates frontend UX responsiveness, component isolation, state management, and end-to-end data flows.'
     },
     data: {
-      code: 'SYS-TRACK-DE-04',
-      title: 'Data & High-Throughput Infrastructure',
-      coreStack: ['Distributed SQL', 'Query Plan Telemetry', 'Columnar Parquet', 'ETL Pipelines'],
-      specs: [
-        { label: 'Evaluation Model', value: 'Query Cost Tree & Disk I/O Minimization' },
-        { label: 'Partition Strategy', value: 'Range vs Hash Sharding Topology' },
-        { label: 'Data Consistency', value: 'Eventual Consistency vs Raft Consensus' },
-        { label: 'Cache Hit Ratio', value: '> 99.2% Tier-1 Redis cluster telemetry' }
-      ],
-      samplePrompt: 'Analyze a slow explain plan for a 50M-row partitioned join. Formulate index covering strategies and partition pruning parameters.'
+      title: 'Data Engineer',
+      skills: ['SQL Optimization', 'DBMS Internals', 'ETL Pipelines', 'Distributed Systems', 'Python'],
+      sampleQuestion: 'Compare indexing strategies (B-Tree vs Hash vs Clustered) and explain how you would troubleshoot a slow query execution plan.',
+      metrics: 'Evaluates indexing cost, normalization tradeoffs, disk I/O, and query optimization patterns.'
     }
   };
 
-  const specificationsFaq = [
+  const faqs = [
     {
-      q: '1.0 How does client-side proctoring protect candidate privacy?',
-      a: 'Zero bytes of camera video leave your workstation. Spatial computer vision executes locally in client memory via Google MediaPipe FaceLandmarker compiled to WebAssembly (WASM). Eye gaze vectors, facial fiducials, and attention metrics are calculated in real-time at 60 FPS directly on the client GPU/CPU, and no video is ever recorded or uploaded to the cloud.'
+      q: 'How does the AI voice communication work without audio lag?',
+      a: 'InterviewIQ uses high-performance in-browser Web Speech APIs. The AI question text is converted into natural audio using Speech Synthesis with customized interviewer personas, while your voice response is transcribed in real-time via Speech Recognition. Only clean text is sent to the backend, eliminating audio upload lag.'
     },
     {
-      q: '2.0 How does the 5-Pillar Neural Evaluation benchmark technical answers?',
-      a: 'Submissions are cross-referenced against calibrated gold-standard engineering rubrics across 5 orthogonal vectors: Technical Accuracy, Completeness of Edge Cases, Architectural Clarity, Problem Relevance, and Delivery Confidence. Detailed analytical scorecards with pinpoint remediation notes are generated instantaneously.'
+      q: 'Is my webcam video recorded or sent to a remote server?',
+      a: 'No. InterviewIQ runs Google MediaPipe FaceLandmarker directly inside your browser via WebAssembly (WASM). All face tracking, eye gaze estimation, and head orientation calculations occur locally on your machine. No video stream or webcam photos ever leave your computer.'
     },
     {
-      q: '3.0 How are custom technical questions generated from resume uploads?',
-      a: 'The Resume Parsing Engine disassembles uploaded PDF/DOCX documents, extracts verified skill graphs, projects, frameworks, and architecture decisions, and primes the AI Engine to conduct deep, context-specific architectural cross-examinations tailored strictly to your background.'
+      q: 'Can I generate interview questions tailored specifically to my own resume?',
+      a: 'Yes! Simply upload your resume (PDF or DOCX) in the Resume Analyzer. InterviewIQ extracts your technical skills, projects, and work experience, and can dynamically generate custom interview questions that target your specific background and target role.'
     },
     {
-      q: '4.0 How does the zero-latency Web Audio engine enhance the simulation?',
-      a: 'Rather than downloading multi-megabyte compressed audio files from cloud CDNs, the browser audio engine procedurally synthesizes mechanical switch tones, oscillator sweeps (3200Hz -> 1400Hz), and shaped white-noise bandpass pulses entirely inside browser memory using the Web Audio API with a warm 7,000Hz analog lowpass filter, ensuring instant tactile feedback.'
+      q: 'How does the 5-pillar scoring system evaluate answers?',
+      a: 'Every answer is analyzed against the benchmark ideal answer across 5 concrete dimensions: Technical Accuracy, Completeness, Communication Clarity, Question Relevance, and Confidence. You receive both quantitative scores (1-10) and qualitative advice on strengths, weaknesses, and key concepts missed.'
     },
     {
-      q: '5.0 Can candidates practice role-specific technical rounds and behavioral interviews?',
-      a: 'Yes. InterviewIQ offers comprehensive tracks including Software Development Engineer (SDE), Distributed Backend Systems, Full Stack Web, and Data Infrastructure, as well as focused modules in Data Structures & Algorithms, System Design, and Behavioral leadership questions.'
+      q: 'What happens if I accidentally switch tabs during a proctored interview?',
+      a: 'InterviewIQ monitors focus using window blur and visibility change events. You are granted warning allowances with real-time alerts. If persistent proctoring violations or tab-switches are recorded beyond the warning threshold, the session is protected and flagged to uphold interview integrity.'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-iq-void text-iq-ice font-ui selection:bg-iq-blue selection:text-iq-ice relative">
-      
-      {/* Floating Navigation Pill */}
-      <FloatingPillNav />
+    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-100 selection:text-blue-900 relative overflow-x-hidden">
 
-      {/* ========================================================================= */}
-      {/* CANVAS 1: VOID MODE (#00050a) — HIGH-TECH PRODUCT & COMPUTER VISION TELEMETRY */}
-      {/* ========================================================================= */}
-      <section id="core" className="relative pt-32 pb-24 md:pt-40 md:pb-32 px-4 sm:px-6 lg:px-8 devices-matrix-grid overflow-hidden border-b border-iq-ice/15">
-        
-        {/* Subtle Ethereal Glow Ring */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-iq-blue/10 blur-[130px] rounded-full pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto relative z-10">
-
-          {/* Top Telemetry Hardware Pill */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-3 px-3.5 py-1.5 rounded-full border border-iq-ice/20 bg-iq-void/90 backdrop-blur-md shadow-lg shadow-black/50">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-mono text-[10px] tracking-wider uppercase text-iq-ice/90">
-                PROCTORING STATUS: NOMINAL // EDGE WASM VISION ACTIVE
-              </span>
-              <span className="font-mono text-[10px] text-iq-ice/40 border-l border-iq-ice/20 pl-2">
-                {telemetryFps} FPS
-              </span>
+      {/* Navigation Header */}
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          
+          {/* Brand Logo */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white font-bold text-sm flex items-center justify-center shadow-xs group-hover:bg-blue-700 transition-colors">
+              IQ
             </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-display font-bold text-base text-slate-900 tracking-tight">InterviewIQ</span>
+                <span className="text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.2 rounded-full uppercase tracking-wider">
+                  AI Studio
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 font-medium hidden sm:block">Intelligent Placement Simulation</p>
+            </div>
+          </Link>
+
+          {/* Desktop Nav Links */}
+          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-600">
+            <a href="#features" className="hover:text-blue-600 transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-blue-600 transition-colors">How It Works</a>
+            <a href="#roles" className="hover:text-blue-600 transition-colors">Role Tracks</a>
+            <a href="#security" className="hover:text-blue-600 transition-colors">Integrity &amp; Privacy</a>
+            <a href="#faq" className="hover:text-blue-600 transition-colors">FAQ</a>
+          </nav>
+
+          {/* Header Action Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            {user ? (
+              <div className="flex items-center gap-3">
+                <Link to="/dashboard" className="btn-primary text-xs py-2 px-4 shadow-xs">
+                  Dashboard
+                </Link>
+                <button onClick={logout} className="btn-ghost text-xs py-2 px-3">
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2.5">
+                <Link to="/login" className="btn-secondary text-xs py-2 px-3.5">
+                  Sign In
+                </Link>
+                <Link to="/register" className="btn-primary text-xs py-2 px-4 shadow-xs">
+                  Get Started Free
+                </Link>
+              </div>
+            )}
           </div>
 
-          {/* Monolithic Editorial Headline */}
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="headline-monolithic text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-tightest mb-6">
-              AI MOCK INTERVIEWS &amp; REAL-TIME PROCTORING
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-iq-ice/70 font-ui font-normal max-w-2xl mx-auto leading-relaxed mb-10">
-              An enterprise-grade technical interview simulation platform. Features client-side computer vision gaze tracking, speech-to-text dictation, 5-pillar neural scoring, and ATS resume auditing.
-            </p>
+          {/* Mobile Menu Hamburger Button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none"
+            >
+              {mobileMenuOpen ? <HiOutlineX className="w-6 h-6" /> : <HiOutlineMenu className="w-6 h-6" />}
+            </button>
+          </div>
 
-            {/* Action CTA Pills */}
-            <div className="flex flex-wrap items-center justify-center gap-4">
+        </div>
+
+        {/* Mobile Navigation Drawer */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-5 space-y-3">
+            <a href="#features" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium text-slate-700">Features</a>
+            <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium text-slate-700">How It Works</a>
+            <a href="#roles" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium text-slate-700">Role Tracks</a>
+            <a href="#security" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium text-slate-700">Integrity &amp; Privacy</a>
+            <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium text-slate-700">FAQ</a>
+            <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
               {user ? (
-                <Link
-                  to="/dashboard"
-                  onMouseEnter={playHoverTick}
-                  data-sfx="toggle"
-                  className="px-6 py-3 rounded-full bg-iq-blue hover:bg-[#005bbb] text-iq-ice font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all shadow-xl shadow-iq-blue/25 flex items-center gap-2"
-                >
-                  <HiOutlineTerminal className="w-4 h-4" />
-                  Launch Control Panel
+                <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="btn-primary text-center w-full py-2.5">
+                  Go to Dashboard
                 </Link>
               ) : (
                 <>
-                  <Link
-                    to="/register"
-                    onMouseEnter={playHoverTick}
-                    data-sfx="toggle"
-                    className="px-6 py-3 rounded-full bg-iq-blue hover:bg-[#005bbb] text-iq-ice font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all shadow-xl shadow-iq-blue/25 flex items-center gap-2"
-                  >
-                    <HiOutlineLightningBolt className="w-4 h-4" />
-                    Start Mock Interview
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn-secondary text-center w-full py-2">
+                    Sign In
                   </Link>
-                  <Link
-                    to="/login"
-                    onMouseEnter={playHoverTick}
-                    className="px-6 py-3 rounded-full bg-iq-void hover:bg-iq-void/80 border border-iq-ice/25 hover:border-iq-ice/50 text-iq-ice font-ui text-xs font-medium uppercase tracking-wider active:scale-95 transition-all flex items-center gap-2"
-                  >
-                    Candidate Login
+                  <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="btn-primary text-center w-full py-2.5">
+                    Get Started Free
                   </Link>
                 </>
               )}
-              <a
-                href="#specifications"
-                onMouseEnter={playHoverTick}
-                className="px-6 py-3 rounded-full bg-iq-paper text-[#00050a] hover:bg-white font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all shadow-md"
-              >
-                Inspect System Specs
-              </a>
             </div>
           </div>
+        )}
+      </header>
 
-          {/* ================================================================= */}
-          {/* LIVE SIMULATION CHAMBER CONSOLE PREVIEW                           */}
-          {/* ================================================================= */}
-          <div className="mt-16 max-w-5xl mx-auto">
-            <div className="iq-panel p-1.5 sm:p-2 relative group">
-              
-              {/* Chassis Top Status Bar */}
-              <div className="px-4 py-2.5 flex items-center justify-between border-b border-iq-ice/15 bg-iq-void/90 rounded-t-xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-2.5 h-2.5 rounded-full bg-iq-blue shadow-sm shadow-iq-blue animate-pulse" />
-                  <span className="font-mono text-[11px] text-white tracking-widest uppercase">
-                    INTERVIEW-IQ // LIVE SIMULATION CHAMBER [PROCTORING ACTIVE]
-                  </span>
-                </div>
-                <div className="flex items-center gap-4 font-mono text-[10px] text-iq-ice/60">
-                  <span className="hidden sm:inline">AUDIO: 48,000Hz</span>
-                  <span>VISION: WASM 60FPS</span>
-                  <span className="text-emerald-400">LATENCY: 11.2ms</span>
-                </div>
-              </div>
-
-              {/* Console Body */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 sm:p-6 bg-iq-void/60 backdrop-blur-md">
-                
-                {/* Left: Spatial Computer Vision Telemetry Feed Mockup */}
-                <div className="lg:col-span-7 flex flex-col gap-3">
-                  <div className="relative aspect-video rounded-xl bg-[#000307] border border-iq-ice/20 overflow-hidden flex flex-col justify-between p-4 shadow-inner">
-                    
-                    {/* Vision Overlay Grid & Crosshairs */}
-                    <div className="absolute inset-0 bg-[radial-gradient(#d6eaff_0.75px,transparent_0.75px)] [background-size:16px_16px] opacity-15 pointer-events-none" />
-                    
-                    {/* Precision HUD Overlays */}
-                    <div className="relative z-10 flex items-start justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded bg-iq-blue/20 border border-iq-blue/40 text-[10px] font-mono text-iq-ice tracking-wider">
-                          CAM.01 // WASM EDGE
-                        </span>
-                        <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-mono text-emerald-400 tracking-wider">
-                          GAZE LOCK: 98.4%
-                        </span>
-                      </div>
-                      <div className="font-mono text-[10px] text-iq-ice/50">
-                        LANDMARKS: 478 PTS
-                      </div>
-                    </div>
-
-                    {/* Center Spatial Wireframe Target */}
-                    <div className="relative z-10 self-center flex flex-col items-center">
-                      <div className="w-32 h-40 border border-iq-ice/25 rounded-3xl relative flex items-center justify-center">
-                        <div className="w-16 h-16 border border-dashed border-iq-blue/40 rounded-full animate-spin" style={{ animationDuration: '20s' }} />
-                        <div className="absolute top-2 w-1.5 h-1.5 bg-iq-blue rounded-full" />
-                        <div className="absolute bottom-4 font-mono text-[9px] text-iq-ice/60 tracking-wider">
-                          FOCAL PLANE
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Bottom Telemetry HUD Data */}
-                    <div className="relative z-10 flex items-center justify-between font-mono text-[10px] text-iq-ice/70 bg-iq-void/80 px-3 py-1.5 rounded-lg border border-iq-ice/10">
-                      <span>PITCH: -1.2°</span>
-                      <span>YAW: +0.4°</span>
-                      <span>ROLL: 0.0°</span>
-                      <span className="text-emerald-400">PROCTOR: CLEAN</span>
-                    </div>
-                  </div>
-
-                  {/* Audio Synthesizer Waveform Visualizer */}
-                  <div className="p-3 rounded-xl bg-[#000307]/80 border border-iq-ice/15 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-end gap-1 h-7">
-                        <span className="wave-bar w-1 bg-iq-blue rounded-full" />
-                        <span className="wave-bar w-1 bg-iq-blue rounded-full" />
-                        <span className="wave-bar w-1 bg-iq-ice rounded-full" />
-                        <span className="wave-bar w-1 bg-iq-ice rounded-full" />
-                        <span className="wave-bar w-1 bg-iq-blue rounded-full" />
-                        <span className="wave-bar w-1 bg-iq-ice rounded-full" />
-                        <span className="wave-bar w-1 bg-iq-blue rounded-full" />
-                      </div>
-                      <div>
-                        <div className="text-[11px] font-mono text-white uppercase tracking-wider">
-                          SPEECH RECOGNITION &amp; SYNTHESIS
-                        </div>
-                        <div className="text-[10px] font-mono text-iq-ice/50">
-                          REAL-TIME VOICE DICTATION &amp; AUDIO FEEDBACK
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => playMechanicalToggle(true)}
-                      onMouseEnter={playHoverTick}
-                      data-sfx="toggle"
-                      className="px-3 py-1 rounded-full border border-iq-ice/20 hover:border-iq-ice/40 bg-iq-void font-mono text-[10px] uppercase text-iq-ice"
-                    >
-                      Test Audio Relay
-                    </button>
-                  </div>
-                </div>
-
-                {/* Right: Real-time 5-Pillar Score Telemetry Card */}
-                <div className="lg:col-span-5 flex flex-col justify-between gap-4 p-4 rounded-xl bg-[#000307]/70 border border-iq-ice/15">
-                  <div>
-                    <div className="flex items-center justify-between pb-3 border-b border-iq-ice/15">
-                      <span className="text-xs font-mono uppercase tracking-widest text-iq-ice/80">
-                        5-PILLAR NEURAL EVALUATION
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full bg-iq-blue text-white font-mono text-[10px] font-bold">
-                        9.4 / 10
-                      </span>
-                    </div>
-
-                    <div className="mt-4 space-y-3">
-                      <div>
-                        <div className="flex justify-between text-[11px] font-mono text-iq-ice/80 mb-1">
-                          <span>1. Technical Accuracy</span>
-                          <span className="text-white font-bold">96%</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-iq-ice/10 rounded-full overflow-hidden">
-                          <div className="h-full bg-iq-blue rounded-full" style={{ width: '96%' }} />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-[11px] font-mono text-iq-ice/80 mb-1">
-                          <span>2. Edge Case Completeness</span>
-                          <span className="text-white font-bold">92%</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-iq-ice/10 rounded-full overflow-hidden">
-                          <div className="h-full bg-iq-blue rounded-full" style={{ width: '92%' }} />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-[11px] font-mono text-iq-ice/80 mb-1">
-                          <span>3. Architectural Clarity</span>
-                          <span className="text-white font-bold">94%</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-iq-ice/10 rounded-full overflow-hidden">
-                          <div className="h-full bg-iq-blue rounded-full" style={{ width: '94%' }} />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-[11px] font-mono text-iq-ice/80 mb-1">
-                          <span>4. Problem Relevance</span>
-                          <span className="text-white font-bold">98%</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-iq-ice/10 rounded-full overflow-hidden">
-                          <div className="h-full bg-iq-blue rounded-full" style={{ width: '98%' }} />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-[11px] font-mono text-iq-ice/80 mb-1">
-                          <span>5. Delivery &amp; Stability</span>
-                          <span className="text-white font-bold">90%</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-iq-ice/10 rounded-full overflow-hidden">
-                          <div className="h-full bg-iq-blue rounded-full" style={{ width: '90%' }} />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-3 border-t border-iq-ice/15">
-                    <p className="text-[11px] font-mono text-iq-ice/60 leading-normal">
-                      &gt; NLP rubric verified: Concurrency primitives &amp; edge case handling. Zero hallucination.
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Bottom Specs */}
-              <div className="px-4 py-2 bg-iq-void/90 rounded-b-xl border-t border-iq-ice/15 flex flex-wrap items-center justify-between text-[10px] font-mono text-iq-ice/40">
-                <span>TECH STACK: SPRING BOOT 3.3 + FASTAPI + GEMINI 2.0</span>
-                <span>VISION: GOOGLE MEDIAPIPE WASM</span>
-                <span>ZERO CLOUD VIDEO STORAGE GUARANTEE</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Core Hardware Metrics Ticker */}
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            <div className="p-4 rounded-xl bg-iq-void/80 border border-iq-ice/15 text-center">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-white tracking-tight">100+</div>
-              <div className="text-[11px] font-mono text-iq-ice/60 uppercase tracking-wider mt-1">
-                Completed Mock Sessions
-              </div>
-            </div>
-            <div className="p-4 rounded-xl bg-iq-void/80 border border-iq-ice/15 text-center">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-iq-blue tracking-tight">&lt; 15ms</div>
-              <div className="text-[11px] font-mono text-iq-ice/60 uppercase tracking-wider mt-1">
-                Browser Audio Synthesis
-              </div>
-            </div>
-            <div className="p-4 rounded-xl bg-iq-void/80 border border-iq-ice/15 text-center">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-emerald-400 tracking-tight">100%</div>
-              <div className="text-[11px] font-mono text-iq-ice/60 uppercase tracking-wider mt-1">
-                Client-Side WASM Vision
-              </div>
-            </div>
-            <div className="p-4 rounded-xl bg-iq-void/80 border border-iq-ice/15 text-center">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-white tracking-tight">0 Bytes</div>
-              <div className="text-[11px] font-mono text-iq-ice/60 uppercase tracking-wider mt-1">
-                Video Egress / Stored
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* CANVAS 2: PAPER MODE (#f5f5f5) — HIGH-DENSITY TECHNICAL SPECIFICATIONS   */}
-      {/* ========================================================================= */}
-      <section id="specifications" className="py-24 px-4 sm:px-6 lg:px-8 bg-[#f5f5f5] text-[#00050a] devices-matrix-grid-paper border-b border-[#00050a]/20">
-        <div className="max-w-7xl mx-auto">
+      {/* Hero Section */}
+      <section className="relative pt-16 pb-20 md:pt-24 md:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="text-center max-w-4xl mx-auto">
           
-          {/* Paper Section Header */}
-          <div className="max-w-3xl mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-[#00050a]/30 bg-white font-mono text-[10px] uppercase tracking-widest text-[#00050a] mb-4">
-              [DOC: ENG-SPEC-2026 // PAPER MODE CANVAS]
-            </div>
-            <h2 className="headline-monolithic text-3xl sm:text-5xl font-bold text-[#00050a] tracking-tightest mb-4">
-              TECHNICAL SPECIFICATION MANUAL
-            </h2>
-            <p className="text-sm sm:text-base text-slate-700 font-ui leading-relaxed">
-              Standard engineering documentation for the InterviewIQ simulation core. Derived from modern placement requirements, architectural blueprints, and strict evaluation tolerances.
-            </p>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-xs font-semibold mb-6 shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+            Next-Gen Placement Preparation Studio
           </div>
 
-          {/* Architectural Drafting Spec Table */}
-          <div className="border border-[#00050a]/25 rounded-xl bg-white shadow-sm overflow-hidden mb-16">
-            <div className="px-6 py-4 bg-slate-100 border-b border-[#00050a]/20 flex items-center justify-between">
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#00050a]">
-                SYSTEM ARCHITECTURE &amp; TOLERANCE MATRIX
-              </span>
-              <span className="font-mono text-[11px] text-slate-600">
-                REVISION 4.1.0 // ENTERPRISE READINESS
-              </span>
-            </div>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
+            Master Technical Interviews with{' '}
+            <span className="text-blue-600">Adaptive AI</span> &amp; Real-Time Proctoring
+          </h1>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left font-ui text-xs">
-                <thead>
-                  <tr className="border-b border-[#00050a]/15 bg-slate-50 font-mono text-[11px] text-slate-600 uppercase">
-                    <th className="px-6 py-3 font-semibold">Subsystem Token</th>
-                    <th className="px-6 py-3 font-semibold">Implementation Standard</th>
-                    <th className="px-6 py-3 font-semibold">Engineering Tolerance</th>
-                    <th className="px-6 py-3 font-semibold">Operational Role</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  <tr className="hover:bg-slate-50">
-                    <td className="px-6 py-4 font-mono font-bold text-[#00050a]">SYS.MOCK.ADAPTIVE</td>
-                    <td className="px-6 py-4">FastAPI + Google Gemini 2.0 Flash</td>
-                    <td className="px-6 py-4 font-mono text-slate-600">Dynamic question synthesis</td>
-                    <td className="px-6 py-4">Contextual technical interview simulation</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50">
-                    <td className="px-6 py-4 font-mono font-bold text-[#00050a]">SYS.VISION.PROCTOR</td>
-                    <td className="px-6 py-4">MediaPipe FaceLandmarker WASM</td>
-                    <td className="px-6 py-4 font-mono text-slate-600">478 3D vertices @ 60 FPS</td>
-                    <td className="px-6 py-4">Gaze tracking &amp; focus verification</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50">
-                    <td className="px-6 py-4 font-mono font-bold text-[#00050a]">SYS.RESUME.ATS</td>
-                    <td className="px-6 py-4">5-Dimensional PyMuPDF + Regex Parser</td>
-                    <td className="px-6 py-4 font-mono text-slate-600">100% PDF &amp; DOCX format extract</td>
-                    <td className="px-6 py-4">Skill extraction &amp; interview personalization</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50">
-                    <td className="px-6 py-4 font-mono font-bold text-[#00050a]">SYS.AUDIO.PROCEDURAL</td>
-                    <td className="px-6 py-4">Web Audio API + 7,000Hz Lowpass</td>
-                    <td className="px-6 py-4 font-mono text-slate-600">&lt; 15ms procedural synthesis</td>
-                    <td className="px-6 py-4">Tactile mechanical click &amp; relay toggle</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50">
-                    <td className="px-6 py-4 font-mono font-bold text-[#00050a]">SYS.EVAL.5PILLAR</td>
-                    <td className="px-6 py-4">Multi-vector Semantic Alignment</td>
-                    <td className="px-6 py-4 font-mono text-slate-600">Accuracy, Edge Cases, Clarity</td>
-                    <td className="px-6 py-4">Comprehensive scoring &amp; remedial notes</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <p className="text-base sm:text-lg md:text-xl text-slate-600 font-normal max-w-2xl mx-auto leading-relaxed mb-10">
+            Practice realistic interviews with dynamic questions, instant voice dictation, client-side gaze verification, and comprehensive 5-pillar evaluation.
+          </p>
 
-          {/* ========================================================================= */}
-          {/* TRACKS SELECTOR: ARCHITECTURAL DRAFTING BLUEPRINT */}
-          {/* ========================================================================= */}
-          <div id="tracks" className="pt-8">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-              <div>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
-                  [MODULE: TRACK-SELECTOR-04]
-                </span>
-                <h3 className="headline-monolithic text-2xl sm:text-4xl font-bold text-[#00050a] tracking-tight mt-1">
-                  ENGINEERING TRACK SPECIFICATIONS
-                </h3>
-              </div>
-              
-              {/* Track Selector Buttons */}
-              <div className="flex flex-wrap gap-2 p-1.5 rounded-xl bg-slate-200 border border-[#00050a]/15">
-                {Object.keys(engineeringTracks).map((trackKey) => (
-                  <button
-                    key={trackKey}
-                    onClick={() => {
-                      setSelectedTrack(trackKey);
-                      playMechanicalToggle(true);
-                    }}
-                    onMouseEnter={playHoverTick}
-                    data-sfx="toggle"
-                    className={`px-3 py-1.5 rounded-lg font-ui text-xs uppercase tracking-wider font-semibold transition-all ${
-                      selectedTrack === trackKey
-                        ? 'bg-[#00050a] text-white shadow-sm'
-                        : 'text-slate-700 hover:text-black hover:bg-white/50'
-                    }`}
-                  >
-                    {trackKey.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Selected Track Detailed Blueprint Card */}
-            <div className="border-2 border-[#00050a]/20 rounded-2xl bg-white p-6 sm:p-8 shadow-sm relative">
-              <div className="flex flex-wrap items-center justify-between pb-4 border-b border-[#00050a]/15 gap-2">
-                <div>
-                  <span className="font-mono text-xs font-bold text-[#007dff]">
-                    {engineeringTracks[selectedTrack].code}
-                  </span>
-                  <h4 className="headline-monolithic text-xl sm:text-2xl font-bold text-[#00050a] mt-0.5">
-                    {engineeringTracks[selectedTrack].title}
-                  </h4>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {engineeringTracks[selectedTrack].coreStack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-2.5 py-1 rounded bg-slate-100 border border-slate-300 font-mono text-[10px] font-semibold text-slate-800 uppercase"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Blueprint Specs Grid */}
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {engineeringTracks[selectedTrack].specs.map((item, idx) => (
-                  <div key={idx} className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
-                    <div className="font-mono text-[10px] uppercase text-slate-500">
-                      {item.label}
-                    </div>
-                    <div className="font-ui text-xs font-bold text-[#00050a] mt-1">
-                      {item.value}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Sample Prompt Telemetry */}
-              <div className="mt-6 p-4 rounded-xl bg-slate-100 border border-slate-300">
-                <div className="font-mono text-[10px] uppercase text-slate-500 tracking-wider mb-1.5 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#007dff]" />
-                  EXEMPLAR INTERVIEW QUESTION SPEC
-                </div>
-                <p className="font-ui text-sm text-[#00050a] font-medium italic">
-                  "{engineeringTracks[selectedTrack].samplePrompt}"
-                </p>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
-                <span className="font-mono text-[11px] text-slate-500">
-                  EVALUATION ENGINE: GEMINI 2.0 FLASH + EXPERT PROMPT ARCHITECTURE
-                </span>
-                <Link
-                  to="/interviews"
-                  onMouseEnter={playHoverTick}
-                  data-sfx="toggle"
-                  className="px-4 py-2 rounded-full bg-[#00050a] hover:bg-black text-[#f5f5f5] font-ui text-xs font-semibold uppercase tracking-wider active:scale-95 transition-all flex items-center gap-2"
-                >
-                  Configure Session <HiOutlineArrowRight className="w-3.5 h-3.5" />
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {user ? (
+              <Link to="/dashboard" className="btn-primary text-sm py-3 px-6 shadow-sm flex items-center gap-2">
+                Launch Dashboard <HiOutlineArrowRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <>
+                <Link to="/register" className="btn-primary text-sm py-3 px-6 shadow-sm flex items-center gap-2">
+                  <HiOutlineLightningBolt className="w-4 h-4" />
+                  Start Free Mock Interview
                 </Link>
-              </div>
+                <Link to="/login" className="btn-secondary text-sm py-3 px-6 shadow-xs">
+                  Candidate Login
+                </Link>
+              </>
+            )}
+            <a href="#how-it-works" className="btn-ghost text-sm py-3 px-5 text-slate-600 hover:text-slate-900">
+              See How It Works
+            </a>
+          </div>
+
+          {/* Social Proof Stats */}
+          <div className="mt-14 pt-10 border-t border-slate-200/80 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+            <div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-slate-900">100+</div>
+              <div className="text-xs text-slate-500 font-medium mt-1">Mock Interviews Completed</div>
+            </div>
+            <div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-blue-600">100%</div>
+              <div className="text-xs text-slate-500 font-medium mt-1">In-Browser Privacy (WASM)</div>
+            </div>
+            <div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-slate-900">5-Pillar</div>
+              <div className="text-xs text-slate-500 font-medium mt-1">Detailed Rubric Scoring</div>
+            </div>
+            <div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-emerald-600">&lt; 15ms</div>
+              <div className="text-xs text-slate-500 font-medium mt-1">Voice Recognition Latency</div>
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* ========================================================================= */}
-      {/* CANVAS 1 (RESUMED): VOID MODE (#00050a) — SPATIAL TELEMETRY & AUDIT       */}
-      {/* ========================================================================= */}
-      <section id="telemetry" className="py-24 px-4 sm:px-6 lg:px-8 devices-matrix-grid border-b border-iq-ice/15">
-        <div className="max-w-7xl mx-auto">
+      {/* Feature Highlights Grid */}
+      <section id="features" className="py-20 bg-white border-y border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-iq-ice/20 bg-iq-void font-mono text-[10px] uppercase tracking-wider text-iq-ice mb-4">
-              [SPATIAL AUDITING &amp; PRIVACY GUARANTEE]
-            </div>
-            <h2 className="headline-monolithic text-3xl sm:text-5xl font-bold text-white tracking-tightest mb-4">
-              EDGE ARCHITECTURE WITH ZERO CLOUD INTRUSION
-            </h2>
-            <p className="text-sm sm:text-base text-iq-ice/70 font-ui leading-relaxed">
-              We engineered the entire vision proctoring pipeline to execute exclusively inside your browser's WebAssembly sandbox. Video streams never touch an external network socket.
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">Core Capabilities</h2>
+            <p className="text-3xl sm:text-4xl font-display font-bold text-slate-900 tracking-tight">
+              Everything You Need to Ace Your Next Technical Round
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             
-            {/* Tile 1 */}
-            <div className="iq-panel p-6 flex flex-col justify-between">
+            {/* Feature 1 */}
+            <div className="p-6 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-slate-300 transition-all shadow-xs flex flex-col justify-between">
               <div>
-                <div className="w-10 h-10 rounded-xl bg-iq-blue/15 border border-iq-blue/30 flex items-center justify-center text-iq-ice mb-4">
-                  <HiOutlineVideoCamera className="w-5 h-5 text-iq-blue" />
+                <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-5">
+                  <HiOutlineVideoCamera className="w-6 h-6" />
                 </div>
-                <div className="font-mono text-[10px] text-iq-blue uppercase tracking-widest mb-1">
-                  01 // WASM COMPILED
-                </div>
-                <h3 className="font-display text-lg font-bold text-white mb-2">
-                  Client FaceLandmarker
-                </h3>
-                <p className="text-xs text-iq-ice/70 font-ui leading-relaxed">
-                  MediaPipe processes 478 spatial face landmarks in real-time on your hardware. Computes iris gaze vectors and head orientation without transmitting a single pixel off your machine.
+                <h3 className="text-base font-bold text-slate-900 mb-2">Adaptive AI Interviews</h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Dynamic technical questions generated by Google Gemini 2.0 tailored to your experience level and claimed skills.
                 </p>
               </div>
-              <div className="mt-6 pt-4 border-t border-iq-ice/10 font-mono text-[10px] text-iq-ice/50">
-                PIPELINE: LOCAL WASM // 60 FPS
+              <div className="mt-6 pt-4 border-t border-slate-200/60 text-[11px] font-semibold text-blue-600 flex items-center gap-1">
+                Natural Voice Synthesis <HiOutlineArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
-            {/* Tile 2 */}
-            <div className="iq-panel p-6 flex flex-col justify-between">
+            {/* Feature 2 */}
+            <div className="p-6 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-slate-300 transition-all shadow-xs flex flex-col justify-between">
               <div>
-                <div className="w-10 h-10 rounded-xl bg-iq-blue/15 border border-iq-blue/30 flex items-center justify-center text-iq-ice mb-4">
-                  <HiOutlineTerminal className="w-5 h-5 text-iq-blue" />
+                <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-5">
+                  <HiOutlineShieldCheck className="w-6 h-6" />
                 </div>
-                <div className="font-mono text-[10px] text-iq-blue uppercase tracking-widest mb-1">
-                  02 // PROCEDURAL WEB AUDIO
-                </div>
-                <h3 className="font-display text-lg font-bold text-white mb-2">
-                  Instant Audio &amp; Speech
-                </h3>
-                <p className="text-xs text-iq-ice/70 font-ui leading-relaxed">
-                  Lowpass-filtered procedural oscillators synthesize mechanical micro-ticks and relay toggles instantaneously. Zero slow audio file downloads and zero response latency.
+                <h3 className="text-base font-bold text-slate-900 mb-2">Client-Side Proctoring</h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Real-time face presence, eye gaze tracking, and tab-focus monitoring using MediaPipe WASM. No video uploaded.
                 </p>
               </div>
-              <div className="mt-6 pt-4 border-t border-iq-ice/10 font-mono text-[10px] text-iq-ice/50">
-                LATENCY: &lt; 12MS // 0 BYTES ASSET DOWNLOAD
+              <div className="mt-6 pt-4 border-t border-slate-200/60 text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
+                100% Air-Gapped Privacy <HiOutlineArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
-            {/* Tile 3 */}
-            <div className="iq-panel p-6 flex flex-col justify-between">
+            {/* Feature 3 */}
+            <div className="p-6 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-slate-300 transition-all shadow-xs flex flex-col justify-between">
               <div>
-                <div className="w-10 h-10 rounded-xl bg-iq-blue/15 border border-iq-blue/30 flex items-center justify-center text-iq-ice mb-4">
-                  <HiOutlineShieldCheck className="w-5 h-5 text-iq-blue" />
+                <div className="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-5">
+                  <HiOutlineDocumentText className="w-6 h-6" />
                 </div>
-                <div className="font-mono text-[10px] text-iq-blue uppercase tracking-widest mb-1">
-                  03 // AIR-GAPPED PRIVACY
-                </div>
-                <h3 className="font-display text-lg font-bold text-white mb-2">
-                  Strict Zero Egress
-                </h3>
-                <p className="text-xs text-iq-ice/70 font-ui leading-relaxed">
-                  Only transcribed text is exchanged with the AI inference model. Webcam feeds, background environments, and raw biometrics are discarded at the frame buffer level.
+                <h3 className="text-base font-bold text-slate-900 mb-2">ATS Resume Intelligence</h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Upload PDF or DOCX resumes to extract verified skills, audit keyword coverage, and generate targeted interview questions.
                 </p>
               </div>
-              <div className="mt-6 pt-4 border-t border-iq-ice/10 font-mono text-[10px] text-iq-ice/50">
-                AUDIT: COMPLIANT WITH GDPR / SOC2 PRINCIPLES
+              <div className="mt-6 pt-4 border-t border-slate-200/60 text-[11px] font-semibold text-purple-600 flex items-center gap-1">
+                5-Vector ATS Scoring <HiOutlineArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="p-6 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-slate-300 transition-all shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-5">
+                  <HiOutlineChartBar className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-bold text-slate-900 mb-2">5-Pillar Scorecard</h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Comprehensive performance feedback evaluating technical accuracy, completeness, communication, relevance, and confidence.
+                </p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-slate-200/60 text-[11px] font-semibold text-amber-600 flex items-center gap-1">
+                Actionable Remediation <HiOutlineArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
@@ -666,103 +310,172 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ========================================================================= */}
-      {/* SECTION: TACTILE MECHANICAL ACCORDION FAQ                                  */}
-      {/* ========================================================================= */}
-      <section id="faq" className="py-24 px-4 sm:px-6 lg:px-8 bg-iq-void border-b border-iq-ice/15">
-        <div className="max-w-4xl mx-auto">
-          
-          <div className="text-center mb-16">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-iq-ice/50">
-              [SUPPORT &amp; ARCHITECTURAL FAQ]
-            </span>
-            <h2 className="headline-monolithic text-3xl sm:text-5xl font-bold text-white tracking-tightest mt-2 mb-4">
-              SYSTEM ARCHITECTURE SPECIFICATIONS
-            </h2>
-            <p className="text-xs sm:text-sm text-iq-ice/60 font-ui">
-              Click any question below to trigger the Web Audio procedural relay toggle switch.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {specificationsFaq.map((item, idx) => {
-              const isOpen = activeFaq === idx;
-              return (
-                <div
-                  key={idx}
-                  className="iq-panel overflow-hidden transition-all duration-200"
-                >
-                  <button
-                    onClick={() => handleToggleFaq(idx)}
-                    onMouseEnter={playHoverTick}
-                    data-sfx="toggle"
-                    aria-expanded={isOpen}
-                    className="w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none"
-                  >
-                    <span className="font-display text-sm sm:text-base font-semibold text-white tracking-tight pr-4">
-                      {item.q}
-                    </span>
-                    <div className={`p-1 rounded-full border border-iq-ice/20 transition-transform duration-200 ${isOpen ? 'rotate-180 bg-iq-blue text-white' : 'text-iq-ice/60'}`}>
-                      <HiOutlineChevronDown className="w-4 h-4" />
-                    </div>
-                  </button>
-
-                  {isOpen && (
-                    <div className="px-6 pb-5 pt-1 border-t border-iq-ice/10 font-ui text-xs sm:text-sm text-iq-ice/80 leading-relaxed bg-iq-void/50">
-                      {item.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
+      {/* Role Tracks Showcase */}
+      <section id="roles" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">Curriculum Roadmaps</h2>
+          <p className="text-3xl font-display font-bold text-slate-900 tracking-tight">
+            Role-Calibrated Interview Simulations
+          </p>
+          <p className="text-sm text-slate-500 mt-2">
+            Practice realistic questions targeted to specific software engineering tracks.
+          </p>
         </div>
-      </section>
 
-      {/* ========================================================================= */}
-      {/* FOOTER                                                                    */}
-      {/* ========================================================================= */}
-      <footer className="py-16 px-4 sm:px-6 lg:px-8 bg-[#000307] border-t border-iq-ice/15 font-ui">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-          
-          <div>
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 rounded bg-iq-blue flex items-center justify-center text-white font-mono text-xs font-bold shadow-md shadow-iq-blue/30">
-                IQ
+        {/* Track Selector Tabs */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+          {Object.keys(roleTracks).map((key) => (
+            <button
+              key={key}
+              onClick={() => setSelectedRoleTab(key)}
+              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                selectedRoleTab === key
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
+            >
+              {roleTracks[key].title.split(' (')[0]}
+            </button>
+          ))}
+        </div>
+
+        {/* Selected Track Details Card */}
+        <div className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs">
+          <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-100 gap-4">
+            <div>
+              <h3 className="text-xl font-bold text-slate-900">{roleTracks[selectedRoleTab].title}</h3>
+              <p className="text-xs text-slate-500 mt-1">{roleTracks[selectedRoleTab].metrics}</p>
+            </div>
+            <Link to="/interviews" className="btn-primary text-xs py-2 px-4 shadow-xs self-start md:self-auto">
+              Practice This Track
+            </Link>
+          </div>
+
+          <div className="mt-6 space-y-4">
+            <div>
+              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Required Competencies:</span>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {roleTracks[selectedRoleTab].skills.map((skill, idx) => (
+                  <span key={idx} className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-medium text-slate-700">
+                    {skill}
+                  </span>
+                ))}
               </div>
-              <span className="font-display font-bold text-white text-base tracking-tightest">
-                INTERVIEW-IQ
+            </div>
+
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider block mb-1">
+                Sample Live Question:
               </span>
+              <p className="text-sm font-medium text-slate-800 italic">
+                "{roleTracks[selectedRoleTab].sampleQuestion}"
+              </p>
             </div>
-            <p className="text-xs text-iq-ice/50 font-mono mt-2">
-              Adaptive Mock Interviews • Client-Side WASM Vision • 5-Pillar Rubric Scoring • ATS Resume Intelligence
+          </div>
+        </div>
+      </section>
+
+      {/* Security & In-Browser Privacy */}
+      <section id="security" className="py-20 bg-slate-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2 block">Privacy First Architecture</span>
+            <h2 className="text-3xl sm:text-4xl font-display font-bold tracking-tight">
+              100% In-Browser Proctoring. Zero Video Recording.
+            </h2>
+            <p className="text-sm text-slate-400 mt-3 leading-relaxed">
+              We engineered the proctoring pipeline to execute exclusively inside your browser's WebAssembly sandbox. Video streams never touch external network sockets.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-6 font-mono text-xs text-iq-ice/70">
-            <a href="#core" onMouseEnter={playHoverTick} className="hover:text-white transition-colors">Overview</a>
-            <a href="#specifications" onMouseEnter={playHoverTick} className="hover:text-white transition-colors">Specs</a>
-            <a href="#tracks" onMouseEnter={playHoverTick} className="hover:text-white transition-colors">Tracks</a>
-            <a href="#telemetry" onMouseEnter={playHoverTick} className="hover:text-white transition-colors">Proctoring</a>
-            <Link to="/login" onMouseEnter={playHoverTick} className="hover:text-white transition-colors">Sign In</Link>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-6 rounded-2xl bg-slate-800/80 border border-slate-700">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-4">
+                <HiOutlineVideoCamera className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-bold mb-2">MediaPipe WASM</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                478 facial landmarks and gaze vectors are calculated at 60 FPS directly on your device GPU/CPU.
+              </p>
+            </div>
 
-          <div className="font-mono text-[10px] text-iq-ice/40 border-l border-iq-ice/15 pl-4 hidden lg:block">
-            <div>STACK: REACT 19 + SPRING BOOT 3.3 + FASTAPI</div>
-            <div>EVALUATION: GEMINI 2.0 FLASH ENGINE</div>
-            <div>PRIVACY: ZERO CLOUD VIDEO RETENTION</div>
-          </div>
+            <div className="p-6 rounded-2xl bg-slate-800/80 border border-slate-700">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4">
+                <HiOutlineLockClosed className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-bold mb-2">Zero Cloud Storage</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Video frames are immediately discarded from browser memory after landmark detection. No video is uploaded or stored.
+              </p>
+            </div>
 
+            <div className="p-6 rounded-2xl bg-slate-800/80 border border-slate-700">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-4">
+                <HiOutlineCheckCircle className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-bold mb-2">Audited Integrity</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Window blur events and multi-face detections trigger fair candidate warnings to uphold exam authenticity.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Accordion FAQ */}
+      <section id="faq" className="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">Got Questions?</h2>
+          <p className="text-3xl font-display font-bold text-slate-900 tracking-tight">
+            Frequently Asked Questions
+          </p>
         </div>
 
-        <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-iq-ice/10 flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-iq-ice/40 gap-4">
-          <div>© {new Date().getFullYear()} InterviewIQ. All rights reserved.</div>
-          <div className="flex items-center gap-4">
-            <span>CLIENT WASM VISION</span>
-            <span>PROCEDURAL AUDIO</span>
-            <span>RESUME INTELLIGENCE</span>
+        <div className="space-y-3">
+          {faqs.map((faq, idx) => (
+            <div key={idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+              <button
+                onClick={() => toggleFaq(idx)}
+                className="w-full px-5 py-4 text-left flex items-center justify-between font-semibold text-sm text-slate-900 focus:outline-none"
+              >
+                <span>{faq.q}</span>
+                <HiOutlineChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${activeFaq === idx ? 'rotate-180 text-blue-600' : ''}`} />
+              </button>
+              {activeFaq === idx && (
+                <div className="px-5 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                  {faq.a}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-slate-200 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+              IQ
+            </div>
+            <div>
+              <span className="font-display font-bold text-sm text-slate-900">InterviewIQ</span>
+              <p className="text-xs text-slate-500">Autonomous Technical Mock Interviews &amp; Resume Intelligence</p>
+            </div>
           </div>
+
+          <div className="flex flex-wrap items-center gap-6 text-xs text-slate-600 font-medium">
+            <a href="#features" className="hover:text-blue-600">Features</a>
+            <a href="#how-it-works" className="hover:text-blue-600">How It Works</a>
+            <a href="#roles" className="hover:text-blue-600">Roles</a>
+            <a href="#security" className="hover:text-blue-600">Security</a>
+            <a href="#faq" className="hover:text-blue-600">FAQ</a>
+            <Link to="/login" className="hover:text-blue-600">Sign In</Link>
+          </div>
+
+          <p className="text-xs text-slate-400">
+            &copy; {new Date().getFullYear()} InterviewIQ. All rights reserved.
+          </p>
         </div>
       </footer>
 

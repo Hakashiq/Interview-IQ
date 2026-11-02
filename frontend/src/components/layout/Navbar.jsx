@@ -3,7 +3,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
-import { playHoverTick, playMechanicalToggle } from '../../utils/soundEffects';
 import {
   HiOutlineBell, HiOutlineSearch, HiOutlineLogout,
   HiOutlineUser, HiOutlineCog, HiOutlineCheck
@@ -38,7 +37,7 @@ export default function Navbar() {
         setNotifications(res.data || []);
       } catch {
         setNotifications([
-          { id: 1, title: 'SYSTEM INITIALIZATION', message: 'AI Proctoring telemetry active. Upload resume for custom track benchmark.', createdAt: new Date().toISOString(), read: false },
+          { id: 1, title: 'Welcome to InterviewIQ', message: 'Upload your resume to generate personalized interview questions.', createdAt: new Date().toISOString(), read: false },
         ]);
       }
     };
@@ -46,7 +45,6 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    playMechanicalToggle(false);
     await logout();
     navigate('/login');
   };
@@ -54,7 +52,6 @@ export default function Navbar() {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleMarkRead = async (id) => {
-    playMechanicalToggle(true);
     try {
       await api.put(`/notifications/${id}/read`);
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
@@ -64,11 +61,10 @@ export default function Navbar() {
   };
 
   const handleMarkAllRead = async () => {
-    playMechanicalToggle(true);
     try {
       await api.put('/notifications/read-all');
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-      toast.success('Telemetry notifications acknowledged');
+      toast.success('All notifications marked as read');
     } catch {
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     }
@@ -86,36 +82,28 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-[#00050a]/90 backdrop-blur-xl border-b border-iq-ice/15">
+    <header className="sticky top-0 z-30 h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs">
       <div className="flex items-center justify-between h-full px-4 lg:px-8">
         
-        {/* Precision Search Bar */}
+        {/* Search Bar */}
         <div className="hidden sm:flex items-center flex-1 max-w-md">
           <div className="relative w-full">
-            <HiOutlineSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-iq-ice/40" />
+            <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               id="navbar-search"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search interview logs, tracks, questions..."
-              className="w-full pl-10 pr-12 py-2 rounded-xl bg-[#000307]/80 border border-iq-ice/20 text-xs font-mono text-iq-ice placeholder-iq-ice/35 focus:outline-none focus:border-iq-blue focus:ring-1 focus:ring-iq-blue transition-all"
+              placeholder="Search interviews, topics, questions..."
+              className="w-full pl-9 pr-12 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all"
             />
-            <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[9px] font-mono font-medium text-iq-ice/40 bg-iq-ice/5 border border-iq-ice/15 pointer-events-none">
+            <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-slate-400 bg-slate-100 border border-slate-200 pointer-events-none">
               CMD+K
             </kbd>
           </div>
         </div>
 
-        {/* Telemetry Indicator Status */}
-        <div className="hidden md:flex items-center gap-2 pl-4">
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-iq-ice/15 bg-iq-ice/5 font-mono text-[10px] text-iq-ice/70">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>SYS.LIVE // 0-EGRESS</span>
-          </div>
-        </div>
-
-        {/* Right Nav Section */}
+        {/* Right Section */}
         <div className="flex items-center gap-3 ml-auto">
           
           {/* Notifications Dropdown */}
@@ -125,56 +113,47 @@ export default function Navbar() {
               onClick={() => {
                 setShowNotifications(!showNotifications);
                 setShowProfile(false);
-                playMechanicalToggle(!showNotifications);
               }}
-              onMouseEnter={playHoverTick}
-              data-sfx="toggle"
-              className="relative p-2 rounded-xl border border-iq-ice/15 hover:border-iq-ice/30 bg-iq-ice/5 text-iq-ice/70 hover:text-white transition-colors"
-              title="System Notifications"
+              className="relative p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-500 hover:text-slate-800 transition-colors"
+              title="Notifications"
             >
               <HiOutlineBell className="w-4 h-4" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] flex items-center justify-center px-1 text-[9px] font-mono font-bold text-white bg-iq-blue rounded-full shadow-sm shadow-iq-blue">
+                <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] flex items-center justify-center px-1 text-[10px] font-bold text-white bg-blue-600 rounded-full">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
             </button>
 
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 iq-panel py-2 shadow-2xl z-50">
-                <div className="px-4 py-2.5 border-b border-iq-ice/15 flex items-center justify-between">
-                  <h3 className="font-mono text-xs font-bold text-white uppercase tracking-wider">
-                    Telemetry Dispatch
-                  </h3>
+              <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-lg py-2 z-50">
+                <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
+                  <h3 className="font-semibold text-xs text-slate-800 uppercase tracking-wider">Notifications</h3>
                   {unreadCount > 0 && (
                     <button
                       onClick={handleMarkAllRead}
-                      onMouseEnter={playHoverTick}
-                      className="text-[11px] font-mono text-iq-blue hover:underline flex items-center gap-1"
+                      className="text-[11px] font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1"
                     >
                       <HiOutlineCheck className="w-3.5 h-3.5" />
-                      ACK ALL
+                      Mark all as read
                     </button>
                   )}
                 </div>
                 {notifications.length === 0 ? (
-                  <div className="px-4 py-8 text-center text-iq-ice/40 font-mono text-xs">
-                    No active dispatches
-                  </div>
+                  <div className="px-4 py-6 text-center text-slate-400 text-xs">No notifications yet</div>
                 ) : (
-                  <div className="max-h-64 overflow-y-auto divide-y divide-iq-ice/10">
+                  <div className="max-h-64 overflow-y-auto divide-y divide-slate-100">
                     {notifications.map((notif) => (
                       <div
                         key={notif.id}
                         onClick={() => handleMarkRead(notif.id)}
-                        onMouseEnter={playHoverTick}
-                        className={`px-4 py-3 hover:bg-iq-ice/5 transition-colors cursor-pointer ${
-                          !notif.read ? 'bg-iq-blue/10 border-l-2 border-iq-blue' : ''
+                        className={`px-4 py-3 hover:bg-slate-50 transition-colors cursor-pointer ${
+                          !notif.read ? 'bg-blue-50/50' : ''
                         }`}
                       >
-                        <p className="text-xs font-mono font-bold text-white">{notif.title}</p>
-                        <p className="text-xs font-ui text-iq-ice/70 mt-0.5 leading-relaxed">{notif.message}</p>
-                        <p className="text-[10px] font-mono text-iq-ice/40 mt-1">{formatTime(notif.createdAt || notif.time)}</p>
+                        <p className="text-xs font-semibold text-slate-900">{notif.title}</p>
+                        <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{notif.message}</p>
+                        <p className="text-[10px] text-slate-400 mt-1">{formatTime(notif.createdAt || notif.time)}</p>
                       </div>
                     ))}
                   </div>
@@ -183,73 +162,65 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* User Profile Menu */}
+          {/* User Profile Dropdown */}
           <div className="relative" ref={profileRef}>
             <button
               id="navbar-profile-btn"
               onClick={() => {
                 setShowProfile(!showProfile);
                 setShowNotifications(false);
-                playMechanicalToggle(!showProfile);
               }}
-              onMouseEnter={playHoverTick}
-              data-sfx="toggle"
-              className="flex items-center gap-2.5 p-1.5 pr-3 rounded-xl border border-iq-ice/15 hover:border-iq-ice/30 bg-iq-ice/5 transition-colors"
+              className="flex items-center gap-2.5 p-1.5 pr-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors"
             >
-              <div className="w-7 h-7 rounded-lg bg-iq-blue flex items-center justify-center text-white text-xs font-mono font-bold flex-shrink-0 shadow-sm shadow-iq-blue/40">
+              <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
                 {user?.fullName?.charAt(0) || 'U'}
               </div>
               <div className="hidden md:block text-left">
-                <p className="text-xs font-ui font-semibold text-white leading-tight">{user?.fullName || 'User'}</p>
-                <p className="text-[9px] font-mono text-iq-ice/50 uppercase leading-tight">
-                  {user?.roles?.[0]?.replace('ROLE_', '') || 'CANDIDATE'}
+                <p className="text-xs font-semibold text-slate-900 leading-tight">{user?.fullName || 'User'}</p>
+                <p className="text-[10px] text-slate-500 leading-tight">
+                  {user?.roles?.[0]?.replace('ROLE_', '') || 'STUDENT'}
                 </p>
               </div>
             </button>
 
             {showProfile && (
-              <div className="absolute right-0 mt-2 w-56 iq-panel py-1.5 shadow-2xl z-50">
-                <div className="px-4 py-2.5 border-b border-iq-ice/15">
-                  <p className="text-xs font-ui font-bold text-white">{user?.fullName}</p>
-                  <p className="text-[10px] font-mono text-iq-ice/50 truncate mt-0.5">{user?.email}</p>
+              <div className="absolute right-0 mt-2 w-52 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-50">
+                <div className="px-4 py-2.5 border-b border-slate-100">
+                  <p className="text-xs font-semibold text-slate-900">{user?.fullName}</p>
+                  <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
                 </div>
                 <div className="py-1">
                   <button
                     id="navbar-profile-link"
                     onClick={() => {
-                      playMechanicalToggle(true);
                       navigate('/profile');
                       setShowProfile(false);
                     }}
-                    onMouseEnter={playHoverTick}
-                    className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-ui uppercase tracking-wider text-iq-ice/80 hover:text-white hover:bg-iq-ice/5 transition-colors"
+                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                   >
-                    <HiOutlineUser className="w-4 h-4 text-iq-ice/50" />
-                    Candidate Profile
+                    <HiOutlineUser className="w-4 h-4 text-slate-400" />
+                    Profile
                   </button>
                   <button
                     id="navbar-settings-link"
                     onClick={() => {
-                      playMechanicalToggle(true);
                       navigate('/settings');
                       setShowProfile(false);
                     }}
-                    onMouseEnter={playHoverTick}
-                    className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-ui uppercase tracking-wider text-iq-ice/80 hover:text-white hover:bg-iq-ice/5 transition-colors"
+                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                   >
-                    <HiOutlineCog className="w-4 h-4 text-iq-ice/50" />
-                    System Settings
+                    <HiOutlineCog className="w-4 h-4 text-slate-400" />
+                    Settings
                   </button>
                 </div>
-                <div className="border-t border-iq-ice/15 pt-1">
+                <div className="border-t border-slate-100 pt-1">
                   <button
                     id="navbar-logout-btn"
                     onClick={handleLogout}
-                    onMouseEnter={playHoverTick}
-                    className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-ui uppercase tracking-wider text-red-400 hover:bg-iq-alert/15 transition-colors"
+                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-medium text-red-600 hover:bg-red-50"
                   >
                     <HiOutlineLogout className="w-4 h-4" />
-                    Disconnect Session
+                    Logout
                   </button>
                 </div>
               </div>
